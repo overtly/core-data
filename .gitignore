@@ -27,9 +27,8 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-packages/repositories.config.rej
+packages
 
  
 log.txt
 /.vs
-*.generated.cs
