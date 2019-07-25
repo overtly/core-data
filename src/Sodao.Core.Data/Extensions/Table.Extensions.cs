@@ -43,7 +43,10 @@ namespace Sodao.Core.Data
                         connection.ExecuteAsync(createScript).GetAwaiter().GetResult();
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
             return true;
         }
