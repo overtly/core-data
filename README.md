@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Sodao.Core.Data v1.0.2
+> Overt.Core.Data v1.0.0
 
 #### 1. 项目目录
 
@@ -81,7 +81,7 @@ Microsoft.Data.Sqlite 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Sodao.Core.Data -Version 1.0.2.12
+Install-Package Overt.Core.Data -Version 1.0.0
 ```
 
 
