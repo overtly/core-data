@@ -3,25 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sodao.Core.Data", "src\Sodao.Core.Data\Sodao.Core.Data.csproj", "{8B1B556F-1D2C-49D2-8CB9-F9D2C7080786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overt.Core.Data", "src\Overt.Core.Data\Overt.Core.Data.csproj", "{8B1B556F-1D2C-49D2-8CB9-F9D2C7080786}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{9DD521BB-DEE6-40A1-B042-EA89EB889546}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net46", "net46", "{B159908C-321A-45AF-998B-C431D7D02070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sodao.User.Domain", "src\net46\Sodao.User.Domain\Sodao.User.Domain.csproj", "{F34F6B13-B939-47A3-827E-E7015FD1B434}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overt.User.Domain", "src\net46\Overt.User.Domain\Overt.User.Domain.csproj", "{F34F6B13-B939-47A3-827E-E7015FD1B434}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sodao.Core.DataConsole", "src\dotnetcore\Sodao.Core.DataConsole\Sodao.Core.DataConsole.csproj", "{D2349F1D-B2AB-40EE-980F-0F0AB8E3F970}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overt.Core.DataConsole", "src\core\Overt.Core.DataConsole\Overt.Core.DataConsole.csproj", "{D2349F1D-B2AB-40EE-980F-0F0AB8E3F970}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sodao.Core.Test", "src\dotnetcore\Sodao.Core.Test\Sodao.Core.Test.csproj", "{85349337-2995-45B7-A341-A5DD17C4126A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overt.Core.Test", "src\core\Overt.Core.Test\Overt.Core.Test.csproj", "{85349337-2995-45B7-A341-A5DD17C4126A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sodao.User.Application", "src\dotnetcore\Sodao.User.Application\Sodao.User.Application.csproj", "{5D9B9D31-33CA-4378-AA58-D788C7EBD4CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overt.User.Application", "src\core\Overt.User.Application\Overt.User.Application.csproj", "{5D9B9D31-33CA-4378-AA58-D788C7EBD4CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sodao.User.Domain", "src\dotnetcore\Sodao.User.Domain\Sodao.User.Domain.csproj", "{0558E8F8-BB9E-4C62-A8D0-03011ED77284}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overt.User.Domain", "src\core\Overt.User.Domain\Overt.User.Domain.csproj", "{0558E8F8-BB9E-4C62-A8D0-03011ED77284}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sodao.User.Application", "src\net46\Sodao.User.Application\Sodao.User.Application.csproj", "{5ADB2A33-42E4-484B-997E-3F8B942539E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overt.User.Application", "src\net46\Overt.User.Application\Overt.User.Application.csproj", "{5ADB2A33-42E4-484B-997E-3F8B942539E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sodao.Core.DataConsole", "src\net46\Sodao.Core.DataConsole\Sodao.Core.DataConsole.csproj", "{F92F116B-A438-447B-9475-4D62AF197742}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overt.Core.DataConsole", "src\net46\Overt.Core.DataConsole\Overt.Core.DataConsole.csproj", "{F92F116B-A438-447B-9475-4D62AF197742}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
