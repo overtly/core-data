@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V 1.0.3.3
+> * Nuget版本：V 1.0.0
 > * 框架支持： Framework4.6 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -70,9 +70,9 @@ Microsoft.Data.Sqlite 2.0.0
 > * Core(DbType=MySql|SqlServer): 
 
 ```
-[mysql]: DataSource=10.0.17.10;Database=JuketoolCore;uid=juketool;pwd=abc@123;Allow Zero Datetime=True;DbType=MySql
-[sqlserver]: Data Source=10.0.12.2;Initial Catalog=SD_SiteLog;Persist Security Info=True;User ID=mpass;Password=123456mpass;DbType=SqlServer  
-[sqlite]: Data Source=chat.db;DbType=SQLite; // 默认使用App_Data目录
+[mysql]: DataSource=127.0.0.1;Database=TestDb;uid=root;pwd=123456;Allow Zero Datetime=True;DbType=MySql
+[sqlserver]: Data Source=127.0.0.1;Initial Catalog=TestDb;Persist Security Info=True;User ID=sa;Password=123456;DbType=SqlServer  
+[sqlite]: Data Source=testdb.db;DbType=SQLite; // 默认使用App_Data目录
 ```
 
 > * Framework: 正常的连接字符串，使用PrividerName来区分数据库类型

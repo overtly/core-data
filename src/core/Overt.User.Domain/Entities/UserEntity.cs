@@ -16,14 +16,6 @@ namespace Overt.User.Domain.Entities
         public string Password { get; set; }
         public DateTime AddTime { get; set; }
         public bool IsSex { get; set; }
-        /// <summary>
-        /// Json类型
-        /// </summary>
-        public string JsonValue { get; set; }
-        /// <summary>
-        /// Json类型
-        /// </summary>
-        public string Join { get; set; }
     }
 
 }
