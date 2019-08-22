@@ -127,7 +127,7 @@ namespace Overt.Core.Data.Expressions
             switch (sqlGenerate.DatabaseType)
             {
                 case DatabaseType.SqlServer:
-                    sqlGenerate.Sql = new StringBuilder($"SELECT it.* FROM ({sqlGenerate.Sql}) it where it.RowNumber > {skip} AND it.RowNumber <= {rows}");
+                    sqlGenerate.Sql = new StringBuilder($"SELECT it.* FROM ({sqlGenerate.Sql}) it where it.RowNumber > {skip} AND it.RowNumber <= {page * rows}");
                     break;
                 case DatabaseType.MySql:
                     sqlGenerate += $" limit {skip}, {rows}";
