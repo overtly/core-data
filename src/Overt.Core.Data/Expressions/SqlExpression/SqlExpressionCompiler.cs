@@ -36,13 +36,13 @@ namespace Overt.Core.Data.Expressions
             if (arg == null)
                 throw new ArgumentNullException(nameof(arg));
 
-            Func<object, object> func = Wrap(arg);
+            var func = Wrap(arg);
             return func(null);
         }
 
         private static Func<object, object> Wrap(Expression arg)
         {
-            Expression<Func<object, object>> lambdaExpr = Expression.Lambda<Func<object, object>>(Expression.Convert(arg, typeof(object)), _unusedParameterExpr);
+            var lambdaExpr = Expression.Lambda<Func<object, object>>(Expression.Convert(arg, typeof(object)), _unusedParameterExpr);
             return ExpressionCompiler.Process(lambdaExpr);
         }
     }

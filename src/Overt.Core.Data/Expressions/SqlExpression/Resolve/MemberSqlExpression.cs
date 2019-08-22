@@ -50,7 +50,7 @@ namespace Overt.Core.Data.Expressions
 
         protected override SqlGenerate In(MemberExpression expression, SqlGenerate sqlGenerate)
         {
-            var result = SqlExpressionCompiler.Evaluate(expression);
+           var result = SqlExpressionCompiler.Evaluate(expression);
             var inArgs = (result as IEnumerable).Flatten();
 
             sqlGenerate += "(";
@@ -87,9 +87,8 @@ namespace Overt.Core.Data.Expressions
             if (obj.GetType().IsValueType)
                 throw new ArgumentException($"Expression '{expression}' accesses unsupported valuetype");
 
-            if (obj is IDictionary)
+            if (obj is IDictionary dictionary)
             {
-                IDictionary dictionary = (IDictionary)obj;
                 foreach (string key in dictionary.Keys)
                 {
                     sqlGenerate += $"{key.ParamSql(sqlGenerate)} = ";
