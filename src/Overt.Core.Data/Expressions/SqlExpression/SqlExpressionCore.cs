@@ -104,6 +104,7 @@ namespace Overt.Core.Data.Expressions
             {
                 case DatabaseType.SqlServer:
                     sqlGenerate.Sql.Replace("select", $"select row_number() over({orderBy}) as RowNumber,");
+                    // sqlGenerate += $"{Environment.NewLine}{orderBy}";
                     break;
                 case DatabaseType.MySql:
                     sqlGenerate += $"{Environment.NewLine}{orderBy}";
@@ -128,6 +129,7 @@ namespace Overt.Core.Data.Expressions
             {
                 case DatabaseType.SqlServer:
                     sqlGenerate.Sql = new StringBuilder($"SELECT it.* FROM ({sqlGenerate.Sql}) it where it.RowNumber > {skip} AND it.RowNumber <= {page * rows}");
+                    // sqlGenerate += $" OFFSET {skip} ROW FETCH NEXT {rows} rows only";
                     break;
                 case DatabaseType.MySql:
                     sqlGenerate += $" limit {skip}, {rows}";
