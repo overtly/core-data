@@ -115,5 +115,22 @@ namespace Overt.Core.Data
                 default: return string.Empty;
             }
         }
+
+        /// <summary>
+        /// 数据库版本值
+        /// </summary>
+        /// <param name="dbType"></param>
+        /// <returns></returns>
+        public static string DbVersionValue(this DatabaseType dbType)
+        {
+            switch (dbType)
+            {
+                case DatabaseType.SqlServer:
+                    return "select DATABASEPROPERTYEX('master','version');";
+
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }
