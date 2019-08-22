@@ -36,6 +36,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\MultiDbType.Extensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.2" />
     <PackageReference Include="MySql.Data" Version="6.10.4" />
   </ItemGroup>

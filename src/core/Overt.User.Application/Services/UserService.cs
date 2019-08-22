@@ -50,7 +50,7 @@ namespace Overt.User.Application.Services
         public List<UserEntity> GetList()
         {
             var a = new List<int> { 1 };
-            var list = _userRepository.GetList(1, 10, oo => a.Contains(oo.UserId));
+            var list = _userRepository.GetList(2, 10, oo => a.Contains(oo.UserId));
             return list?.ToList();
         }
 

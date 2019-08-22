@@ -1,16 +1,11 @@
 ﻿using Overt.Core.Data.Expressions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Overt.Core.Data
 {
     /// <summary>
     /// Sql别名
     /// </summary>
-    public static class SqlAliasCharExtension
+    public static class SqlAliasExtensions
     {
         /// <summary>
         /// 参数前缀
@@ -24,7 +19,6 @@ namespace Overt.Core.Data
                 case DatabaseType.SqlServer: return "@";
                 case DatabaseType.MySql: return "?";
                 case DatabaseType.SQLite: return "@";
-                //case DatabaseType.Oracle: return ":";
                 default: return string.Empty;
             }
         }
@@ -120,33 +114,6 @@ namespace Overt.Core.Data
                     return $"select * from sqlite_master where name='{tableName}' and sql like '%{fieldName}%';";
                 default: return string.Empty;
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static List<object> Flatten(this IEnumerable list)
-        {
-            var ret = new List<object>();
-            if (list == null) return ret;
-
-            foreach (var item in list)
-            {
-                if (item == null) continue;
-
-                var arr = item as IEnumerable;
-                if (arr != null && !(item is string))
-                {
-                    ret.AddRange(arr.Cast<object>());
-                }
-                else
-                {
-                    ret.Add(item);
-                }
-            }
-            return ret;
         }
     }
 }

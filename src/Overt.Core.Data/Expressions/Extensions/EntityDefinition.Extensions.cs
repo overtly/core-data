@@ -9,7 +9,7 @@ namespace Overt.Core.Data
     /// <summary>
     /// 字段定义说明
     /// </summary>
-    public static class EntityDefinition
+    public static class EntityDefinitionExtensions
     {
         private static ConcurrentDictionary<string, List<PropertyInfo>> _cacheSubmeter = new ConcurrentDictionary<string, List<PropertyInfo>>();
 
