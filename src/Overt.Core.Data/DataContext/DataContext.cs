@@ -19,9 +19,9 @@ namespace Overt.Core.Data
     public class DataContext : IDisposable
     {
         #region Private Members
-        DbProviderFactory _dbFactory;
         readonly bool _isMaster;
         readonly string _dbStoreKey;
+        DbProviderFactory _dbFactory;
 
 #if ASP_NET_CORE
         readonly IConfiguration _configuration;
