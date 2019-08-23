@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Data;
+#if !ASP_NET_CORE
+using System.Configuration;
+#endif
 
 namespace Overt.Core.Data
 {
@@ -52,7 +55,12 @@ namespace Overt.Core.Data
         /// <summary>
         /// 连接方法创建
         /// </summary>
-        Func<string> ConnectionFunc { get; set; }
+
+#if ASP_NET_CORE
+        Func<(string, DatabaseType)> ConnectionFunc { get; set; }
+#else
+        Func<ConnectionStringSettings> ConnectionFunc { get; set; }
+#endif
         #endregion
 
         #region Connection

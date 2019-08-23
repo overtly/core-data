@@ -1,8 +1,10 @@
-﻿#if ASP_NET_CORE
-using Microsoft.Extensions.Configuration;
-#endif
-using System;
+﻿using System;
 using System.Data;
+#if ASP_NET_CORE
+using Microsoft.Extensions.Configuration;
+#else
+using System.Configuration;
+#endif
 
 namespace Overt.Core.Data
 {
@@ -90,12 +92,12 @@ namespace Overt.Core.Data
 
 #if ASP_NET_CORE
             if (ignoreTransaction)
-                connection = new DataContext(_configuration, isMaster, ConnectionFunc, DbStoreKey).DbConnection;
+                connection = new DataContext(_configuration, isMaster, DbStoreKey, ConnectionFunc).DbConnection;
             else
                 connection = Transaction?.Connection ??
-                    new DataContext(_configuration, isMaster, ConnectionFunc, DbStoreKey).DbConnection;
+                    new DataContext(_configuration, isMaster, DbStoreKey, ConnectionFunc).DbConnection;
 #else
-            connection = new DataContext(isMaster, ConnectionFunc, DbStoreKey).DbConnection;
+            connection = new DataContext(isMaster, DbStoreKey, ConnectionFunc).DbConnection;
 #endif
 
             if (connection == null)
@@ -107,10 +109,15 @@ namespace Overt.Core.Data
             return connection;
         }
 
+
         /// <summary>
         /// 数据库连接方法
         /// </summary>
-        public virtual Func<string> ConnectionFunc { get; set; }
+#if ASP_NET_CORE
+        public virtual Func<(string, DatabaseType)> ConnectionFunc { get; set; }
+#else
+        public virtual Func<ConnectionStringSettings> ConnectionFunc { get; set; }
+#endif
 
         /// <summary>
         /// 表名方法

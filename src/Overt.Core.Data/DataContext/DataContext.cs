@@ -1,5 +1,6 @@
 ﻿#if ASP_NET_CORE
 using Microsoft.Extensions.Configuration;
+using System.IO;
 #endif
 using MySql.Data.MySqlClient;
 using System;
@@ -9,8 +10,6 @@ using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace Overt.Core.Data
 {
@@ -21,35 +20,24 @@ namespace Overt.Core.Data
     {
         #region Private Members
         DbProviderFactory _dbFactory;
+        readonly bool _isMaster;
+        readonly string _dbStoreKey;
+
 #if ASP_NET_CORE
-        IConfiguration _configuration;
+        readonly IConfiguration _configuration;
+        readonly Func<(string, DatabaseType)> _connectionFunc;
+#else
+        readonly Func<ConnectionStringSettings> _connectionFunc;
 #endif
 
-        private readonly bool _isMaster;
-        private readonly string _dbStoreKey;
-        private readonly Func<string> _connectionFunc;
+
         #endregion
 
         #region Public Members
-        private IDbConnection _dbConnection;
         /// <summary>
         /// 连接对象
         /// </summary>
-        public IDbConnection DbConnection
-        {
-            get
-            {
-                return _dbConnection;
-            }
-        }
-        private DatabaseType _dbType = DatabaseType.MySql;
-        /// <summary>
-        /// 数据库类型
-        /// </summary>
-        public DatabaseType DbType
-        {
-            get { return _dbType; }
-        }
+        public IDbConnection DbConnection { get; private set; }
         #endregion
 
         #region Constructor
@@ -61,7 +49,7 @@ namespace Overt.Core.Data
         /// <param name="isMaster">是否从库</param>
         /// <param name="dbStoreKey">存储字符串标识</param>
         /// <param name="connectionFunc">连接字符串Func</param>
-        public DataContext(IConfiguration configuration, bool isMaster = false, Func<string> connectionFunc = null, string dbStoreKey = "")
+        public DataContext(IConfiguration configuration, bool isMaster = false, string dbStoreKey = "", Func<(string, DatabaseType)> connectionFunc = null)
         {
             _configuration = configuration;
             _isMaster = isMaster;
@@ -78,7 +66,7 @@ namespace Overt.Core.Data
         /// <param name="isMaster">是否从库</param>
         /// <param name="dbStoreKey">存储字符串标识</param>
         /// <param name="connectionFunc">连接字符串Func</param>
-        public DataContext(bool isMaster = false, Func<string> connectionFunc = null, string dbStoreKey = "")
+        public DataContext(bool isMaster = false, string dbStoreKey = "", Func<ConnectionStringSettings> connectionFunc = null)
         {
             _isMaster = isMaster;
             _dbStoreKey = dbStoreKey;
@@ -97,71 +85,26 @@ namespace Overt.Core.Data
         private void CreateAndOpen()
         {
             var connectionString = string.Empty;
-            var providerName = string.Empty;
+            var settings = DataSettings.Default;
 
-            #region 1. ExecuteFunc
-            if (_connectionFunc != null)
-            {
-                connectionString = _connectionFunc?.Invoke();
-            }
-            #endregion
-
-            #region 2. 配置文件 
-            else
-            {
+            // 获取连接
 #if ASP_NET_CORE
-                #region 自编译Configuration
-                if (_configuration == null)
-                {
-                    _configuration = new ConfigurationBuilder()
-                        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                        .AddJsonFile("appsettings.json")
-                        .Build();
-                }
-                #endregion
-
-                #region 从库转主库
-                var connectionKey = DataContextConfig.Default.Setting(_isMaster, _dbStoreKey);
-                connectionString = _configuration.GetConnectionString(connectionKey);
-                if (string.IsNullOrEmpty(connectionString) && !_isMaster)
-                {
-                    connectionKey = DataContextConfig.Default.Setting(true, _dbStoreKey);
-                    connectionString = _configuration.GetConnectionString(connectionKey);
-                }
-                #endregion
+            var connectionSetting = settings.Get(_configuration, _isMaster, _dbStoreKey, _connectionFunc);
+            connectionString = connectionSetting.Item1;
+            _dbFactory = GetFactory(connectionSetting.Item2);
 #else
-                #region 从库转主库
-                var connectionKey = DataContextConfig.Default.Setting(_isMaster, _dbStoreKey);
-                var connectionSetting = ConfigurationManager.ConnectionStrings[connectionKey];
-                connectionString = connectionSetting?.ConnectionString;
-                providerName = connectionSetting?.ProviderName;
-                if (string.IsNullOrEmpty(connectionString) && !_isMaster)
-                {
-                    connectionKey = DataContextConfig.Default.Setting(true, _dbStoreKey);
-                    connectionSetting = ConfigurationManager.ConnectionStrings[connectionKey];
-                    connectionString = connectionSetting.ConnectionString;
-                    providerName = connectionSetting.ProviderName;
-                }
-                #endregion
+            var connectionSetting = settings.Get(_isMaster, _dbStoreKey, _connectionFunc);
+            connectionString = connectionSetting?.ConnectionString;
+            _dbFactory = DbProviderFactories.GetFactory(connectionSetting?.ProviderName);
 #endif
-            }
-            #endregion
 
-            #region 3. 创建连接
             if (string.IsNullOrEmpty(connectionString))
                 throw new Exception($"连接字符串获取为空，请检查Repository是否指定了dbStoreKey以及检查配置文件是否存在");
 
-#if ASP_NET_CORE
-            connectionString = FixConnectionString(connectionString);
-            _dbFactory = GetFactory(_dbType);
-#else
-            _dbFactory = DbProviderFactories.GetFactory(providerName);
-#endif
-            _dbConnection = _dbFactory.CreateConnection();
-            _dbConnection.ConnectionString = connectionString;
-            if (_dbConnection.State != ConnectionState.Open)
-                _dbConnection.Open();
-            #endregion
+            DbConnection = _dbFactory.CreateConnection();
+            DbConnection.ConnectionString = connectionString;
+            if (DbConnection.State != ConnectionState.Open)
+                DbConnection.Open();
         }
 
         /// <summary>
@@ -187,26 +130,6 @@ namespace Overt.Core.Data
             }
             return null;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="connectionString"></param>
-        /// <param name="param"></param>
-        /// <returns></returns>
-        private string FixConnectionString(string connectionString, string param = "DbType")
-        {
-            var dbTypeRegex = new Regex($@"(^|;){param}=(?<dbtype>[A-Za-z]+)(;|$)");
-            var m = dbTypeRegex.Match(connectionString);
-            var dbTypeString = m?.Groups["dbtype"].Value;
-            _dbType = DatabaseType.MySql;
-            var parseResult = Enum.TryParse(dbTypeString, out _dbType);
-            if (!parseResult)
-                _dbType = DatabaseType.MySql;
-
-            connectionString = Regex.Replace(connectionString, $@"{param}=([A-Za-z]+)(;|$)", "");
-            return connectionString;
-        }
         #endregion
 
         #region Public Method
@@ -215,11 +138,11 @@ namespace Overt.Core.Data
         /// </summary>
         public void Dispose()
         {
-            if (_dbConnection == null)
+            if (DbConnection == null)
                 return;
             try
             {
-                _dbConnection.Dispose();
+                DbConnection.Dispose();
             }
             catch { }
         }
