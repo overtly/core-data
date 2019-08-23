@@ -451,7 +451,13 @@ namespace Overt.Core.Data
             if (connection is MySqlConnection)
                 return DatabaseType.MySql;
             if (connection is SqlConnection)
+            {
+                SqlConnection sqlConnection = (SqlConnection)connection;
+                var v = sqlConnection.ServerVersion;
+                if (v.StartsWith(Constants.MSSQLVersion.SQLServer2012Prefix))
+                    return DatabaseType.GteSqlServer2012;
                 return DatabaseType.SqlServer;
+            }
 #if ASP_NET_CORE
             if (connection is Microsoft.Data.Sqlite.SqliteConnection)
 #else

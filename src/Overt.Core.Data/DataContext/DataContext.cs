@@ -117,6 +117,7 @@ namespace Overt.Core.Data
             switch (dbType)
             {
                 case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
                     return SqlClientFactory.Instance;
                 case DatabaseType.MySql:
                     return MySqlClientFactory.Instance;

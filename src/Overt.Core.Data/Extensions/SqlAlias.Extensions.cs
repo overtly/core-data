@@ -16,10 +16,15 @@ namespace Overt.Core.Data
         {
             switch (dbType)
             {
-                case DatabaseType.SqlServer: return "@";
-                case DatabaseType.MySql: return "?";
-                case DatabaseType.SQLite: return "@";
-                default: return string.Empty;
+                case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
+                    return "@";
+                case DatabaseType.MySql:
+                    return "?";
+                case DatabaseType.SQLite:
+                    return "@";
+                default:
+                    return string.Empty;
             }
         }
 
@@ -45,15 +50,20 @@ namespace Overt.Core.Data
             switch (dbType)
             {
                 case DatabaseType.SqlServer:
-                    if (columnName.StartsWith("[")) return columnName;
+                case DatabaseType.GteSqlServer2012:
+                    if (columnName.StartsWith("["))
+                        return columnName;
                     return $"[{columnName}]";
                 case DatabaseType.MySql:
-                    if (columnName.StartsWith("`")) return columnName;
+                    if (columnName.StartsWith("`"))
+                        return columnName;
                     return $"`{columnName}`";
                 case DatabaseType.SQLite:
-                    if (columnName.StartsWith("`")) return columnName;
+                    if (columnName.StartsWith("`"))
+                        return columnName;
                     return $"`{columnName}`";
-                default: return columnName;
+                default:
+                    return columnName;
             }
         }
 
@@ -66,10 +76,15 @@ namespace Overt.Core.Data
         {
             switch (dbType)
             {
-                case DatabaseType.SqlServer: return " select @@Identity";
-                case DatabaseType.MySql: return " select LAST_INSERT_ID();";
-                case DatabaseType.SQLite: return " select last_insert_rowid();";
-                default: return string.Empty;
+                case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
+                    return " select @@Identity";
+                case DatabaseType.MySql:
+                    return " select LAST_INSERT_ID();";
+                case DatabaseType.SQLite:
+                    return " select last_insert_rowid();";
+                default:
+                    return string.Empty;
             }
         }
 
@@ -85,6 +100,7 @@ namespace Overt.Core.Data
             switch (dbType)
             {
                 case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
                     return $"select count(1) from sys.tables where name='{tableName}' and type = 'u'";
                 case DatabaseType.MySql:
                     return $"select count(1) from information_schema.tables where table_schema = '{dbName}' and table_name = '{tableName}'";
@@ -107,29 +123,13 @@ namespace Overt.Core.Data
             switch (dbType)
             {
                 case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
                     return $"select count(1) sys.columns where object_id = object_id('{tableName}') and name='{fieldName}'";
                 case DatabaseType.MySql:
                     return $"select count(1) from information_schema.columns where table_schema = '{dbName}' and table_name  = '{tableName}' and column_name = '{fieldName}'";
                 case DatabaseType.SQLite:
                     return $"select * from sqlite_master where name='{tableName}' and sql like '%{fieldName}%';";
                 default: return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// 数据库版本值
-        /// </summary>
-        /// <param name="dbType"></param>
-        /// <returns></returns>
-        public static string DbVersionValue(this DatabaseType dbType)
-        {
-            switch (dbType)
-            {
-                case DatabaseType.SqlServer:
-                    return "select DATABASEPROPERTYEX('master','version');";
-
-                default:
-                    return string.Empty;
             }
         }
     }
