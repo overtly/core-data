@@ -454,7 +454,8 @@ namespace Overt.Core.Data
             {
                 SqlConnection sqlConnection = (SqlConnection)connection;
                 var v = sqlConnection.ServerVersion;
-                if (v.StartsWith(Constants.MSSQLVersion.SQLServer2012Prefix))
+                int.TryParse(v.Substring(0, v.IndexOf(".")), out int bV);
+                if (bV >= Constants.MSSQLVersion.SQLServer2012Bv)
                     return DatabaseType.GteSqlServer2012;
                 return DatabaseType.SqlServer;
             }
