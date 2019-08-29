@@ -170,6 +170,27 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
+        /// 获取列表 Offset
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <param name="expression">条件表达式</param>
+        /// <param name="fieldExpressison">按字段返回</param>
+        /// <param name="isMaster">是否主从</param>
+        /// <param name="orderByFields">排序字段集合</param>
+        /// <returns></returns>
+        public IEnumerable<TEntity> GetOffsets(
+            int offset,
+            int size,
+            Expression<Func<TEntity, bool>> expression = null,
+            Expression<Func<TEntity, object>> fieldExpressison = null,
+            bool isMaster = false,
+            params OrderByField[] orderByFields)
+        {
+            return GetOffsetsAsync(offset, size, expression, fieldExpressison, isMaster, orderByFields).Result;
+        }
+
+        /// <summary>
         /// 获取数量
         /// </summary>
         /// <param name="expression">条件表达式</param>
@@ -335,6 +356,35 @@ namespace Overt.Core.Data
             {
                 var tableName = expression.GetTableName(TableNameFunc);
                 var task = await connection.GetListAsync(tableName, page, rows, expression, fieldExpressison, orderByFields?.ToList(), Transaction, OutSqlAction);
+                return task;
+            }, isMaster);
+        }
+
+        /// <summary>
+        /// 异步获取列表 Offset
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <param name="expression">条件表达式</param>
+        /// <param name="fieldExpressison">按字段返回</param>
+        /// <param name="isMaster">是否主从</param>
+        /// <param name="orderByFields">排序字段集合</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TEntity>> GetOffsetsAsync(
+            int offset,
+            int size,
+            Expression<Func<TEntity, bool>> expression = null,
+            Expression<Func<TEntity, object>> fieldExpressison = null,
+            bool isMaster = false,
+            params OrderByField[] orderByFields)
+        {
+            if (offset < 0 || size <= 0)
+                return default(IEnumerable<TEntity>);
+
+            return await Execute(async (connection) =>
+            {
+                var tableName = expression.GetTableName(TableNameFunc);
+                var task = await connection.GetOffsetsAsync(tableName, offset, size, expression, fieldExpressison, orderByFields?.ToList(), Transaction, OutSqlAction);
                 return task;
             }, isMaster);
         }

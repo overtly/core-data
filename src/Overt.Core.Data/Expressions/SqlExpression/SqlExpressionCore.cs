@@ -148,6 +148,34 @@ namespace Overt.Core.Data.Expressions
         }
 
         /// <summary>
+        /// Offset
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public SqlExpressionCore<T> Offset(int offset, int size)
+        {
+            switch (sqlGenerate.DatabaseType)
+            {
+                case DatabaseType.SqlServer:
+                    sqlGenerate.Sql = new StringBuilder($"SELECT it.* FROM ({sqlGenerate.Sql}) it where it.RowNumber > {offset} AND it.RowNumber <= {offset + size}");
+                    break;
+                case DatabaseType.GteSqlServer2012:
+                    sqlGenerate += $" OFFSET {offset} ROW FETCH NEXT {size} rows only";
+                    break;
+                case DatabaseType.MySql:
+                    sqlGenerate += $" limit {offset}, {size}";
+                    break;
+                case DatabaseType.SQLite:
+                    sqlGenerate += $" limit {size} offset {offset}";
+                    break;
+                default:
+                    break;
+            }
+            return this;
+        }
+
+        /// <summary>
         /// 最大
         /// </summary>
         /// <param name="expression"></param>

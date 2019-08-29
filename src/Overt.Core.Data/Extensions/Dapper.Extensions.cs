@@ -411,6 +411,51 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
+        /// 获取分页数据 Offset
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="tableName"></param>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <param name="whereExpress">条件表达式</param>
+        /// <param name="fieldExpress">选择字段，默认为*</param>
+        /// <param name="orderByFields">排序字段集合</param>
+        /// <param name="transaction">事务</param>
+        /// <param name="outSqlAction">返回sql语句</param>
+        /// <returns></returns>
+        public static async Task<IEnumerable<TEntity>> GetOffsetsAsync<TEntity>(this
+            IDbConnection connection,
+            string tableName,
+            int offset,
+            int size,
+            Expression<Func<TEntity, bool>> whereExpress,
+            Expression<Func<TEntity, object>> fieldExpress = null,
+            List<OrderByField> orderByFields = null,
+            IDbTransaction transaction = null,
+            Action<string> outSqlAction = null)
+            where TEntity : class, new()
+        {
+            if (string.IsNullOrEmpty(tableName))
+                return default(IEnumerable<TEntity>);
+
+            var dbType = connection.GetDbType();
+            var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName);
+            if (whereExpress != null)
+                sqlExpression.Where(whereExpress);
+
+            var orderBy = string.Empty;
+            if ((orderByFields?.Count ?? 0) > 0)
+                orderBy = $" {string.Join(", ", orderByFields.Select(oo => oo.Field.ParamSql(dbType) + " " + oo.OrderBy))}";
+            sqlExpression.OrderBy(orderBy).Offset(offset, size);
+
+            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            // 返回sql
+            outSqlAction?.Invoke(sqlExpression.Script);
+            return task;
+        }
+
+        /// <summary>
         /// 获取数量
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>

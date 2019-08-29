@@ -144,7 +144,7 @@ namespace Overt.Core.Data
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false);
 
         /// <summary>
-        /// 获取列表
+        /// 获取列表 
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rows"></param>
@@ -154,6 +154,18 @@ namespace Overt.Core.Data
         /// <param name="orderByFields">排序字段集合</param>
         /// <returns></returns>
         IEnumerable<TEntity> GetList(int page, int rows, Expression<Func<TEntity, bool>> expression = null, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false, params OrderByField[] orderByFields);
+
+        /// <summary>
+        /// 获取列表 Offset
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <param name="expression">条件表达式</param>
+        /// <param name="fieldExpressison">按字段返回</param>
+        /// <param name="isMaster">是否主从</param>
+        /// <param name="orderByFields">排序字段集合</param>
+        /// <returns></returns>
+        IEnumerable<TEntity> GetOffsets(int offset, int size, Expression<Func<TEntity, bool>> expression = null, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false, params OrderByField[] orderByFields);
 
         /// <summary>
         /// 异步获取列表
@@ -166,6 +178,18 @@ namespace Overt.Core.Data
         /// <param name="orderByFields">排序字段集合</param>
         /// <returns></returns>
         Task<IEnumerable<TEntity>> GetListAsync(int page, int rows, Expression<Func<TEntity, bool>> expression = null, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false, params OrderByField[] orderByFields);
+
+        /// <summary>
+        /// 异步获取列表 Offset
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
+        /// <param name="expression">条件表达式</param>
+        /// <param name="fieldExpressison">按字段返回</param>
+        /// <param name="isMaster">是否主从</param>
+        /// <param name="orderByFields">排序字段集合</param>
+        /// <returns></returns>
+        Task<IEnumerable<TEntity>> GetOffsetsAsync(int offset, int size, Expression<Func<TEntity, bool>> expression = null, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false, params OrderByField[] orderByFields);
 
         /// <summary>
         /// 获取数量
