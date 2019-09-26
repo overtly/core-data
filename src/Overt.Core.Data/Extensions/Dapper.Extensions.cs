@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using Overt.Core.Data.Expressions;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -486,6 +487,7 @@ namespace Overt.Core.Data
         #endregion
 
         #region Private Method
+        static ConcurrentDictionary<string, DatabaseType> MSSqlDbType = new ConcurrentDictionary<string, DatabaseType>();
         /// <summary>
         /// 获取db类型
         /// </summary>
@@ -497,12 +499,15 @@ namespace Overt.Core.Data
                 return DatabaseType.MySql;
             if (connection is SqlConnection)
             {
-                SqlConnection sqlConnection = (SqlConnection)connection;
-                var v = sqlConnection.ServerVersion;
-                int.TryParse(v.Substring(0, v.IndexOf(".")), out int bV);
-                if (bV >= Constants.MSSQLVersion.SQLServer2012Bv)
-                    return DatabaseType.GteSqlServer2012;
-                return DatabaseType.SqlServer;
+                return MSSqlDbType.GetOrAdd(connection.ConnectionString, (connectionString) =>
+                {
+                    var sqlConnection = (SqlConnection)connection;
+                    var v = sqlConnection.ServerVersion;
+                    int.TryParse(v.Substring(0, v.IndexOf(".")), out int bV);
+                    if (bV >= Constants.MSSQLVersion.SQLServer2012Bv)
+                        return DatabaseType.GteSqlServer2012;
+                    return DatabaseType.SqlServer;
+                });
             }
 #if ASP_NET_CORE
             if (connection is Microsoft.Data.Sqlite.SqliteConnection)
