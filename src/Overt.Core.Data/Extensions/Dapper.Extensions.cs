@@ -177,9 +177,9 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return -1;
+                throw new ArgumentNullException(nameof(tableName));
             if (entity == null)
-                return -1;
+                throw new ArgumentNullException(nameof(entity));
 
             var addFields = new List<string>();
             var atFields = new List<string>();
@@ -235,9 +235,9 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return -1;
+                throw new ArgumentNullException(nameof(tableName));
             if (whereExpress == null)
-                return -1;
+                throw new ArgumentNullException(nameof(whereExpress));
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Delete<TEntity>(dbType, tableName).Where(whereExpress);
@@ -268,9 +268,9 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return false;
+                throw new ArgumentNullException(nameof(tableName));
             if (entity == null)
-                return false;
+                throw new ArgumentNullException(nameof(entity));
 
             var setFields = new List<string>();
             var whereFields = new List<string>();
@@ -321,9 +321,9 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return false;
+                throw new ArgumentNullException(nameof(tableName));
             if (setExpress == null || whereExpress == null)
-                return false;
+                throw new ArgumentNullException($"{nameof(setExpress)} / {nameof(whereExpress)}");
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Update<TEntity>(dbType, setExpress, tableName).Where(whereExpress);
@@ -354,9 +354,9 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return default(TEntity);
+                throw new ArgumentNullException(nameof(tableName));
             if (whereExpress == null)
-                return default(TEntity);
+                throw new ArgumentNullException(nameof(whereExpress));
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName).Where(whereExpress);
@@ -393,7 +393,7 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return default(IEnumerable<TEntity>);
+                throw new ArgumentNullException(nameof(tableName));
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName);
@@ -438,7 +438,7 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return default(IEnumerable<TEntity>);
+                throw new ArgumentNullException(nameof(tableName));
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName);
@@ -475,7 +475,7 @@ namespace Overt.Core.Data
             where TEntity : class, new()
         {
             if (string.IsNullOrEmpty(tableName))
-                return 0;
+                throw new ArgumentNullException(nameof(tableName));
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Count<TEntity>(dbType, tableName: tableName).Where(whereExpress);

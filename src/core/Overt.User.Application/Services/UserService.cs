@@ -63,6 +63,12 @@ namespace Overt.User.Application.Services
                 ids.Add(i + 1);
             }
             var list = _userRepository.GetList(1, int.MaxValue, oo => ids.Contains(oo.UserId));
+
+            var ids1 = ids.ToArray();
+            var list1 = _userRepository.GetList(1, int.MaxValue, oo => ids1.Contains(oo.UserId));
+
+            var list2 = _userRepository.GetList(1, int.MaxValue, oo => new List<int> { 1, 2, 3, 4, 5 }.Contains(oo.UserId));
+
             return list.ToList();
         }
     }

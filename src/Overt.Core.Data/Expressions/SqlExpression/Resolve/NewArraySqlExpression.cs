@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Overt.Core.Data.Expressions
 {
@@ -6,16 +7,13 @@ namespace Overt.Core.Data.Expressions
     {
         protected override SqlGenerate In(NewArrayExpression expression, SqlGenerate sqlGenerate)
         {
-            sqlGenerate += "(";
-            foreach (Expression expressionItem in expression.Expressions)
+            var list = new List<object>();
+            foreach (var expressionItem in expression.Expressions)
             {
-                SqlExpressionProvider.In(expressionItem, sqlGenerate);
+                var obj = SqlExpressionCompiler.Evaluate(expressionItem);
+                list.Add(obj);
             }
-
-            if (sqlGenerate.Sql[sqlGenerate.Sql.Length - 1] == ',')
-                sqlGenerate.Sql.Remove(sqlGenerate.Sql.Length - 1, 1);
-            sqlGenerate += ")";
-
+            sqlGenerate.AddDbParameter(list);
             return sqlGenerate;
         }
     }

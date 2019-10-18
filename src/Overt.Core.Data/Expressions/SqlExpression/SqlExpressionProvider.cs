@@ -67,7 +67,7 @@ namespace Overt.Core.Data.Expressions
             }
             if (expression is ListInitExpression)
             {
-                throw new NotImplementedException("未实现的ListInitSqlExpression");
+                return new ListInitSqlExpression();
             }
             if (expression is LoopExpression)
             {

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Overt.Core.Data.Expressions
 {
@@ -50,25 +47,9 @@ namespace Overt.Core.Data.Expressions
 
         protected override SqlGenerate In(MemberExpression expression, SqlGenerate sqlGenerate)
         {
-           var result = SqlExpressionCompiler.Evaluate(expression);
+            var result = SqlExpressionCompiler.Evaluate(expression);
             var inArgs = (result as IEnumerable).Flatten();
-
-            sqlGenerate += "(";
-            if (inArgs?.Count > 0)
-            {
-                foreach (var item in inArgs)
-                {
-                    sqlGenerate.AddDbParameter(item);
-                    sqlGenerate += ",";
-                }
-                if (sqlGenerate.Sql.ToString().EndsWith(","))
-                    sqlGenerate.Sql.Remove(sqlGenerate.Sql.Length - 1, 1);
-            }
-            else
-            {
-                sqlGenerate += "NULL";
-            }
-            sqlGenerate += ")";
+            sqlGenerate.AddDbParameter(inArgs);
             return sqlGenerate;
         }
 

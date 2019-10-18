@@ -27,9 +27,9 @@ namespace Overt.Core.DataConsole
         static void Main(string[] args)
         {
             var _userService = provider.GetService<IUserService>();
-            _userService.DoSomethingWithTrans();
+            //_userService.DoSomethingWithTrans();
 
-            _userService.GetList();
+            //_userService.GetList();
             _userService.GetByIds();
 
             //_userService.DoSomething();
