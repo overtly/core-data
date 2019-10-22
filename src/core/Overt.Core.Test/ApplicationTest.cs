@@ -17,7 +17,7 @@ namespace Overt.Core.Test
         public void DoSomethingTest()
         {
             var _userService = provider.GetService<IUserService>();
-            _userService.DoSomethingWithTrans();
+            //_userService.DoSomethingWithTrans();
 
             _userService.GetList();
 

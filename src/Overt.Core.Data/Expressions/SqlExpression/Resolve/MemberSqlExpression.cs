@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Overt.Core.Data.Expressions
@@ -8,6 +10,17 @@ namespace Overt.Core.Data.Expressions
     {
         protected override SqlGenerate Select(MemberExpression expression, SqlGenerate sqlGenerate)
         {
+            if (IsEnumerable(expression))
+            {
+                var result = SqlExpressionCompiler.Evaluate(expression);
+                var fields = (result as IEnumerable).Flatten();
+                if (fields?.Count > 0)
+                {
+                    sqlGenerate.SelectFields.AddRange(fields.Select(field => field.ToString().ParamSql(sqlGenerate)));
+                }
+                return sqlGenerate;
+            }
+
             sqlGenerate.SelectFields.Add(expression.Member.Name.ParamSql(sqlGenerate));
             return sqlGenerate;
         }
@@ -122,6 +135,17 @@ namespace Overt.Core.Data.Expressions
         {
             sqlGenerate.Sql.AppendFormat("select sum({0}) from {1}", expression.Member.Name.ParamSql(sqlGenerate), sqlGenerate.TableName);
             return sqlGenerate;
+        }
+
+        /// <summary>
+        /// 是否是集合方法
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        internal static bool IsEnumerable(MemberExpression m)
+        {
+            return m.Type.IsOrHasGenericInterfaceTypeOf(typeof(IEnumerable<>))
+                && m.Type != typeof(string);
         }
     }
 }

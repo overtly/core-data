@@ -4,6 +4,7 @@ using Overt.User.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Overt.User.Application.Services
@@ -50,8 +51,18 @@ namespace Overt.User.Application.Services
         public List<UserEntity> GetList()
         {
             var a = new List<int> { 1 };
-            var list = _userRepository.GetOffsets(2, 1, oo => a.Contains(oo.UserId));
-            return list?.ToList();
+            Expression<Func<UserEntity, object>> fieldEx0 = o => new { o.RealName };
+            var list0 = _userRepository.GetOffsets(2, 1, oo => a.Contains(oo.UserId), fieldEx0);
+
+            var fields1 = new string[] { "RealName" };
+            Expression<Func<UserEntity, object>> fieldEx1 = o => fields1;
+            var list1 = _userRepository.GetOffsets(2, 1, oo => a.Contains(oo.UserId), fieldEx1);
+
+            var fields2 = new List<string>() { "RealName" };
+            Expression<Func<UserEntity, object>> fieldEx2 = o => fields2;
+            var list2 = _userRepository.GetOffsets(2, 1, oo => a.Contains(oo.UserId), fieldEx2);
+
+            return list0?.ToList();
         }
 
 
