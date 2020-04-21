@@ -50,7 +50,8 @@ namespace Overt.User.Application.Services
 
         public List<UserEntity> GetList()
         {
-            var b = _userRepository.Get(oo => oo.UserId == 1, oo => null);
+            var f = new List<string>();
+            var b = _userRepository.Get(oo => oo.UserId == 1, oo => f);
             var a = new List<int> { 1 };
             Expression<Func<UserEntity, object>> fieldEx0 = o => new { o.RealName };
             var list0 = _userRepository.GetOffsets(2, 1, oo => a.Contains(oo.UserId), oo => null);

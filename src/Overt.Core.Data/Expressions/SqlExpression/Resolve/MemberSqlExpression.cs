@@ -15,9 +15,10 @@ namespace Overt.Core.Data.Expressions
                 var result = SqlExpressionCompiler.Evaluate(expression);
                 var fields = (result as IEnumerable).Flatten();
                 if (fields?.Count > 0)
-                {
                     sqlGenerate.SelectFields.AddRange(fields.Select(field => field.ToString().ParamSql(sqlGenerate)));
-                }
+                else
+                    sqlGenerate.SelectFields = new List<string>() { "*" };
+
                 return sqlGenerate;
             }
 
