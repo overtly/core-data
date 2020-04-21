@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Overt.Core.Data.Expressions
 {
@@ -14,6 +15,15 @@ namespace Overt.Core.Data.Expressions
         {
             sqlGenerate.AddDbParameter(expression.Value);
             sqlGenerate += ",";
+            return sqlGenerate;
+        }
+
+        protected override SqlGenerate Select(ConstantExpression expression, SqlGenerate sqlGenerate)
+        {
+            if (expression.Value == null)
+                sqlGenerate.SelectFields = new List<string>() { "*" };
+            else
+                sqlGenerate.SelectFields = new List<string>() { expression.Value.ToString() };
             return sqlGenerate;
         }
     }
