@@ -9,16 +9,18 @@ using System.Linq;
 
 namespace Overt.User.Domain.Repositories
 {
-    public class UserRepository : BaseRepository<UserEntity>, IUserRepository
+    public class SubUserRepository : BaseRepository<SubUserEntity>, ISubUserRepository
     {
-        public UserRepository() 
-            : base() // dbStoreKey 可用于不同数据库切换，连接字符串key前缀：xxx.master xxx.secondary
+        public SubUserRepository() : base()
         {
         }
 
+        // Service层进行赋值即可
+        public DateTime AddTime { get; set; }
+
         public override Func<string> TableNameFunc => () =>
         {
-            var tableName = $"{GetMainTableName()}_Test";
+            var tableName = $"{GetMainTableName()}_{DateTime.Now.ToString("yyyyMMdd")}";
             return tableName;
         };
 
@@ -37,17 +39,5 @@ namespace Overt.User.Domain.Repositories
                    "  PRIMARY KEY(`UserId`)" +
                    ") ENGINE = InnoDB AUTO_INCREMENT = 3748 DEFAULT CHARSET = utf8mb4; ";
         };
-
-        public async Task<List<string>> OtherSqlAsync()
-        {
-            // 表名最好使用这个方法获取，支持分表，分表案例详见其他案例
-            var tableName = GetTableName();
-            var sql = $"select distinct(UserName) from {tableName}";
-            return await Execute(async connecdtion =>
-            {
-                var task = await connecdtion.QueryAsync<string>(sql);
-                return task.ToList();
-            });
-        }
     }
 }

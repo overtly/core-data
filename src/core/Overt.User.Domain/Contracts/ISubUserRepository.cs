@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Overt.User.Domain.Contracts
 {
-    public interface IUserRepository : IBaseRepository<UserEntity>
+    public interface ISubUserRepository : IBaseRepository<SubUserEntity>
     {
         /// <summary>
-        /// 其他sql 本案例中 统计UserName去重个数
+        /// 分表标识 第二种
+        /// 第一种为HASH模式，实体标记Submeter
         /// </summary>
-        /// <returns></returns>
-        Task<List<string>> OtherSqlAsync();
+        DateTime AddTime { get; set; }
+             
     }
 }

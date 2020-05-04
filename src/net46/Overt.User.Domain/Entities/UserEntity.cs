@@ -10,7 +10,6 @@ namespace Overt.User.Domain.Entities
     public class UserEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //[Submeter(Bit = 2)]
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string RealName { get; set; }
@@ -21,10 +20,6 @@ namespace Overt.User.Domain.Entities
         /// Json类型
         /// </summary>
         public string JsonValue { get; set; }
-        /// <summary>
-        /// Json类型
-        /// </summary>
-        public string Join { get; set; }
     }
 
 }

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Overt.Core.Data;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Overt.User.Domain.Entities
 {
     [Table("User")]
-    public class UserEntity
+    public class SubUserEntity
     {
+        // 第一种分表标识，Md5(UserId)取{Bit}位 尽量不用，使用自定义模式
+        //[Submeter(Bit = 2)]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
         public string UserName { get; set; }

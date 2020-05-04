@@ -1,18 +1,26 @@
-﻿using Overt.User.Domain.Entities;
+﻿using Overt.User.Application.Models;
+using Overt.User.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Overt.User.Application.Constracts
 {
     public interface IUserService
     {
-        UserEntity DoSomething();
+        Task<UserModel> GetAsync(int userId, bool isMaster = false);
 
-        List<UserEntity> GetList();
+        Task<List<UserModel>> GetListAsync(List<int> userIds, bool isMaster = false);
 
-        bool DoSomethingWithTrans();
+        Task<(int, List<UserModel>)> GetPageAsync(UserSearchModel model);
 
-        List<UserEntity> GetByIds();
+        Task<int> AddAsync(UserPostModel model);
+
+        Task<bool> UpdateAsync(int userId, bool isSex);
+
+        Task<bool> DeleteAsync(int userId);
+
+        Task<int> OtherSqlAsync();
     }
 }

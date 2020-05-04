@@ -3,15 +3,16 @@ using Overt.User.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Overt.User.Domain.Contracts
 {
     public interface IUserRepository : IBaseRepository<UserEntity>
     {
         /// <summary>
-        /// 做什么东西
+        /// 其他sql 本案例中 统计UserName去重个数
         /// </summary>
         /// <returns></returns>
-        UserEntity DoSomething();
+        Task<List<string>> OtherSqlAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using Overt.User.Application.Constracts;
 using Overt.User.Application.Services;
 using Overt.User.Domain;
@@ -12,6 +13,7 @@ namespace Overt.User.Application
             services.AddTransient<IUserService, UserService>();
 
             services.AddDomainDI();
+            services.AddAutoMapper();
         }
     }
 }
