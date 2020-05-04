@@ -106,18 +106,17 @@ IBaseRepository的实现
 // 自定义重写TableNameFunc
 // 使用GetTableName()可获取到实际的表名
 // 内置方法均从上述方法中获取表名，默认表名为实体定义的[Table("主表名")]
-        public override Func<string> TableNameFunc => () =>
-        {
-            var tableName = $"{GetMainTableName()}_{DateTime.Now.ToString("yyyyMMdd")}";
-            return tableName;
-        };
+public override Func<string> TableNameFunc => () =>
+{
+    var tableName = $"{GetMainTableName()}_{DateTime.Now.ToString("yyyyMMdd")}";
+    return tableName;
+};
         
 // 重写创建表的脚本，可在调用过程中，自动创建表，一般用于动态分表
-        public override Func<string, string> CreateScriptFunc => (tableName) =>
-        {
-        
-        }
-        
+public override Func<string, string> CreateScriptFunc => (tableName) =>
+{
+    return "创建表的Sql脚本"; // 将在增删改操作中执行，查询操作中，表不存在则直接返回空数据  
+}        
 ```
 
 #### 5. 分库实现
