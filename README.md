@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v1.0.0
+> Overt.Core.Data v1.0.3.5
 
 #### 1. 项目目录
 
@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V 1.0.0
+> * Nuget版本：V 1.0.3.5
 > * 框架支持： Framework4.6 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -67,7 +67,7 @@ Microsoft.Data.Sqlite 2.0.0
 
 > * 支持 IConfiguration 对象注入
 > * 支持默认配置文件appsettings.json
-> * Core(DbType=MySql|SqlServer): 
+> * Core(DbType=MySql|SqlServer|SQLite): 
 
 ```
 [mysql]: DataSource=127.0.0.1;Database=TestDb;uid=root;pwd=123456;Allow Zero Datetime=True;DbType=MySql
@@ -81,7 +81,7 @@ Microsoft.Data.Sqlite 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 1.0.0
+Install-Package Overt.Core.Data -Version 1.0.3.5
 ```
 
 
@@ -98,8 +98,58 @@ return await Execute(async (connection) =>
 }, true);
 ```
 
+#### 4. 分表实现
 
-#### 4. Where表达式支持
+```
+IBaseRepository的实现
+
+// 自定义重写TableNameFunc
+// 使用GetTableName()可获取到实际的表名
+// 内置方法均从上述方法中获取表名，默认表名为实体定义的[Table("主表名")]
+        public override Func<string> TableNameFunc => () =>
+        {
+            var tableName = $"{GetMainTableName()}_{DateTime.Now.ToString("yyyyMMdd")}";
+            return tableName;
+        };
+        
+// 重写创建表的脚本，可在调用过程中，自动创建表，一般用于动态分表
+        public override Func<string, string> CreateScriptFunc => (tableName) =>
+        {
+        
+        }
+        
+```
+
+#### 5. 分库实现
+
+> * 连接字符串配置中以key - value 模式定义，key使用默认的读写分离关键字【master / secondary】表示写入连接字符串和读取连接字符串
+> * 前缀添加 xxx.即可简单定义不同数据库，代码中，对于IBaseRepository的实现，在构造函数中直接常量定义 xxx，如下所示
+```
+using Overt.Core.Data;
+using Overt.User.Domain.Contracts;
+using Overt.User.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Dapper;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
+
+namespace Overt.User.Domain.Repositories
+{
+    public class UserRepository : BaseRepository<UserEntity>, IUserRepository
+    {
+        public UserRepository(IConfiguration configuration) 
+            : base(configuration, "xxx") // dbStoreKey 可用于不同数据库切换，连接字符串key前缀：xxx.master xxx.secondary
+        {
+        }
+    }
+}
+
+```
+
+
+#### 6. Lambda表达式支持
 
 > * ==
 > * !
