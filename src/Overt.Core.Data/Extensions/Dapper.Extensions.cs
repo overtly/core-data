@@ -558,6 +558,7 @@ namespace Overt.Core.Data
         /// </summary>
         /// <param name="propertyInfo"></param>
         /// <returns></returns>
+        [Obsolete("请使用TableNameFunc")]
         internal static int GetBit(this PropertyInfo propertyInfo)
         {
             if (propertyInfo == null)
@@ -573,6 +574,7 @@ namespace Overt.Core.Data
         /// <param name="val"></param>
         /// <param name="bit"></param>
         /// <returns></returns>
+        [Obsolete("请使用TableNameFunc")]
         internal static string GetSuffix(string val, int bit = 2)
         {
             if (string.IsNullOrEmpty(val))
@@ -595,6 +597,7 @@ namespace Overt.Core.Data
         /// <param name="propertyInfo"></param>
         /// <param name="val"></param>
         /// <returns></returns>
+        [Obsolete("请使用TableNameFunc")]
         internal static string GetSuffix(this PropertyInfo propertyInfo, string val)
         {
             var bit = propertyInfo.GetBit();
@@ -608,6 +611,7 @@ namespace Overt.Core.Data
         /// <param name="propertyInfo"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
+        [Obsolete("请使用TableNameFunc")]
         internal static string GetSuffix<TEntity>(this PropertyInfo propertyInfo, TEntity entity) where TEntity : class, new()
         {
             var val = propertyInfo.GetValue(entity);
@@ -622,6 +626,7 @@ namespace Overt.Core.Data
         /// <param name="propertyInfo"></param>
         /// <param name="expression">表达式数据</param>
         /// <returns></returns>
+        [Obsolete("请使用TableNameFunc")]
         internal static string GetSuffix<TEntity>(this PropertyInfo propertyInfo, Expression<Func<TEntity, bool>> expression) where TEntity : class, new()
         {
             var val = propertyInfo.GetValueFromExpression(expression);

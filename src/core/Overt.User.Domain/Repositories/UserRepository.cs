@@ -21,7 +21,7 @@ namespace Overt.User.Domain.Repositories
         {
             // 表名最好使用这个方法获取，支持分表，分表案例详见其他案例
             var tableName = GetTableName();
-            var sql = $"select distinct(UserName) from {tableName}";
+            var sql = $"select distinct([UserName]) from [{tableName}]";
             return await Execute(async connecdtion =>
             {
                 var task = await connecdtion.QueryAsync<string>(sql);

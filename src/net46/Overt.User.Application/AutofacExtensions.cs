@@ -10,6 +10,8 @@ namespace Overt.User.Application
         public static void AddApplicationDI(this ContainerBuilder builder)
         {
             builder.RegisterType<UserService>().As<IUserService>();
+            builder.RegisterType<SubUserService>().As<ISubUserService>();
+            builder.RegisterType<SubDbUserService>().As<ISubDbUserService>();
 
             builder.AddDomainDI();
         }

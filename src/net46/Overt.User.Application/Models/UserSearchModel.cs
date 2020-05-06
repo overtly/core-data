@@ -23,7 +23,7 @@ namespace Overt.User.Application.Models
 
         public Expression<Func<UserEntity, bool>> GetExpression()
         {
-            Expression<Func<UserEntity, bool>> expression = oo => 1 == 1;
+            Expression<Func<UserEntity, bool>> expression = oo => oo.UserId > 0;
             if (UserIds?.Count > 0)
                 expression = expression.And(oo => UserIds.Contains(oo.UserId));
 

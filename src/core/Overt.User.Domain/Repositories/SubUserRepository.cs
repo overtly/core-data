@@ -27,18 +27,15 @@ namespace Overt.User.Domain.Repositories
 
         public override Func<string, string> CreateScriptFunc => (tableName) =>
         {
-            return "CREATE TABLE `" + tableName + "` (" +
-                   "  `UserId` int(11) NOT NULL AUTO_INCREMENT," +
-                   "  `UserName` varchar(200) DEFAULT NULL," +
-                   "  `Password` varchar(200) DEFAULT NULL," +
-                   "  `RealName` varchar(200) DEFAULT NULL," +
-                   "  `AddTime` datetime DEFAULT NULL," +
-                   "  `IsSex` bit(1) DEFAULT NULL," +
-                   "  `JsonValue` json DEFAULT NULL," +
-                   "  `Join` varchar(255) DEFAULT NULL," +
-                   "  `ENValue` int(11) DEFAULT NULL," +
-                   "  PRIMARY KEY(`UserId`)" +
-                   ") ENGINE = InnoDB AUTO_INCREMENT = 3748 DEFAULT CHARSET = utf8mb4; ";
+            return $"CREATE TABLE [{tableName}] (" +
+                    "  [UserId] int  IDENTITY(1,1) NOT NULL," +
+                    "  [UserName] varchar(200) COLLATE Chinese_PRC_CI_AS DEFAULT NULL NULL," +
+                    "  [Password] varchar(200) COLLATE Chinese_PRC_CI_AS DEFAULT NULL NULL," +
+                    "  [RealName] varchar(200) COLLATE Chinese_PRC_CI_AS DEFAULT NULL NULL," +
+                    "  [AddTime] datetime DEFAULT NULL NULL," +
+                    "  [IsSex] bit DEFAULT NULL NULL," +
+                    "  [JsonValue] varchar(1000) COLLATE Chinese_PRC_CI_AS DEFAULT NULL NULL" +
+                    ") ";
         };
     }
 }

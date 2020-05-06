@@ -14,7 +14,8 @@ namespace Overt.Core.DataConsole
         {
             // autofac
             AutofacContainer.Register();
-
+            
+            #region 单表
             var _userService = AutofacContainer.Container.Resolve<IUserService>();
 
             // 新增
@@ -44,11 +45,48 @@ namespace Overt.Core.DataConsole
                 UserIds = new List<int> { userId }
             }).Result;
 
+            // 自定义SQL
+            var otherResult = _userService.OtherSqlAsync().Result;
+
             // 删除
-            var delResult = _userService.DeleteAsync(userId);
+            var delResult = _userService.DeleteAsync(userId).Result;
 
             // ... 其他更多用法详见Readme，可有很多组合方式，并不局限于目前案例所示
+            #endregion
 
+            #region 分表
+            var _subUserService = AutofacContainer.Container.Resolve<ISubUserService>();
+
+            // 添加
+            var addResult1 = _subUserService.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST_Sub",
+                RealName = "TEST_Sub",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }).Result;
+
+            // 获取
+            var getResult1 = _subUserService.GetAsync(addResult1).Result;
+            #endregion
+
+            #region 分库
+            var _subDbUserService = AutofacContainer.Container.Resolve<ISubDbUserService>();
+
+            // 添加
+            var addResult2 = _subDbUserService.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST_SubDb",
+                RealName = "TEST_SubDb",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }).Result;
+
+            // 获取
+            var getResult2 = _subDbUserService.GetAsync(addResult2).Result;
+            #endregion
         }
     }
 }

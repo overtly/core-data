@@ -5,6 +5,7 @@ namespace Overt.Core.Data
     /// <summary>
     /// 分表标识
     /// </summary>
+    [Obsolete("请使用TableNameFunc")]
     public class SubmeterAttribute : Attribute
     {
         /// <summary>

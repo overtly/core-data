@@ -73,9 +73,10 @@ namespace Overt.User.Application.Services
             return (count, models);
         }
 
-        public async Task<int> OtherSqlAsync()
+        public async Task<List<string>> OtherSqlAsync()
         {
-            throw new NotImplementedException();
+            var result = await _userRepository.OtherSqlAsync();
+            return result;
         }
 
         public async Task<bool> UpdateAsync(int userId, bool isSex)

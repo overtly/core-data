@@ -11,6 +11,8 @@ namespace Overt.User.Application
         public static void AddApplicationDI(this IServiceCollection services)
         {
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISubUserService, SubUserService>();
+            services.AddTransient<ISubDbUserService, SubDbUserService>();
 
             services.AddDomainDI();
             services.AddAutoMapper();

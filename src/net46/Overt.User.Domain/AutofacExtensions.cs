@@ -9,6 +9,8 @@ namespace Overt.User.Domain
         public static void AddDomainDI(this ContainerBuilder builder)
         {
             builder.RegisterType<UserRepository>().As<IUserRepository>();
+            builder.RegisterType<SubUserRepository>().As<ISubUserRepository>();
+            builder.RegisterType<SubDbUserRepository>().As<ISubDbUserRepository>();
         }
     }
 }
