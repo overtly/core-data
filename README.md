@@ -1,12 +1,12 @@
 ### 项目层次说明
 
-> Overt.Core.Data v1.0.3.5
+> Overt.Core.Data v1.0.4.0
 
 #### 1. 项目目录
 
 ```
 |-Attrubute                     特性
-|  |-SubmeterAttrubute.cs       分表标识特性
+|  |-SubmeterAttrubute.cs       分表标识特性 (已废弃)
 |
 |-Contract                      契约层
 |  |-IPropertyAssist.cs         统一的接口定义文件，所有的数据层接口均继承
@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V 1.0.3.5
+> * Nuget版本：V 1.0.4.0
 > * 框架支持： Framework4.6 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -75,7 +75,7 @@ Microsoft.Data.Sqlite 2.0.0
 [sqlite]: Data Source=testdb.db;DbType=SQLite; // 默认使用App_Data目录
 ```
 
-> * Framework: 正常的连接字符串，使用PrividerName来区分数据库类型
+> * Framework: 正常的连接字符串，使用ProviderName来区分数据库类型
 
 
 #### 2. Nuget包引用
