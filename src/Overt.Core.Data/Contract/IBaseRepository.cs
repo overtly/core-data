@@ -27,6 +27,7 @@ namespace Overt.Core.Data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
+        [Obsolete("请使用GetTableName")]
         string GetTableName(string key);
 
         /// <summary>
@@ -78,6 +79,21 @@ namespace Overt.Core.Data
         /// <param name="returnLastIdentity">是否赋值最后一次的自增ID</param>
         /// <returns></returns>
         Task<bool> AddAsync(TEntity entity, bool returnLastIdentity = false);
+
+        /// <summary>
+        /// 批量添加
+        /// </summary>
+        /// <param name="entities">数据实体</param>
+        /// <returns>bool</returns>
+        bool Add(params TEntity[] entities);
+
+        /// <summary>
+        /// 异步批量添加
+        /// </summary>
+        /// <param name="entities">数据实体</param>
+        /// <returns>bool</returns>
+        /// <returns></returns>
+        Task<bool> AddAsync(params TEntity[] entities);
 
         /// <summary>
         /// 删除

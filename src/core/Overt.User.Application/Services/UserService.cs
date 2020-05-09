@@ -37,6 +37,22 @@ namespace Overt.User.Application.Services
             return entity.UserId;
         }
 
+        public async Task<bool> AddAsync(params UserPostModel[] models)
+        {
+            if ((models?.Count() ?? 0) <= 0)
+                throw new Exception("必须提供");
+
+            var entities = _mapper.Map<List<UserEntity>>(models);
+            entities.ForEach(oo =>
+            {
+                oo.AddTime = DateTime.Now;
+            });
+            var result = await _userRepository.AddAsync(entities.ToArray());
+            if (!result)
+                throw new Exception($"新增失败");
+            return result;
+        }
+
         public async Task<bool> DeleteAsync(int userId)
         {
             if (userId <= 0)

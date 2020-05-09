@@ -64,6 +64,7 @@ namespace Overt.Core.Data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
+        [Obsolete("请使用GetTableName")]
         public string GetTableName(string key)
         {
             var tableName = key.GetTableName<TEntity>(TableNameFunc);
@@ -102,6 +103,16 @@ namespace Overt.Core.Data
         public virtual bool Add(TEntity entity, bool returnLastIdentity = false)
         {
             return AddAsync(entity, returnLastIdentity).Result;
+        }
+
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <param name="entities">数据实体</param>
+        /// <returns>添加后的数据实体</returns>
+        public virtual bool Add(params TEntity[] entities)
+        {
+            return AddAsync(entities).Result;
         }
 
         /// <summary>
@@ -253,6 +264,24 @@ namespace Overt.Core.Data
             {
                 var tableName = entity.GetTableName(TableNameFunc);
                 var result = await connection.InsertAsync(tableName, entity, Transaction, returnLastIdentity, OutSqlAction);
+                return result > 0;
+            }, true);
+        }
+
+        /// <summary>
+        /// 异步批量添加
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public async Task<bool> AddAsync(params TEntity[] entities)
+        {
+            if ((entities?.Count() ?? 0) <= 0)
+                return false;
+
+            return await Execute(async (connection) =>
+            {
+                var tableName = entities.First().GetTableName(TableNameFunc);
+                var result = await connection.InsertAsync(tableName, entities, Transaction, OutSqlAction);
                 return result > 0;
             }, true);
         }

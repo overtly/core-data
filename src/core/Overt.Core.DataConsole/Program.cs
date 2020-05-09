@@ -40,21 +40,39 @@ namespace Overt.Core.DataConsole
                 JsonValue = "{}"
             }).Result;
 
+            // 批量新增
+            var batchAddResult = _userService.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST1" + DateTime.Now.ToString("fffff"),
+                RealName = "TEST1" + DateTime.Now.ToString("fffff"),
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }, new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST2" + DateTime.Now.ToString("fffff"),
+                RealName = "TEST2" + DateTime.Now.ToString("fffff"),
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }).Result;
+
             // 修改
             var setResult = _userService.UpdateAsync(userId, true).Result;
 
             // 单条查询
-            var getResult = _userService.GetAsync(userId).Result;
+            var getResult = _userService.GetAsync(userId, true).Result;
 
             // 多条查询
-            var listResult = _userService.GetListAsync(new List<int>() { userId }).Result;
+            var listResult = _userService.GetListAsync(new List<int>() { userId }, true).Result;
 
             // 分页查询
             var pageResult = _userService.GetPageAsync(new User.Application.Models.UserSearchModel()
             {
                 Page = 1,
                 Size = 10,
-                UserIds = new List<int> { userId }
+                UserIds = new List<int> { userId },
+                IsMaster = true
             }).Result;
 
             // 自定义SQL

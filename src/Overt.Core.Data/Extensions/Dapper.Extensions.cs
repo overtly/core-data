@@ -217,6 +217,52 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
+        /// 批量插入数据
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="connection"></param>
+        /// <param name="tableName"></param>
+        /// <param name="entities"></param>
+        /// <param name="transaction">事务</param>
+        /// <param name="outSqlAction">返回sql语句</param>
+        /// <returns>-1 参数为空</returns>
+        public static async Task<int> InsertAsync<TEntity>(this
+            IDbConnection connection,
+            string tableName,
+            IEnumerable<TEntity> entities,
+            IDbTransaction transaction = null,
+            Action<string> outSqlAction = null)
+            where TEntity : class, new()
+        {
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentNullException(nameof(tableName));
+            if ((entities?.Count() ?? 0) <= 0)
+                throw new ArgumentNullException(nameof(entities));
+
+            var addFields = new List<string>();
+            var atFields = new List<string>();
+            var dbType = connection.GetDbType();
+
+            var pis = typeof(TEntity).GetProperties();
+            var identityPropertyInfo = entities.First().GetIdentityField();
+            foreach (var pi in pis)
+            {
+                if (identityPropertyInfo?.Name == pi.Name)
+                    continue;
+
+                addFields.Add($"{pi.Name.ParamSql(dbType)}");
+                atFields.Add($"@{pi.Name}");
+            }
+
+            var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
+            var task = await connection.ExecuteAsync(sql, entities, transaction);
+            // 返回sql
+            outSqlAction?.Invoke(sql);
+
+            return task;
+        }
+
+        /// <summary>
         /// 删除数据
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>

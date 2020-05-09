@@ -17,6 +17,8 @@ namespace Overt.User.Application.Constracts
 
         Task<int> AddAsync(UserPostModel model);
 
+        Task<bool> AddAsync(params UserPostModel[] models);
+
         Task<bool> UpdateAsync(int userId, bool isSex);
 
         Task<bool> DeleteAsync(int userId);
