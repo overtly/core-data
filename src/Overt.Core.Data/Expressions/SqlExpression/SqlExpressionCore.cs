@@ -91,10 +91,10 @@ namespace Overt.Core.Data.Expressions
         {
             if (string.IsNullOrEmpty(orderBy))
             {
-                var keyAttr = typeof(T).GetProperty<KeyAttribute>();
-                if (keyAttr == null)
-                    throw new Exception("实体未设置Key属性");
-                orderBy = $"order by {keyAttr.Name} desc";
+                var property = typeof(T).GetProperty<KeyAttribute>();
+                if (property == null)
+                    property = typeof(T).GetProperties()[0];
+                orderBy = $"order by {property.Name} desc";
             }
 
             if (!orderBy.StartsWith("order by"))
