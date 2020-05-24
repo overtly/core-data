@@ -114,9 +114,9 @@ namespace Overt.Core.Data
         /// 数据库连接方法
         /// </summary>
 #if ASP_NET_CORE
-        public virtual Func<(string, DatabaseType)> ConnectionFunc { get; set; }
+        public virtual Func<bool, string> ConnectionFunc { get; set; }
 #else
-        public virtual Func<ConnectionStringSettings> ConnectionFunc { get; set; }
+        public virtual Func<bool, ConnectionStringSettings> ConnectionFunc { get; set; }
 #endif
 
         /// <summary>

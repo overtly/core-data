@@ -83,27 +83,31 @@ namespace Overt.Core.Data
         /// <param name="dbStoreKey"></param>
         /// <param name="connectionFunc"></param>
         /// <returns></returns>
-        public (string, DatabaseType) Get(IConfiguration configuration, bool isMaster, string dbStoreKey, Func<(string, DatabaseType)> connectionFunc = null)
+        public (string, DatabaseType) Get(IConfiguration configuration, bool isMaster, string dbStoreKey, Func<bool, string> connectionFunc = null)
         {
-            if (connectionFunc != null)
-                return connectionFunc.Invoke();
-
-            if (configuration == null)
-            {
-                configuration = new ConfigurationBuilder()
-                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-            }
-
             var connectionString = string.Empty;
-            var connectionKey = Key(isMaster, dbStoreKey);
-            connectionString = configuration.GetConnectionString(connectionKey);
-            if (string.IsNullOrEmpty(connectionString) && !isMaster)
+            if (connectionFunc != null)
             {
-                // 从库转主库
-                connectionKey = Key(true, dbStoreKey);
+                connectionString = connectionFunc.Invoke(isMaster);
+            }
+            else
+            {
+                if (configuration == null)
+                {
+                    configuration = new ConfigurationBuilder()
+                        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                        .AddJsonFile("appsettings.json")
+                        .Build();
+                }
+
+                var connectionKey = Key(isMaster, dbStoreKey);
                 connectionString = configuration.GetConnectionString(connectionKey);
+                if (string.IsNullOrEmpty(connectionString) && !isMaster)
+                {
+                    // 从库转主库
+                    connectionKey = Key(true, dbStoreKey);
+                    connectionString = configuration.GetConnectionString(connectionKey);
+                }
             }
 
             return ResolveConnectionString(connectionString);
@@ -136,10 +140,10 @@ namespace Overt.Core.Data
         /// <param name="dbStoreKey"></param>
         /// <param name="connectionFunc"></param>
         /// <returns></returns>
-        public ConnectionStringSettings Get(bool isMaster, string dbStoreKey, Func<ConnectionStringSettings> connectionFunc = null)
+        public ConnectionStringSettings Get(bool isMaster, string dbStoreKey, Func<bool, ConnectionStringSettings> connectionFunc = null)
         {
             if (connectionFunc != null)
-                return connectionFunc.Invoke();
+                return connectionFunc.Invoke(isMaster);
 
             var connectionKey = Key(isMaster, dbStoreKey);
             var connectionSetting = ConfigurationManager.ConnectionStrings[connectionKey];
