@@ -87,27 +87,26 @@ namespace Overt.Core.Data
         {
             var connectionString = string.Empty;
             if (connectionFunc != null)
-            {
                 connectionString = connectionFunc.Invoke(isMaster);
-            }
-            else
-            {
-                if (configuration == null)
-                {
-                    configuration = new ConfigurationBuilder()
-                        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                        .AddJsonFile("appsettings.json")
-                        .Build();
-                }
 
-                var connectionKey = Key(isMaster, dbStoreKey);
+            if (configuration == null)
+            {
+                configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+            }
+
+            var connectionKey = GetKey(isMaster, dbStoreKey);
+            if (string.IsNullOrEmpty(connectionString))
+            {
                 connectionString = configuration.GetConnectionString(connectionKey);
-                if (string.IsNullOrEmpty(connectionString) && !isMaster)
-                {
-                    // 从库转主库
-                    connectionKey = Key(true, dbStoreKey);
-                    connectionString = configuration.GetConnectionString(connectionKey);
-                }
+            }
+            if (string.IsNullOrEmpty(connectionString) && !isMaster)
+            {
+                // 从库转主库
+                connectionKey = GetKey(true, dbStoreKey);
+                connectionString = configuration.GetConnectionString(connectionKey);
             }
 
             return ResolveConnectionString(connectionString);
@@ -145,11 +144,11 @@ namespace Overt.Core.Data
             if (connectionFunc != null)
                 return connectionFunc.Invoke(isMaster);
 
-            var connectionKey = Key(isMaster, dbStoreKey);
+            var connectionKey = GetKey(isMaster, dbStoreKey);
             var connectionSetting = ConfigurationManager.ConnectionStrings[connectionKey];
             if (string.IsNullOrEmpty(connectionSetting?.ConnectionString) && !isMaster)
             {
-                connectionKey = Key(true, dbStoreKey);
+                connectionKey = GetKey(true, dbStoreKey);
                 connectionSetting = ConfigurationManager.ConnectionStrings[connectionKey];
             }
             return connectionSetting;
@@ -164,7 +163,7 @@ namespace Overt.Core.Data
         /// <param name="isMaster"></param>
         /// <param name="store">不能包含点</param>
         /// <returns></returns>
-        private string Key(bool isMaster = false, string store = "")
+        private string GetKey(bool isMaster = false, string store = "")
         {
             _connNameOfPrefix = string.IsNullOrEmpty(store) ? "" : $"{store}{_connNameOfPoint}";
             var connName = string.Empty;
