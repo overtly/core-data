@@ -87,7 +87,10 @@ namespace Overt.Core.Data
         {
             var connectionString = string.Empty;
             if (connectionFunc != null)
+            {
                 connectionString = connectionFunc.Invoke(isMaster);
+                return ResolveConnectionString(connectionString);
+            }
 
             if (configuration == null)
             {
@@ -98,10 +101,7 @@ namespace Overt.Core.Data
             }
 
             var connectionKey = GetKey(isMaster, dbStoreKey);
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                connectionString = configuration.GetConnectionString(connectionKey);
-            }
+            connectionString = configuration.GetConnectionString(connectionKey);
             if (string.IsNullOrEmpty(connectionString) && !isMaster)
             {
                 // 从库转主库
