@@ -25,9 +25,9 @@ namespace Overt.Core.Data
 
 #if ASP_NET_CORE
         readonly IConfiguration _configuration;
-        readonly Func<(string, DatabaseType)> _connectionFunc;
+        readonly Func<bool, string> _connectionFunc;
 #else
-        readonly Func<ConnectionStringSettings> _connectionFunc;
+        readonly Func<bool, ConnectionStringSettings> _connectionFunc;
 #endif
 
 
@@ -49,7 +49,7 @@ namespace Overt.Core.Data
         /// <param name="isMaster">是否从库</param>
         /// <param name="dbStoreKey">存储字符串标识</param>
         /// <param name="connectionFunc">连接字符串Func</param>
-        public DataContext(IConfiguration configuration, bool isMaster = false, string dbStoreKey = "", Func<(string, DatabaseType)> connectionFunc = null)
+        public DataContext(IConfiguration configuration, bool isMaster = false, string dbStoreKey = "", Func<bool, string> connectionFunc = null)
         {
             _configuration = configuration;
             _isMaster = isMaster;
@@ -66,7 +66,7 @@ namespace Overt.Core.Data
         /// <param name="isMaster">是否从库</param>
         /// <param name="dbStoreKey">存储字符串标识</param>
         /// <param name="connectionFunc">连接字符串Func</param>
-        public DataContext(bool isMaster = false, string dbStoreKey = "", Func<ConnectionStringSettings> connectionFunc = null)
+        public DataContext(bool isMaster = false, string dbStoreKey = "", Func<bool, ConnectionStringSettings> connectionFunc = null)
         {
             _isMaster = isMaster;
             _dbStoreKey = dbStoreKey;

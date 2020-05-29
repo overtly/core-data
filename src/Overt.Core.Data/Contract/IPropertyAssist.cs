@@ -57,9 +57,9 @@ namespace Overt.Core.Data
         /// </summary>
 
 #if ASP_NET_CORE
-        Func<(string, DatabaseType)> ConnectionFunc { get; set; }
+        Func<bool, string> ConnectionFunc { get; set; }
 #else
-        Func<ConnectionStringSettings> ConnectionFunc { get; set; }
+        Func<bool, ConnectionStringSettings> ConnectionFunc { get; set; }
 #endif
         #endregion
 
