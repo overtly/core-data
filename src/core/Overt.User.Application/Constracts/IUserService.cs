@@ -24,5 +24,11 @@ namespace Overt.User.Application.Constracts
         Task<bool> DeleteAsync(int userId);
 
         Task<List<string>> OtherSqlAsync();
+
+        /// <summary>
+        /// 在事务中执行
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> ExecuteInTransactionAsync();
     }
 }

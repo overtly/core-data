@@ -22,5 +22,7 @@ namespace Overt.User.Application.Constracts
         Task<bool> DeleteAsync(int userId);
 
         Task<List<string>> OtherSqlAsync();
+
+        Task<bool> ExecuteInTransactionAsync();
     }
 }

@@ -5,8 +5,6 @@ using Overt.User.Domain.Contracts;
 using Overt.User.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -16,12 +14,15 @@ namespace Overt.User.Application.Services
     {
         IMapper _mapper;
         IUserRepository _userRepository;
+        ISubUserRepository _subUserRepository;
         public UserService(
             IMapper mapper,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ISubUserRepository subUserRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            _subUserRepository = subUserRepository;
         }
 
         public async Task<int> AddAsync(UserPostModel model)
@@ -102,6 +103,28 @@ namespace Overt.User.Application.Services
             var updateResult3 = await _userRepository.SetAsync(entity);
 
             return updateResult3;
+        }
+
+        public async Task<bool> ExecuteInTransactionAsync()
+        {
+            // 分布式事务
+            using (var scope = new TransactionScope())
+            {
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    scope.Complete();
+                    return result;
+                }
+                catch
+                {
+                    // logger
+                }
+                return false;
+            }
         }
     }
 }

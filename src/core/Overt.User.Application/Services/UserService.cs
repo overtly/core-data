@@ -16,12 +16,15 @@ namespace Overt.User.Application.Services
     {
         IMapper _mapper;
         IUserRepository _userRepository;
+        ISubUserRepository _subUserRepository;
         public UserService(
             IMapper mapper,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ISubUserRepository subUserRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            _subUserRepository = subUserRepository;
         }
 
         public async Task<int> AddAsync(UserPostModel model)
@@ -118,6 +121,30 @@ namespace Overt.User.Application.Services
             var updateResult3 = await _userRepository.SetAsync(entity);
 
             return updateResult3;
+        }
+
+        public async Task<bool> ExecuteInTransactionAsync()
+        {
+            using (var transaction = _userRepository.BeginTransaction())
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            }
         }
     }
 }

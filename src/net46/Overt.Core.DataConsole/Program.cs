@@ -87,6 +87,10 @@ namespace Overt.Core.DataConsole
             // 获取
             var getResult2 = _subDbUserService.GetAsync(addResult2).Result;
             #endregion
+
+            #region 事务
+            var transResult = _userService.ExecuteInTransactionAsync().Result;
+            #endregion
         }
     }
 }
