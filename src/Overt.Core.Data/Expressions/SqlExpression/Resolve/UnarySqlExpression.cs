@@ -16,7 +16,10 @@ namespace Overt.Core.Data.Expressions
             switch (expression.NodeType)
             {
                 case ExpressionType.Not:
-                    sqlGenerate += " = 0";
+                    if (expression.Operand is MethodCallExpression)
+                        sqlGenerate.RelaceLast("in", "not in");
+                    else
+                        sqlGenerate += " = 0";
                     break;
             }
 

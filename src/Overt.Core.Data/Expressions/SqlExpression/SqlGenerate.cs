@@ -117,6 +117,16 @@ namespace Overt.Core.Data.Expressions
         }
 
         /// <summary>
+        /// 替换最后一次出现字符
+        /// </summary>
+        /// <param name="oldStr"></param>
+        /// <param name="newStr"></param>
+        public void RelaceLast(string oldStr, string newStr)
+        {
+            Sql = Sql.Replace(oldStr, newStr, Sql.ToString().LastIndexOf(oldStr), newStr.Length);
+        }
+
+        /// <summary>
         /// 添加参数
         /// </summary>
         /// <param name="parameterValue"></param>
