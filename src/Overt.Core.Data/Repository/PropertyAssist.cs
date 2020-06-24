@@ -91,11 +91,10 @@ namespace Overt.Core.Data
             IDbConnection connection;
 
 #if ASP_NET_CORE
-            if (ignoreTransaction)
+            if (ignoreTransaction || !InTransaction)
                 connection = new DataContext(_configuration, isMaster, DbStoreKey, ConnectionFunc).DbConnection;
             else
-                connection = Transaction?.Connection ??
-                    new DataContext(_configuration, isMaster, DbStoreKey, ConnectionFunc).DbConnection;
+                connection = Transaction.Connection;
 #else
             connection = new DataContext(isMaster, DbStoreKey, ConnectionFunc).DbConnection;
 #endif
