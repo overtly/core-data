@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v1.0.4.2
+> Overt.Core.Data v1.0.5.0
 
 #### 1. 项目目录
 
@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V 1.0.4.0
+> * Nuget版本：V 1.0.5.0
 > * 框架支持： Framework4.6 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -81,7 +81,7 @@ Microsoft.Data.Sqlite 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 1.0.3.5
+Install-Package Overt.Core.Data -Version 1.0.5.0
 ```
 
 
@@ -148,7 +148,67 @@ namespace Overt.User.Domain.Repositories
 ```
 
 
-#### 6. Lambda表达式支持
+#### 6. 事务实现
+
+> * Framework: 使用TransactionScope
+
+```
+// Service层
+public async Task<bool> ExecuteInTransactionAsync()
+{
+    // 分布式事务
+    using (var scope = new TransactionScope())
+    {
+        var result = false;
+        try
+        {
+            result = await _userRepository.AddAsync(new UserEntity());
+            result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+            scope.Complete();
+            return result;
+        }
+        catch
+        {
+            // logger
+        }
+        return false;
+    }
+}
+```
+
+> * DotNetCore：使用普通的Transaction
+
+```
+// Service层
+public async Task<bool> ExecuteInTransactionAsync()
+{
+    await _repository.TransactionExecuteAsync(async transaction =>
+    {
+        // 传递事务
+        _subUserRepository.Transaction = transaction;
+
+        var result = false;
+        try
+        {
+            result = await _userRepository.AddAsync(new UserEntity());
+            result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+            transaction.Commit();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+        }
+        return false;
+    });
+    return true;
+}
+```
+
+
+#### 7. Lambda表达式支持
 
 > * ==
 > * !
@@ -157,6 +217,7 @@ namespace Overt.User.Domain.Repositories
 > * In
 > * Equals
 > * Contains
+> * !Contains
 > * StartWith
 > * EndWith
 > * &&
