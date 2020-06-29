@@ -38,7 +38,7 @@ namespace Overt.Core.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        T TransactionExecute<T>(Func<IDbTransaction, T> func);
+        T BeginTransaction<T>(Func<IDbTransaction, T> func);
 
         /// <summary>
         /// 是否存在表
@@ -144,7 +144,7 @@ namespace Overt.Core.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        Task<T> TransactionExecuteAsync<T>(Func<IDbTransaction, Task<T>> func);
+        Task<T> BeginTransactionAsync<T>(Func<IDbTransaction, Task<T>> func);
 
         /// <summary>
         /// 是否存在表

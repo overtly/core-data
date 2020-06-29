@@ -77,7 +77,7 @@ namespace Overt.Core.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public T TransactionExecute<T>(Func<IDbTransaction, T> func)
+        public T BeginTransaction<T>(Func<IDbTransaction, T> func)
         {
             if (InTransaction)
                 return func(Transaction);
@@ -247,7 +247,7 @@ namespace Overt.Core.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public async Task<T> TransactionExecuteAsync<T>(Func<IDbTransaction, Task<T>> func)
+        public async Task<T> BeginTransactionAsync<T>(Func<IDbTransaction, Task<T>> func)
         {
             if (InTransaction)
                 return await func(Transaction);

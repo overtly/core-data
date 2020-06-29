@@ -125,7 +125,7 @@ namespace Overt.User.Application.Services
 
         public async Task<bool> ExecuteInTransactionAsync()
         {
-            await _userRepository.TransactionExecuteAsync(async transaction =>
+            await _userRepository.BeginTransactionAsync(async transaction =>
             {
                 // 传递事务
                 _subUserRepository.Transaction = transaction;
