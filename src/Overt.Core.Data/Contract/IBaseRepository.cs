@@ -33,7 +33,7 @@ namespace Overt.Core.Data
         string GetTableName(string key);
 
         /// <summary>
-        /// 事务中执行
+        /// 事务中执行，内部已做TryCatch，Catch回滚
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
@@ -139,7 +139,7 @@ namespace Overt.Core.Data
 
         #region Async Method
         /// <summary>
-        /// 事务中执行
+        /// 事务中执行，内部已做TryCatch，Catch回滚
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>

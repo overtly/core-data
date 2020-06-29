@@ -86,7 +86,17 @@ namespace Overt.Core.Data
             using (var transaction = connection.BeginTransaction())
             {
                 Transaction = transaction;
-                return func(transaction);
+                try
+                {
+                    return func(transaction);
+                }
+                catch (Exception ex)
+                {
+                    transaction?.Rollback();
+                    transaction?.Dispose();
+                    connection?.Dispose();
+                    throw ex;
+                }
             }
         }
 
@@ -247,8 +257,18 @@ namespace Overt.Core.Data
             using (var connection = OpenConnection(true))
             using (var transaction = connection.BeginTransaction())
             {
-                Transaction = transaction;
-                return await func(transaction);
+                try
+                {
+                    Transaction = transaction;
+                    return await func(transaction);
+                }
+                catch (Exception ex)
+                {
+                    transaction?.Rollback();
+                    transaction?.Dispose();
+                    connection?.Dispose();
+                    throw ex;
+                }
             }
         }
 
