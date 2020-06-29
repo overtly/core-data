@@ -125,7 +125,7 @@ namespace Overt.User.Application.Services
 
         public async Task<bool> ExecuteInTransactionAsync()
         {
-            using (var transaction = _userRepository.BeginTransaction())
+            await _userRepository.TransactionExecuteAsync(async transaction =>
             {
                 // 传递事务
                 _subUserRepository.Transaction = transaction;
@@ -144,7 +144,128 @@ namespace Overt.User.Application.Services
                     transaction.Rollback();
                 }
                 return false;
-            }
+            });
+            await _userRepository.TransactionExecuteAsync(async transaction =>
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            });
+            await _userRepository.TransactionExecuteAsync(async transaction =>
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            });
+            await _userRepository.TransactionExecuteAsync(async transaction =>
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            });
+            await _userRepository.TransactionExecuteAsync(async transaction =>
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            });
+            await _userRepository.TransactionExecuteAsync(async transaction =>
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            });
+            await _userRepository.TransactionExecuteAsync(async transaction =>
+            {
+                // 传递事务
+                _subUserRepository.Transaction = transaction;
+
+                var result = false;
+                try
+                {
+                    result = await _userRepository.AddAsync(new UserEntity());
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+                    transaction.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return false;
+            });
+            return true;
         }
     }
 }

@@ -72,6 +72,25 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
+        /// 事务中执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public T TransactionExecute<T>(Func<IDbTransaction, T> func)
+        {
+            if (InTransaction)
+                return func(Transaction);
+
+            using (var connection = OpenConnection(true))
+            using (var transaction = connection.BeginTransaction())
+            {
+                Transaction = transaction;
+                return func(transaction);
+            }
+        }
+
+        /// <summary>
         /// 是否存在表
         /// </summary>
         /// <param name="tableName"></param>
@@ -214,6 +233,25 @@ namespace Overt.Core.Data
         #endregion
 
         #region Async Method
+        /// <summary>
+        /// 事务中执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public async Task<T> TransactionExecuteAsync<T>(Func<IDbTransaction, Task<T>> func)
+        {
+            if (InTransaction)
+                return await func(Transaction);
+
+            using (var connection = OpenConnection(true))
+            using (var transaction = connection.BeginTransaction())
+            {
+                Transaction = transaction;
+                return await func(transaction);
+            }
+        }
+
         /// <summary>
         /// 是否存在表
         /// </summary>

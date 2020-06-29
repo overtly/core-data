@@ -27,9 +27,9 @@ namespace Overt.Core.DataConsole
         }
         static void Main(string[] args)
         {
-            #region 单表
             var _userService = provider.GetService<IUserService>();
 
+            #region 单表
             // 新增
             var userId = _userService.AddAsync(new User.Application.Models.UserPostModel()
             {

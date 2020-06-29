@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace Overt.Core.Data
     /// </summary>
     public interface IBaseRepository<TEntity> : IPropertyAssist where TEntity : class, new()
     {
+        #region Sync Method
         /// <summary>
         /// 获取主表名
         /// </summary>
@@ -31,12 +33,12 @@ namespace Overt.Core.Data
         string GetTableName(string key);
 
         /// <summary>
-        /// 是否存在表
+        /// 事务中执行
         /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="isMaster"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
         /// <returns></returns>
-        bool IsExistTable(string tableName, bool isMaster = true);
+        T TransactionExecute<T>(Func<IDbTransaction, T> func);
 
         /// <summary>
         /// 是否存在表
@@ -44,7 +46,7 @@ namespace Overt.Core.Data
         /// <param name="tableName"></param>
         /// <param name="isMaster"></param>
         /// <returns></returns>
-        Task<bool> IsExistTableAsync(string tableName, bool isMaster = true);
+        bool IsExistTable(string tableName, bool isMaster = true);
 
         /// <summary>
         /// 是否存在字段
@@ -56,29 +58,12 @@ namespace Overt.Core.Data
         bool IsExistField(string tableName, string fieldName, bool isMaster = true);
 
         /// <summary>
-        /// 是否存在字段
-        /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="fieldName"></param>
-        /// <param name="isMaster"></param>
-        /// <returns></returns>
-        Task<bool> IsExistFieldAsync(string tableName, string fieldName, bool isMaster = true);
-
-        /// <summary>
         /// 添加
         /// </summary>
         /// <param name="entity">数据实体</param>
         /// <param name="returnLastIdentity">是否赋值最后一次的自增ID</param>
         /// <returns>添加后的数据实体</returns>
         bool Add(TEntity entity, bool returnLastIdentity = false);
-
-        /// <summary>
-        /// 异步添加
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="returnLastIdentity">是否赋值最后一次的自增ID</param>
-        /// <returns></returns>
-        Task<bool> AddAsync(TEntity entity, bool returnLastIdentity = false);
 
         /// <summary>
         /// 批量添加
@@ -88,26 +73,11 @@ namespace Overt.Core.Data
         bool Add(params TEntity[] entities);
 
         /// <summary>
-        /// 异步批量添加
-        /// </summary>
-        /// <param name="entities">数据实体</param>
-        /// <returns>bool</returns>
-        /// <returns></returns>
-        Task<bool> AddAsync(params TEntity[] entities);
-
-        /// <summary>
         /// 删除
         /// </summary>
         /// <param name="expression">删除条件</param>
         /// <returns>是否成功</returns>
         bool Delete(Expression<Func<TEntity, bool>> expression);
-
-        /// <summary>
-        /// 异步删除
-        /// </summary>
-        /// <param name="expression">删除条件</param>
-        /// <returns>是否成功</returns>
-        Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression);
 
         /// <summary>
         /// 更新
@@ -118,28 +88,12 @@ namespace Overt.Core.Data
         bool Set(TEntity entity, Expression<Func<TEntity, object>> fields = null);
 
         /// <summary>
-        /// 异步更新
-        /// </summary>
-        /// <param name="entity">数据实体</param>
-        /// <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
-        /// <returns>是否成功</returns>
-        Task<bool> SetAsync(TEntity entity, Expression<Func<TEntity, object>> fields = null);
-
-        /// <summary>
         /// 根据字段修改
         /// </summary>
         /// <param name="setExpress">修改字段表达式 object =>dynamic 是一个匿名类</param>
         /// <param name="whereExpress">条件表达式</param>
         /// <returns>是否成功</returns>
         bool Set(Expression<Func<object>> setExpress, Expression<Func<TEntity, bool>> whereExpress);
-
-        /// <summary>
-        /// 异步根据字段修改
-        /// </summary>
-        /// <param name="setExpress">修改字段表达式</param>
-        /// <param name="whereExpress">条件表达式</param>
-        /// <returns>是否成功</returns>
-        Task<bool> SetAsync(Expression<Func<object>> setExpress, Expression<Func<TEntity, bool>> whereExpress);
 
         /// <summary>
         /// 获取一条数据
@@ -149,15 +103,6 @@ namespace Overt.Core.Data
         /// <param name="isMaster">是否主从</param>
         /// <returns>实体</returns>
         TEntity Get(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false);
-
-        /// <summary>
-        /// 异步获取一条数据
-        /// </summary>
-        /// <param name="expression">查询条件</param>
-        /// <param name="fieldExpressison">按字段返回</param>
-        /// <param name="isMaster">是否主从</param>
-        /// <returns>实体</returns>
-        Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false);
 
         /// <summary>
         /// 获取列表 
@@ -184,6 +129,89 @@ namespace Overt.Core.Data
         IEnumerable<TEntity> GetOffsets(int offset, int size, Expression<Func<TEntity, bool>> expression = null, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false, params OrderByField[] orderByFields);
 
         /// <summary>
+        /// 获取数量
+        /// </summary>
+        /// <param name="expression">条件表达式</param>
+        /// <param name="isMaster">是否主从</param>
+        /// <returns></returns>
+        int Count(Expression<Func<TEntity, bool>> expression = null, bool isMaster = false);
+        #endregion
+
+        #region Async Method
+        /// <summary>
+        /// 事务中执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        Task<T> TransactionExecuteAsync<T>(Func<IDbTransaction, Task<T>> func);
+
+        /// <summary>
+        /// 是否存在表
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="isMaster"></param>
+        /// <returns></returns>
+        Task<bool> IsExistTableAsync(string tableName, bool isMaster = true);
+
+        /// <summary>
+        /// 是否存在字段
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="isMaster"></param>
+        /// <returns></returns>
+        Task<bool> IsExistFieldAsync(string tableName, string fieldName, bool isMaster = true);
+
+        /// <summary>
+        /// 异步添加
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="returnLastIdentity">是否赋值最后一次的自增ID</param>
+        /// <returns></returns>
+        Task<bool> AddAsync(TEntity entity, bool returnLastIdentity = false);
+
+        /// <summary>
+        /// 异步批量添加
+        /// </summary>
+        /// <param name="entities">数据实体</param>
+        /// <returns>bool</returns>
+        /// <returns></returns>
+        Task<bool> AddAsync(params TEntity[] entities);
+
+        /// <summary>
+        /// 异步删除
+        /// </summary>
+        /// <param name="expression">删除条件</param>
+        /// <returns>是否成功</returns>
+        Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression);
+
+        /// <summary>
+        /// 异步更新
+        /// </summary>
+        /// <param name="entity">数据实体</param>
+        /// <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
+        /// <returns>是否成功</returns>
+        Task<bool> SetAsync(TEntity entity, Expression<Func<TEntity, object>> fields = null);
+
+        /// <summary>
+        /// 异步根据字段修改
+        /// </summary>
+        /// <param name="setExpress">修改字段表达式</param>
+        /// <param name="whereExpress">条件表达式</param>
+        /// <returns>是否成功</returns>
+        Task<bool> SetAsync(Expression<Func<object>> setExpress, Expression<Func<TEntity, bool>> whereExpress);
+
+        /// <summary>
+        /// 异步获取一条数据
+        /// </summary>
+        /// <param name="expression">查询条件</param>
+        /// <param name="fieldExpressison">按字段返回</param>
+        /// <param name="isMaster">是否主从</param>
+        /// <returns>实体</returns>
+        Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false);
+
+        /// <summary>
         /// 异步获取列表
         /// </summary>
         /// <param name="page"></param>
@@ -208,19 +236,12 @@ namespace Overt.Core.Data
         Task<IEnumerable<TEntity>> GetOffsetsAsync(int offset, int size, Expression<Func<TEntity, bool>> expression = null, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false, params OrderByField[] orderByFields);
 
         /// <summary>
-        /// 获取数量
-        /// </summary>
-        /// <param name="expression">条件表达式</param>
-        /// <param name="isMaster">是否主从</param>
-        /// <returns></returns>
-        int Count(Expression<Func<TEntity, bool>> expression = null, bool isMaster = false);
-
-        /// <summary>
         /// 异步获取数量
         /// </summary>
         /// <param name="expression">条件表达式</param>
         /// <param name="isMaster">是否主从</param>
         /// <returns></returns>
         Task<int> CountAsync(Expression<Func<TEntity, bool>> expression = null, bool isMaster = false);
+        #endregion
     }
 }
