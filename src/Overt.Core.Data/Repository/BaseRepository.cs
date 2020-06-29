@@ -255,9 +255,9 @@ namespace Overt.Core.Data
             using (var connection = OpenConnection(true))
             using (var transaction = connection.BeginTransaction())
             {
+                Transaction = transaction;
                 try
                 {
-                    Transaction = transaction;
                     return await func(transaction);
                 }
                 catch (Exception ex)
