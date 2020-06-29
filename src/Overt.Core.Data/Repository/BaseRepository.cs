@@ -93,8 +93,6 @@ namespace Overt.Core.Data
                 catch (Exception ex)
                 {
                     transaction?.Rollback();
-                    transaction?.Dispose();
-                    connection?.Dispose();
                     throw ex;
                 }
             }
@@ -265,8 +263,6 @@ namespace Overt.Core.Data
                 catch (Exception ex)
                 {
                     transaction?.Rollback();
-                    transaction?.Dispose();
-                    connection?.Dispose();
                     throw ex;
                 }
             }
