@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v1.0.5.2
+> Overt.Core.Data v2.0.0.0
 
 #### 1. 项目目录
 
@@ -36,28 +36,33 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V 1.0.5.2
-> * 框架支持： Framework4.6 - NetStandard 2.0
+> * Nuget版本：V2.0.0.0
+> * 框架支持： Framework4.6.1 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
 
 #### 3. 项目依赖
 
-> * Framework 4.6
+> * Framework 4.6.1
 
 ```
-Dapper 1.50.2  
-MySql.Data 6.10.4
-System.Data.SQLite 1.0.106
-System.ComponentModel.DataAnnotations
+Dapper 2.0.35  
+MySql.Data 8.0.20
+System.Data.SqlClient 4.8.1
+System.Data.SQLite 1.0.113.1
+System.ComponentModel.DataAnnotations 4.7.0
 ```
 
 > * NetStandard 2.0
 
 ```
-Dapper 1.50.2  
-MySql.Data 6.10.4
-Microsoft.Data.Sqlite 2.0.0
+Dapper 2.0.35  
+Microsoft.Data.Sqlite 3.1.5
+MySql.Data 8.0.20
+System.Data.SqlClient 4.8.1
+System.ComponentModel.DataAnnotations 4.7.0
+Microsoft.Extensions.Configuration 2.0.0
+
 ```
 
 
@@ -81,7 +86,7 @@ Microsoft.Data.Sqlite 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 1.0.5.2
+Install-Package Overt.Core.Data -Version 2.0.0.0
 ```
 
 
@@ -151,6 +156,7 @@ namespace Overt.User.Domain.Repositories
 #### 6. 事务实现
 
 > * Framework: 使用TransactionScope
+> * DotNetCore: 使用TransactionScope
 
 ```
 // Service层
@@ -176,37 +182,6 @@ public async Task<bool> ExecuteInTransactionAsync()
     }
 }
 ```
-
-> * DotNetCore：使用普通的Transaction
-
-```
-// Service层
-public async Task<bool> ExecuteInTransactionAsync()
-{
-    await _repository.BeginTransactionAsync(async transaction =>
-    {
-        // 传递事务
-        _subUserRepository.Transaction = transaction;
-
-        var result = false;
-        try
-        {
-            result = await _userRepository.AddAsync(new UserEntity());
-            result &= await _subUserRepository.AddAsync(new SubUserEntity());
-
-            transaction.Commit();
-            return result;
-        }
-        catch (Exception ex)
-        {
-            transaction.Rollback();
-        }
-        return false;
-    });
-    return true;
-}
-```
-
 
 #### 7. Lambda表达式支持
 
@@ -253,5 +228,18 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 
 ~~var list = _repository.GetList(1, 1, oo=>"test".Contains(oo.UserName));~~  
 ~~var list = _repository.GetList(1, 1, oo=>oo.UserName.IndexOf("abc") > -1);~~
+
+
+
+
+#### 8. 更新说明
+
+
+- 2020-06-30 v2.0.0
+
+> 1. 升级底层依赖的驱动：Dapper、SqlClient、MySql、SQLite
+> 2. 去除原有老版本中使用的Transaction属性，全部统一使用TransactionScope实现事务业务。PS：DotNetCore中的事务只支持单服务器数据，Framework支持分布式数据库！！！
+> 3. 如需兼容老版本的的代码，请使用v1.x.x版本的驱动或者代码
+
 
 ---
