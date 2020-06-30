@@ -136,7 +136,7 @@ namespace Overt.User.Application.Services
                     JsonValue = "{}",
                     AddTime = DateTime.Now
                 });
-                //result &= await _subUserRepository.AddAsync(new SubUserEntity());
+                result &= await _subUserRepository.AddAsync(new SubUserEntity());
 
                 scope.Complete();
             }

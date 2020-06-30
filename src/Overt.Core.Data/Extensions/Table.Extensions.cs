@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Concurrent;
+using System.Transactions;
 
 namespace Overt.Core.Data
 {
@@ -38,6 +39,7 @@ namespace Overt.Core.Data
 
                 try
                 {
+                    using (var scope = new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled))
                     using (var connection = repository.OpenConnection(true))
                     {
                         connection.ExecuteAsync(createScript).GetAwaiter().GetResult();
