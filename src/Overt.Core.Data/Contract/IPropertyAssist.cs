@@ -24,7 +24,7 @@ namespace Overt.Core.Data
         /// 提供内部事务
         /// </summary>
         /// <returns></returns>
-        [Obsolete("请使用 TransactionExecute")]
+        [Obsolete("请使用 _repository.BeginTransaction(transaction=>{})")]
         IDbTransaction BeginTransaction();
 #endif
 

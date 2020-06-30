@@ -54,7 +54,7 @@ namespace Overt.Core.Data
         /// 创建事务，可自动创建连接 已赋值 Transaction 属性
         /// </summary>
         /// <returns></returns>
-        [Obsolete("请使用 TransactionExecute")]
+        [Obsolete("请使用 _repository.BeginTransaction(transaction=>{})")]
         public virtual IDbTransaction BeginTransaction()
         {
             var connection = OpenConnection(true);
