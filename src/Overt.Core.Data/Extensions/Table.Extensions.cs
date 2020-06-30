@@ -38,7 +38,7 @@ namespace Overt.Core.Data
 
                 try
                 {
-                    using (var connection = repository.OpenConnection(true, true))
+                    using (var connection = repository.OpenConnection(true))
                     {
                         connection.ExecuteAsync(createScript).GetAwaiter().GetResult();
                     }

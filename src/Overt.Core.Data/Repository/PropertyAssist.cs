@@ -49,53 +49,16 @@ namespace Overt.Core.Data
         /// </summary>
         public string DbStoreKey { get; set; }
 
-#if ASP_NET_CORE
-        /// <summary>
-        /// 创建事务，可自动创建连接 已赋值 Transaction 属性
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("请使用 _repository.BeginTransaction(transaction=>{})")]
-        public virtual IDbTransaction BeginTransaction()
-        {
-            var connection = OpenConnection(true);
-            Transaction = connection.BeginTransaction();
-            return Transaction;
-        }
-#endif
-
-        /// <summary>
-        /// 事务
-        /// </summary>
-        public virtual IDbTransaction Transaction { get; set; }
-
-        /// <summary>
-        /// 是否在事务中
-        /// </summary>
-        public virtual bool InTransaction
-        {
-            get
-            {
-#if ASP_NET_CORE
-                return Transaction?.Connection != null;
-#else
-                return false;
-#endif
-            }
-        }
-
         /// <summary>
         /// 打开连接 已赋值 connection 属性
         /// </summary>
         /// <returns></returns>
-        public virtual IDbConnection OpenConnection(bool isMaster = false, bool ignoreTransaction = false)
+        public virtual IDbConnection OpenConnection(bool isMaster = false)
         {
             IDbConnection connection;
 
 #if ASP_NET_CORE
-            if (ignoreTransaction || !InTransaction)
-                connection = new DataContext(_configuration, isMaster, DbStoreKey, ConnectionFunc).DbConnection;
-            else
-                connection = Transaction.Connection;
+            connection = new DataContext(_configuration, isMaster, DbStoreKey, ConnectionFunc).DbConnection;
 #else
             connection = new DataContext(isMaster, DbStoreKey, ConnectionFunc).DbConnection;
 #endif

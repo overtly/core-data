@@ -94,10 +94,11 @@ namespace Overt.Core.Data
 
             if (configuration == null)
             {
-                configuration = new ConfigurationBuilder()
-                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                    .AddJsonFile("appsettings.json")
-                    .Build();
+                throw new Exception($"请注入IConfiguration");
+                //configuration = new ConfigurationBuilder()
+                //    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                //    .AddJsonFile("appsettings.json")
+                //    .Build();
             }
 
             var connectionKey = GetKey(isMaster, dbStoreKey);

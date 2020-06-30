@@ -33,14 +33,6 @@ namespace Overt.Core.Data
         string GetTableName(string key);
 
         /// <summary>
-        /// 事务中执行，内部已做TryCatch，Catch回滚
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        T BeginTransaction<T>(Func<IDbTransaction, T> func);
-
-        /// <summary>
         /// 是否存在表
         /// </summary>
         /// <param name="tableName"></param>
@@ -138,14 +130,6 @@ namespace Overt.Core.Data
         #endregion
 
         #region Async Method
-        /// <summary>
-        /// 事务中执行，内部已做TryCatch，Catch回滚
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        Task<T> BeginTransactionAsync<T>(Func<IDbTransaction, Task<T>> func);
-
         /// <summary>
         /// 是否存在表
         /// </summary>

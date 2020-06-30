@@ -163,7 +163,6 @@ namespace Overt.Core.Data
         /// <param name="connection"></param>
         /// <param name="tableName"></param>
         /// <param name="entity"></param>
-        /// <param name="transaction">事务</param>
         /// <param name="returnLastIdentity">是否返回自增的数据</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
@@ -171,7 +170,6 @@ namespace Overt.Core.Data
             IDbConnection connection,
             string tableName,
             TEntity entity,
-            IDbTransaction transaction = null,
             bool returnLastIdentity = false,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
@@ -202,13 +200,13 @@ namespace Overt.Core.Data
             if (identityPropertyInfo != null && returnLastIdentity)
             {
                 sql += dbType.SelectLastIdentity();
-                task = await connection.ExecuteScalarAsync<int>(sql, entity, transaction);
+                task = await connection.ExecuteScalarAsync<int>(sql, entity);
                 if (task > 0)
                     identityPropertyInfo.SetValue(entity, task);
             }
             else
             {
-                task = await connection.ExecuteAsync(sql, entity, transaction);
+                task = await connection.ExecuteAsync(sql, entity);
             }
             // 返回sql
             outSqlAction?.Invoke(sql);
@@ -223,14 +221,12 @@ namespace Overt.Core.Data
         /// <param name="connection"></param>
         /// <param name="tableName"></param>
         /// <param name="entities"></param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
         public static async Task<int> InsertAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             IEnumerable<TEntity> entities,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -255,7 +251,7 @@ namespace Overt.Core.Data
             }
 
             var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
-            var task = await connection.ExecuteAsync(sql, entities, transaction);
+            var task = await connection.ExecuteAsync(sql, entities);
             // 返回sql
             outSqlAction?.Invoke(sql);
 
@@ -269,14 +265,12 @@ namespace Overt.Core.Data
         /// <param name="connection"></param>
         /// <param name="tableName"></param>
         /// <param name="whereExpress"></param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
         public static async Task<int> DeleteAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             Expression<Func<TEntity, bool>> whereExpress,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -287,7 +281,7 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Delete<TEntity>(dbType, tableName).Where(whereExpress);
-            var task = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            var task = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
             // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
             return task;
@@ -301,7 +295,6 @@ namespace Overt.Core.Data
         /// <param name="tableName"></param>
         /// <param name="entity"></param>
         /// <param name="fields">选择字段</param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
         public static async Task<bool> SetAsync<TEntity>(this
@@ -309,7 +302,6 @@ namespace Overt.Core.Data
             string tableName,
             TEntity entity,
             IEnumerable<string> fields = null,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -340,7 +332,7 @@ namespace Overt.Core.Data
                 throw new Exception($"实体[{nameof(TEntity)}]未标记任何更新字段");
 
             var sql = $"update {tableName.ParamSql(dbType)} set {string.Join(", ", setFields)} where {string.Join(", ", whereFields)}";
-            var result = await connection.ExecuteAsync(sql, entity, transaction);
+            var result = await connection.ExecuteAsync(sql, entity);
             // 返回sql
             outSqlAction?.Invoke(sql);
             return result > 0;
@@ -354,7 +346,6 @@ namespace Overt.Core.Data
         /// <param name="tableName">表名</param>
         /// <param name="setExpress">修改内容表达式</param>
         /// <param name="whereExpress">条件表达式</param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
         public static async Task<bool> SetAsync<TEntity>(this
@@ -362,7 +353,6 @@ namespace Overt.Core.Data
             string tableName,
             Expression<Func<object>> setExpress,
             Expression<Func<TEntity, bool>> whereExpress,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -373,7 +363,7 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Update<TEntity>(dbType, setExpress, tableName).Where(whereExpress);
-            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
             // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
             return result > 0;
@@ -387,7 +377,6 @@ namespace Overt.Core.Data
         /// <param name="tableName">表名</param>
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="fieldExpress">选择字段，默认为*</param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
         public static async Task<TEntity> GetAsync<TEntity>(this
@@ -395,7 +384,6 @@ namespace Overt.Core.Data
             string tableName,
             Expression<Func<TEntity, bool>> whereExpress,
             Expression<Func<TEntity, object>> fieldExpress = null,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -406,7 +394,7 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName).Where(whereExpress);
-            var task = await connection.QueryFirstOrDefaultAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            var task = await connection.QueryFirstOrDefaultAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
             // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
             return task;
@@ -423,7 +411,6 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="fieldExpress">选择字段，默认为*</param>
         /// <param name="orderByFields">排序字段集合</param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
         public static async Task<IEnumerable<TEntity>> GetListAsync<TEntity>(this
@@ -434,7 +421,6 @@ namespace Overt.Core.Data
             Expression<Func<TEntity, bool>> whereExpress,
             Expression<Func<TEntity, object>> fieldExpress = null,
             List<OrderByField> orderByFields = null,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -451,7 +437,7 @@ namespace Overt.Core.Data
                 orderBy = $" {string.Join(", ", orderByFields.Select(oo => oo.Field.ParamSql(dbType) + " " + oo.OrderBy))}";
             sqlExpression.OrderBy(orderBy).Limit(page, rows);
 
-            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
             // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
             return task;
@@ -468,7 +454,6 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="fieldExpress">选择字段，默认为*</param>
         /// <param name="orderByFields">排序字段集合</param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
         public static async Task<IEnumerable<TEntity>> GetOffsetsAsync<TEntity>(this
@@ -479,7 +464,6 @@ namespace Overt.Core.Data
             Expression<Func<TEntity, bool>> whereExpress,
             Expression<Func<TEntity, object>> fieldExpress = null,
             List<OrderByField> orderByFields = null,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -496,7 +480,7 @@ namespace Overt.Core.Data
                 orderBy = $" {string.Join(", ", orderByFields.Select(oo => oo.Field.ParamSql(dbType) + " " + oo.OrderBy))}";
             sqlExpression.OrderBy(orderBy).Offset(offset, size);
 
-            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
             // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
             return task;
@@ -509,14 +493,12 @@ namespace Overt.Core.Data
         /// <param name="connection"></param>
         /// <param name="tableName"></param>
         /// <param name="whereExpress">条件表达式</param>
-        /// <param name="transaction">事务</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
         public static async Task<int> CountAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             Expression<Func<TEntity, bool>> whereExpress,
-            IDbTransaction transaction = null,
             Action<string> outSqlAction = null)
             where TEntity : class, new()
         {
@@ -525,7 +507,7 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Count<TEntity>(dbType, tableName: tableName).Where(whereExpress);
-            var task = await connection.QueryFirstOrDefaultAsync<int>(sqlExpression.Script, sqlExpression.DbParams, transaction);
+            var task = await connection.QueryFirstOrDefaultAsync<int>(sqlExpression.Script, sqlExpression.DbParams);
             // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
             return task;

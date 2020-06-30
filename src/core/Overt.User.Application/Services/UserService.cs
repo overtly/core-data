@@ -125,17 +125,32 @@ namespace Overt.User.Application.Services
 
         public async Task<bool> ExecuteInTransactionAsync()
         {
-            await _userRepository.BeginTransactionAsync(async transaction =>
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                // 传递事务
-                _subUserRepository.Transaction = transaction;
+                var result = await _userRepository.AddAsync(new UserEntity()
+                {
+                    UserName = "11111111111",
+                    RealName = "11111111111",
+                    Password = "123456",
+                    IsSex = false,
+                    JsonValue = "{}",
+                    AddTime = DateTime.Now
+                });
+                //result &= await _subUserRepository.AddAsync(new SubUserEntity());
 
-                var result = await _userRepository.AddAsync(new UserEntity());
-                result &= await _subUserRepository.AddAsync(new SubUserEntity());
+                scope.Complete();
+            }
+            //await _userRepository.BeginTransactionAsync(async transaction =>
+            //{
+            //    // 传递事务
+            //    _subUserRepository.Transaction = transaction;
 
-                transaction.Commit();
-                return result;
-            });
+            //    var result = await _userRepository.AddAsync(new UserEntity());
+            //    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+
+            //    transaction.Commit();
+            //    return result;
+            //});
             return true;
         }
     }

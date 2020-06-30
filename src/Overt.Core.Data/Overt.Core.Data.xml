@@ -47,14 +47,6 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.IBaseRepository`1.BeginTransaction``1(System.Func{System.Data.IDbTransaction,``0})">
-            <summary>
-            事务中执行，内部已做TryCatch，Catch回滚
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="func"></param>
-            <returns></returns>
-        </member>
         <member name="M:Overt.Core.Data.IBaseRepository`1.IsExistTable(System.String,System.Boolean)">
             <summary>
             是否存在表
@@ -149,14 +141,6 @@
             </summary>
             <param name="expression">条件表达式</param>
             <param name="isMaster">是否主从</param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.IBaseRepository`1.BeginTransactionAsync``1(System.Func{System.Data.IDbTransaction,System.Threading.Tasks.Task{``0}})">
-            <summary>
-            事务中执行，内部已做TryCatch，Catch回滚
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="func"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.IBaseRepository`1.IsExistTableAsync(System.String,System.Boolean)">
@@ -266,16 +250,6 @@
             数据库key
             </summary>
         </member>
-        <member name="P:Overt.Core.Data.IPropertyAssist.Transaction">
-            <summary>
-            事务
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.IPropertyAssist.InTransaction">
-            <summary>
-            是否在事务中
-            </summary>
-        </member>
         <member name="P:Overt.Core.Data.IPropertyAssist.TableNameFunc">
             <summary>
             表名生成方法
@@ -292,7 +266,7 @@
             连接方法创建
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.IPropertyAssist.OpenConnection(System.Boolean,System.Boolean)">
+        <member name="M:Overt.Core.Data.IPropertyAssist.OpenConnection(System.Boolean)">
             <summary>
             打开连接
             </summary>
@@ -1164,7 +1138,7 @@
             <param name="outSqlAction"></param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.InsertAsync``1(System.Data.IDbConnection,System.String,``0,System.Data.IDbTransaction,System.Boolean,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.InsertAsync``1(System.Data.IDbConnection,System.String,``0,System.Boolean,System.Action{System.String})">
             <summary>
             插入数据
             </summary>
@@ -1172,12 +1146,11 @@
             <param name="connection"></param>
             <param name="tableName"></param>
             <param name="entity"></param>
-            <param name="transaction">事务</param>
             <param name="returnLastIdentity">是否返回自增的数据</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns>-1 参数为空</returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.InsertAsync``1(System.Data.IDbConnection,System.String,System.Collections.Generic.IEnumerable{``0},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.InsertAsync``1(System.Data.IDbConnection,System.String,System.Collections.Generic.IEnumerable{``0},System.Action{System.String})">
             <summary>
             批量插入数据
             </summary>
@@ -1185,11 +1158,10 @@
             <param name="connection"></param>
             <param name="tableName"></param>
             <param name="entities"></param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns>-1 参数为空</returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.DeleteAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.DeleteAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
             <summary>
             删除数据
             </summary>
@@ -1197,11 +1169,10 @@
             <param name="connection"></param>
             <param name="tableName"></param>
             <param name="whereExpress"></param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns>-1 参数为空</returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.SetAsync``1(System.Data.IDbConnection,System.String,``0,System.Collections.Generic.IEnumerable{System.String},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.SetAsync``1(System.Data.IDbConnection,System.String,``0,System.Collections.Generic.IEnumerable{System.String},System.Action{System.String})">
             <summary>
             对象修改
             </summary>
@@ -1210,11 +1181,10 @@
             <param name="tableName"></param>
             <param name="entity"></param>
             <param name="fields">选择字段</param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.SetAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.SetAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
             <summary>
             条件修改
             </summary>
@@ -1223,11 +1193,10 @@
             <param name="tableName">表名</param>
             <param name="setExpress">修改内容表达式</param>
             <param name="whereExpress">条件表达式</param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.GetAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Action{System.String})">
             <summary>
             获取单条数据
             </summary>
@@ -1236,11 +1205,10 @@
             <param name="tableName">表名</param>
             <param name="whereExpress">条件表达式</param>
             <param name="fieldExpress">选择字段，默认为*</param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetListAsync``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.GetListAsync``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
             <summary>
             获取分页数据
             </summary>
@@ -1252,11 +1220,10 @@
             <param name="whereExpress">条件表达式</param>
             <param name="fieldExpress">选择字段，默认为*</param>
             <param name="orderByFields">排序字段集合</param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetOffsetsAsync``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.GetOffsetsAsync``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
             <summary>
             获取分页数据 Offset
             </summary>
@@ -1268,11 +1235,10 @@
             <param name="whereExpress">条件表达式</param>
             <param name="fieldExpress">选择字段，默认为*</param>
             <param name="orderByFields">排序字段集合</param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.CountAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Data.IDbTransaction,System.Action{System.String})">
+        <member name="M:Overt.Core.Data.DapperExtensions.CountAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
             <summary>
             获取数量
             </summary>
@@ -1280,7 +1246,6 @@
             <param name="connection"></param>
             <param name="tableName"></param>
             <param name="whereExpress">条件表达式</param>
-            <param name="transaction">事务</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
@@ -1563,14 +1528,6 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.BaseRepository`1.BeginTransaction``1(System.Func{System.Data.IDbTransaction,``0})">
-            <summary>
-            事务中执行
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="func"></param>
-            <returns></returns>
-        </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.IsExistTable(System.String,System.Boolean)">
             <summary>
             是否存在表
@@ -1658,14 +1615,6 @@
             </summary>
             <param name="expression">条件表达式</param>
             <param name="isMaster">是否主从</param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.BaseRepository`1.BeginTransactionAsync``1(System.Func{System.Data.IDbTransaction,System.Threading.Tasks.Task{``0}})">
-            <summary>
-            事务中执行
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="func"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.IsExistTableAsync(System.String,System.Boolean)">
@@ -1757,14 +1706,13 @@
             <param name="isMaster">是否主从</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,System.Threading.Tasks.Task{``0}},System.Boolean,System.Boolean)">
+        <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,System.Threading.Tasks.Task{``0}},System.Boolean)">
             <summary>
             包含connection的方法执行
             </summary>
             <typeparam name="T"></typeparam>
             <param name="func"></param>
             <param name="isMaster"></param>
-            <param name="ignoreTransaction">是否忽略事务，true 将忽略事务，直接创建一个connection</param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.OutSqlAction(System.String)">
@@ -1789,53 +1737,7 @@
             数据库名key
             </summary>
         </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.Transaction">
-            <summary>
-            事务
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.InTransaction">
-            <summary>
-            是否在事务中
-            </summary>
-        </member>
-        <member name="M:Overt.Core.Data.PropertyAssist.OpenConnection(System.Boolean,System.Boolean)">
-            <summary>
-            打开连接 已赋值 connection 属性
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.ConnectionFunc">
-            <summary>
-            数据库连接方法
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.TableNameFunc">
-            <summary>
-            表名方法
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.CreateScriptFunc">
-            <summary>
-            创建表的脚本
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.ExecuteScript">
-            <summary>
-            执行的sql脚本
-            </summary>
-        </member>
-    </members>
-</doc>
-��务
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.InTransaction">
-            <summary>
-            是否在事务中
-            </summary>
-        </member>
-        <member name="M:Overt.Core.Data.PropertyAssist.OpenConnection(System.Boolean,System.Boolean)">
+        <member name="M:Overt.Core.Data.PropertyAssist.OpenConnection(System.Boolean)">
             <summary>
             打开连接 已赋值 connection 属性
             </summary>

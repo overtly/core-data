@@ -72,33 +72,6 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
-        /// 事务中执行
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public T BeginTransaction<T>(Func<IDbTransaction, T> func)
-        {
-            if (InTransaction)
-                return func(Transaction);
-
-            using (var connection = OpenConnection(true))
-            using (var transaction = connection.BeginTransaction())
-            {
-                Transaction = transaction;
-                try
-                {
-                    return func(transaction);
-                }
-                catch (Exception ex)
-                {
-                    transaction?.Rollback();
-                    throw ex;
-                }
-            }
-        }
-
-        /// <summary>
         /// 是否存在表
         /// </summary>
         /// <param name="tableName"></param>
@@ -242,33 +215,6 @@ namespace Overt.Core.Data
 
         #region Async Method
         /// <summary>
-        /// 事务中执行
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public async Task<T> BeginTransactionAsync<T>(Func<IDbTransaction, Task<T>> func)
-        {
-            if (InTransaction)
-                return await func(Transaction);
-
-            using (var connection = OpenConnection(true))
-            using (var transaction = connection.BeginTransaction())
-            {
-                Transaction = transaction;
-                try
-                {
-                    return await func(transaction);
-                }
-                catch (Exception ex)
-                {
-                    transaction?.Rollback();
-                    throw ex;
-                }
-            }
-        }
-
-        /// <summary>
         /// 是否存在表
         /// </summary>
         /// <param name="tableName"></param>
@@ -279,7 +225,7 @@ namespace Overt.Core.Data
             if (string.IsNullOrEmpty(tableName))
                 return false;
 
-            using (var connection = OpenConnection(isMaster, true))
+            using (var connection = OpenConnection(isMaster))
             {
                 return await connection.IsExistTableAsync(tableName, OutSqlAction);
             }
@@ -297,7 +243,7 @@ namespace Overt.Core.Data
             if (string.IsNullOrEmpty(tableName) || string.IsNullOrEmpty(fieldName))
                 return false;
 
-            using (var conneciton = OpenConnection(isMaster, true))
+            using (var conneciton = OpenConnection(isMaster))
             {
                 return await conneciton.IsExistFieldAsync(tableName, fieldName, OutSqlAction);
             }
@@ -317,7 +263,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = entity.GetTableName(TableNameFunc);
-                var result = await connection.InsertAsync(tableName, entity, Transaction, returnLastIdentity, OutSqlAction);
+                var result = await connection.InsertAsync(tableName, entity, returnLastIdentity, OutSqlAction);
                 return result > 0;
             }, true);
         }
@@ -335,7 +281,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = entities.First().GetTableName(TableNameFunc);
-                var result = await connection.InsertAsync(tableName, entities, Transaction, OutSqlAction);
+                var result = await connection.InsertAsync(tableName, entities, OutSqlAction);
                 return result > 0;
             }, true);
         }
@@ -350,7 +296,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = expression.GetTableName(TableNameFunc);
-                var task = await connection.DeleteAsync(tableName, expression, Transaction, OutSqlAction);
+                var task = await connection.DeleteAsync(tableName, expression, OutSqlAction);
                 return task > 0;
             }, true);
         }
@@ -370,7 +316,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = entity.GetTableName(TableNameFunc);
-                var task = await connection.SetAsync(tableName, entity, fieldNames, Transaction, OutSqlAction);
+                var task = await connection.SetAsync(tableName, entity, fieldNames, OutSqlAction);
                 return task;
             }, true);
         }
@@ -389,7 +335,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = whereExpress.GetTableName(TableNameFunc);
-                var task = await connection.SetAsync(tableName, setExpress, whereExpress, Transaction, OutSqlAction);
+                var task = await connection.SetAsync(tableName, setExpress, whereExpress, OutSqlAction);
                 return task;
             }, true);
         }
@@ -409,7 +355,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = expression.GetTableName(TableNameFunc);
-                var task = await connection.GetAsync(tableName, expression, fieldExpressison, Transaction, OutSqlAction);
+                var task = await connection.GetAsync(tableName, expression, fieldExpressison, OutSqlAction);
                 return task;
             }, isMaster);
         }
@@ -438,7 +384,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = expression.GetTableName(TableNameFunc);
-                var task = await connection.GetListAsync(tableName, page, rows, expression, fieldExpressison, orderByFields?.ToList(), Transaction, OutSqlAction);
+                var task = await connection.GetListAsync(tableName, page, rows, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
                 return task;
             }, isMaster);
         }
@@ -467,7 +413,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = expression.GetTableName(TableNameFunc);
-                var task = await connection.GetOffsetsAsync(tableName, offset, size, expression, fieldExpressison, orderByFields?.ToList(), Transaction, OutSqlAction);
+                var task = await connection.GetOffsetsAsync(tableName, offset, size, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
                 return task;
             }, isMaster);
         }
@@ -483,7 +429,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = expression.GetTableName(TableNameFunc);
-                var task = await connection.CountAsync(tableName, expression, Transaction, OutSqlAction);
+                var task = await connection.CountAsync(tableName, expression, OutSqlAction);
                 return task;
             }, isMaster);
         }
@@ -496,18 +442,12 @@ namespace Overt.Core.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <param name="isMaster"></param>
-        /// <param name="ignoreTransaction">是否忽略事务，true 将忽略事务，直接创建一个connection</param>
         /// <returns></returns>
-        protected async Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true, bool ignoreTransaction = false)
+        protected async Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true)
         {
             if (!this.CheckTableIfMissingCreate(isMaster))
                 return default(T);
 
-            if (InTransaction)
-            {
-                var connection = OpenConnection(isMaster, ignoreTransaction);
-                return await func(connection);
-            }
             using (var connection = OpenConnection(isMaster))
             {
                 return await func(connection);

@@ -18,27 +18,6 @@ namespace Overt.Core.Data
         string DbStoreKey { get; set; }
         #endregion
 
-        #region Transaction 
-#if ASP_NET_CORE
-        /// <summary>
-        /// 提供内部事务
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("请使用 _repository.BeginTransaction(transaction=>{})")]
-        IDbTransaction BeginTransaction();
-#endif
-
-        /// <summary>
-        /// 事务
-        /// </summary>
-        IDbTransaction Transaction { get; set; }
-
-        /// <summary>
-        /// 是否在事务中
-        /// </summary>
-        bool InTransaction { get; }
-        #endregion
-
         #region TableName
         /// <summary>
         /// 表名生成方法
@@ -69,7 +48,7 @@ namespace Overt.Core.Data
         /// 打开连接
         /// </summary>
         /// <returns></returns>
-        IDbConnection OpenConnection(bool isMaster = false, bool ignoreTransaction = false);
+        IDbConnection OpenConnection(bool isMaster = false);
         #endregion
 
         #region ExecuteScript
