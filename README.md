@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v1.0.5.0
+> Overt.Core.Data v1.0.5.2
 
 #### 1. 项目目录
 
@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V 1.0.5.0
+> * Nuget版本：V 1.0.5.2
 > * 框架支持： Framework4.6 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -81,7 +81,7 @@ Microsoft.Data.Sqlite 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 1.0.5.0
+Install-Package Overt.Core.Data -Version 1.0.5.2
 ```
 
 
@@ -183,7 +183,7 @@ public async Task<bool> ExecuteInTransactionAsync()
 // Service层
 public async Task<bool> ExecuteInTransactionAsync()
 {
-    await _repository.TransactionExecuteAsync(async transaction =>
+    await _repository.BeginTransactionAsync(async transaction =>
     {
         // 传递事务
         _subUserRepository.Transaction = transaction;
