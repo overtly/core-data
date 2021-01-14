@@ -319,16 +319,6 @@
             2. xx.master / xx.secondary
             </summary>
         </member>
-        <member name="P:Overt.Core.Data.DataSettings.Master">
-            <summary>
-            主库
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.DataSettings.Secondary">
-            <summary>
-            从库
-            </summary>
-        </member>
         <member name="P:Overt.Core.Data.DataSettings.Default">
             <summary>
             单例模式
@@ -353,7 +343,7 @@
             获取
             </summary>
             <param name="isMaster"></param>
-            <param name="store">不能包含点</param>
+            <param name="dbStoreKey">不能包含点</param>
             <returns></returns>
         </member>
         <member name="T:Overt.Core.Data.DatabaseType">

@@ -7,14 +7,13 @@
     <Authors>Yaofeng</Authors>
     <Description>Overt.Core.Data</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. 移动Sql语句的赋值位置，防止异常情况下，SQL语句无法获知
-2. 修改命名</PackageReleaseNotes>
+    <PackageReleaseNotes>修复多数据库情况下数据库切换并发连接导致连接字符串获取错误</PackageReleaseNotes>
     <Copyright>Overt</Copyright>
     <PackageTags></PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>2.0.0.1</Version>
+    <Version>2.0.1</Version>
     <RepositoryUrl>http://github.com/overtly/core-data</RepositoryUrl>
   </PropertyGroup>
 
