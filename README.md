@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v2.0.0.0
+> Overt.Core.Data v2.0.1
 
 #### 1. 项目目录
 
@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V2.0.0.0
+> * Nuget版本：V2.0.1
 > * 框架支持： Framework4.6.1 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -86,7 +86,7 @@ Microsoft.Extensions.Configuration 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 2.0.0.0
+Install-Package Overt.Core.Data -Version 2.0.1
 ```
 
 
@@ -233,6 +233,12 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 
 
 #### 8. 更新说明
+
+- 2020-06-30 v2.0.1
+
+> 1. 修复多数据库情况下并发查询切换数据库导致连接字符串混乱的问题
+> 2. Repository层回执SQL脚本的位置调整，防止数据库执行异常无法获知实际的SQL脚本
+
 
 
 - 2020-06-30 v2.0.0
