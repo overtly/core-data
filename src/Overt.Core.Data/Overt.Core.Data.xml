@@ -1575,7 +1575,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             查找数据
@@ -1664,7 +1664,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.GetAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             异步获取一条数据

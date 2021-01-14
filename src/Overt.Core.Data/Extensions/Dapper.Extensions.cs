@@ -98,8 +98,7 @@ namespace Overt.Core.Data
         /// <returns></returns>
         public static PropertyInfo GetIdentityField<TEntity>(this TEntity entity)
         {
-            var t = typeof(TEntity);
-            var mTableName = t.GetMainTableName();
+            var t = entity.GetType();
             var propertyInfos = t.GetProperties<DatabaseGeneratedAttribute>();
             if ((propertyInfos?.Count ?? 0) <= 0) // 代表没有主键
                 return null;
@@ -131,9 +130,10 @@ namespace Overt.Core.Data
             var dbType = connection.GetDbType();
             var dbName = connection.Database;
             var sql = dbType.ExistTableSql(dbName, tableName);
-            var task = await connection.QueryFirstOrDefaultAsync<int>(sql);
-            outSqlAction?.Invoke(sql);
-            return task > 0;
+            outSqlAction?.Invoke(sql); // 返回sql
+
+            var result = await connection.QueryFirstOrDefaultAsync<int>(sql);
+            return result > 0;
         }
 
         /// <summary>
@@ -151,9 +151,10 @@ namespace Overt.Core.Data
             var dbType = connection.GetDbType();
             var dbName = connection.Database;
             var sql = dbType.ExistFieldSql(dbName, tableName, fieldName);
-            var task = await connection.QueryFirstOrDefaultAsync<int>(sql);
             outSqlAction?.Invoke(sql);
-            return task > 0;
+
+            var result = await connection.QueryFirstOrDefaultAsync<int>(sql);
+            return result > 0;
         }
 
         /// <summary>
@@ -195,23 +196,22 @@ namespace Overt.Core.Data
             }
 
             var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
+            outSqlAction?.Invoke(sql);
 
-            var task = 0;
+            int result;
             if (identityPropertyInfo != null && returnLastIdentity)
             {
                 sql += dbType.SelectLastIdentity();
-                task = await connection.ExecuteScalarAsync<int>(sql, entity);
-                if (task > 0)
-                    identityPropertyInfo.SetValue(entity, task);
+                result = await connection.ExecuteScalarAsync<int>(sql, entity);
+                if (result > 0)
+                    identityPropertyInfo.SetValue(entity, result);
             }
             else
             {
-                task = await connection.ExecuteAsync(sql, entity);
+                result = await connection.ExecuteAsync(sql, entity);
             }
-            // 返回sql
-            outSqlAction?.Invoke(sql);
 
-            return task;
+            return result;
         }
 
         /// <summary>
@@ -251,11 +251,10 @@ namespace Overt.Core.Data
             }
 
             var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
-            var task = await connection.ExecuteAsync(sql, entities);
-            // 返回sql
             outSqlAction?.Invoke(sql);
 
-            return task;
+            var result = await connection.ExecuteAsync(sql, entities);
+            return result;
         }
 
         /// <summary>
@@ -281,10 +280,10 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Delete<TEntity>(dbType, tableName).Where(whereExpress);
-            var task = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
-            // 返回sql
             outSqlAction?.Invoke(sqlExpression.Script);
-            return task;
+
+            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
+            return result;
         }
 
         /// <summary>
@@ -332,9 +331,9 @@ namespace Overt.Core.Data
                 throw new Exception($"实体[{nameof(TEntity)}]未标记任何更新字段");
 
             var sql = $"update {tableName.ParamSql(dbType)} set {string.Join(", ", setFields)} where {string.Join(", ", whereFields)}";
-            var result = await connection.ExecuteAsync(sql, entity);
-            // 返回sql
             outSqlAction?.Invoke(sql);
+
+            var result = await connection.ExecuteAsync(sql, entity);
             return result > 0;
         }
 
@@ -363,9 +362,9 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Update<TEntity>(dbType, setExpress, tableName).Where(whereExpress);
+            outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
+
             var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
-            // 返回sql
-            outSqlAction?.Invoke(sqlExpression.Script);
             return result > 0;
         }
 
@@ -394,10 +393,10 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName).Where(whereExpress);
-            var task = await connection.QueryFirstOrDefaultAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
-            // 返回sql
-            outSqlAction?.Invoke(sqlExpression.Script);
-            return task;
+            outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
+
+            var result = await connection.QueryFirstOrDefaultAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
+            return result;
         }
 
         /// <summary>
@@ -436,11 +435,10 @@ namespace Overt.Core.Data
             if ((orderByFields?.Count ?? 0) > 0)
                 orderBy = $" {string.Join(", ", orderByFields.Select(oo => oo.Field.ParamSql(dbType) + " " + oo.OrderBy))}";
             sqlExpression.OrderBy(orderBy).Limit(page, rows);
+            outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
-            // 返回sql
-            outSqlAction?.Invoke(sqlExpression.Script);
-            return task;
+            var result = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
+            return result;
         }
 
         /// <summary>
@@ -479,11 +477,10 @@ namespace Overt.Core.Data
             if ((orderByFields?.Count ?? 0) > 0)
                 orderBy = $" {string.Join(", ", orderByFields.Select(oo => oo.Field.ParamSql(dbType) + " " + oo.OrderBy))}";
             sqlExpression.OrderBy(orderBy).Offset(offset, size);
+            outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var task = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
-            // 返回sql
-            outSqlAction?.Invoke(sqlExpression.Script);
-            return task;
+            var result = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
+            return result;
         }
 
         /// <summary>
@@ -507,10 +504,10 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Count<TEntity>(dbType, tableName: tableName).Where(whereExpress);
-            var task = await connection.QueryFirstOrDefaultAsync<int>(sqlExpression.Script, sqlExpression.DbParams);
-            // 返回sql
-            outSqlAction?.Invoke(sqlExpression.Script);
-            return task;
+            outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
+
+            var result = await connection.QueryFirstOrDefaultAsync<int>(sqlExpression.Script, sqlExpression.DbParams);
+            return result;
         }
         #endregion
 
@@ -555,7 +552,7 @@ namespace Overt.Core.Data
         internal static string GetMainTableName(this Type entity)
         {
             var attribute = entity.GetAttribute<TableAttribute>();
-            var mTableName = string.Empty;
+            string mTableName;
             if (attribute == null)
                 mTableName = entity.Name;
             else
