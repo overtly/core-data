@@ -266,6 +266,12 @@
             数据库key
             </summary>
         </member>
+        <member name="M:Overt.Core.Data.IPropertyAssist.BeginTransaction">
+            <summary>
+            提供内部事务
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Overt.Core.Data.IPropertyAssist.Transaction">
             <summary>
             事务
@@ -313,10 +319,11 @@
             连接对象
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.DataContext.#ctor(System.Boolean,System.String,System.Func{System.Boolean,System.Configuration.ConnectionStringSettings})">
+        <member name="M:Overt.Core.Data.DataContext.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.String,System.Func{System.Boolean,System.String})">
             <summary>
             构造函数
             </summary>
+            <param name="configuration">if null 则从appsettings.json中获取</param>
             <param name="isMaster">是否从库</param>
             <param name="dbStoreKey">存储字符串标识</param>
             <param name="connectionFunc">连接字符串Func</param>
@@ -345,16 +352,6 @@
             2. xx.master / xx.secondary
             </summary>
         </member>
-        <member name="P:Overt.Core.Data.DataSettings.Master">
-            <summary>
-            主库
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.DataSettings.Secondary">
-            <summary>
-            从库
-            </summary>
-        </member>
         <member name="P:Overt.Core.Data.DataSettings.Default">
             <summary>
             单例模式
@@ -365,13 +362,22 @@
             构造函数
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.DataSettings.Get(System.Boolean,System.String,System.Func{System.Boolean,System.Configuration.ConnectionStringSettings})">
+        <member name="M:Overt.Core.Data.DataSettings.Get(Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.String,System.Func{System.Boolean,System.String})">
             <summary>
             获取连接字符串
             </summary>
+            <param name="configuration"></param>
             <param name="isMaster"></param>
             <param name="dbStoreKey"></param>
             <param name="connectionFunc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DataSettings.ResolveConnectionString(System.String,System.String)">
+            <summary>
+            解析
+            </summary>
+            <param name="connectionString"></param>
+            <param name="param"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DataSettings.GetKey(System.Boolean,System.String)">
@@ -379,7 +385,7 @@
             获取
             </summary>
             <param name="isMaster"></param>
-            <param name="store">不能包含点</param>
+            <param name="dbStoreKey">不能包含点</param>
             <returns></returns>
         </member>
         <member name="T:Overt.Core.Data.DatabaseType">
@@ -1538,10 +1544,11 @@
             实现IBaseRepository
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.BaseRepository`1.#ctor(System.String)">
+        <member name="M:Overt.Core.Data.BaseRepository`1.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
             <summary>
             构造函数 
             </summary>
+            <param name="configuration">配置注入</param>
             <param name="dbStoreKey">数据库前缀</param>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.GetMainTableName">
@@ -1618,7 +1625,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             查找数据
@@ -1715,7 +1722,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.GetAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             异步获取一条数据
@@ -1778,10 +1785,11 @@
             DbRespository 抽象类
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.PropertyAssist.#ctor(System.String)">
+        <member name="M:Overt.Core.Data.PropertyAssist.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
             <summary>
             实例化
             </summary>
+            <param name="configuration">配置注入</param>
             <param name="dbStoreKey">数据库前缀</param>
         </member>
         <member name="P:Overt.Core.Data.PropertyAssist.DbStoreKey">
@@ -1789,45 +1797,15 @@
             数据库名key
             </summary>
         </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.Transaction">
+        <member name="M:Overt.Core.Data.PropertyAssist.BeginTransaction">
             <summary>
-            事务
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.InTransaction">
-            <summary>
-            是否在事务中
-            </summary>
-        </member>
-        <member name="M:Overt.Core.Data.PropertyAssist.OpenConnection(System.Boolean,System.Boolean)">
-            <summary>
-            打开连接 已赋值 connection 属性
+            创建事务，可自动创建连接 已赋值 Transaction 属性
             </summary>
             <returns></returns>
         </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.ConnectionFunc">
+        <member name="P:Overt.Core.Data.PropertyAssist.Transaction">
             <summary>
-            数据库连接方法
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.TableNameFunc">
-            <summary>
-            表名方法
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.CreateScriptFunc">
-            <summary>
-            创建表的脚本
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.ExecuteScript">
-            <summary>
-            执行的sql脚本
-            </summary>
-        </member>
-    </members>
-</doc>
-��务
+            事务
             </summary>
         </member>
         <member name="P:Overt.Core.Data.PropertyAssist.InTransaction">

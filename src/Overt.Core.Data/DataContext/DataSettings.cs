@@ -16,30 +16,9 @@ namespace Overt.Core.Data
     public class DataSettings
     {
         #region Static Private Members
-        static readonly string _connNmeOfMaster = "master";
-        static readonly string _connNameOfSecondary = "secondary";
-        static readonly string _connNameOfPoint = ".";
-        static string _connNameOfPrefix = "";
-        #endregion
-
-        #region Private Member
-        /// <summary>
-        /// 主库
-        /// </summary>
-        private string Master
-        {
-            get { return $"{_connNameOfPrefix}{_connNmeOfMaster}"; }
-        }
-        /// <summary>
-        /// 从库
-        /// </summary>
-        private string Secondary
-        {
-            get
-            {
-                return $"{_connNameOfPrefix}{_connNameOfSecondary}";
-            }
-        }
+        const string _connNmeOfMaster = "master";
+        const string _connNameOfSecondary = "secondary";
+        const string _connNameOfPoint = ".";
         #endregion
 
         #region Single Instance
@@ -161,16 +140,16 @@ namespace Overt.Core.Data
         /// 获取
         /// </summary>
         /// <param name="isMaster"></param>
-        /// <param name="store">不能包含点</param>
+        /// <param name="dbStoreKey">不能包含点</param>
         /// <returns></returns>
-        private string GetKey(bool isMaster = false, string store = "")
+        private string GetKey(bool isMaster = false, string dbStoreKey = "")
         {
-            _connNameOfPrefix = string.IsNullOrEmpty(store) ? "" : $"{store}{_connNameOfPoint}";
-            var connName = string.Empty;
+            var connNameOfPrefix = string.IsNullOrWhiteSpace(dbStoreKey) ? "" : $"{dbStoreKey}{_connNameOfPoint}";
+            string connName;
             if (isMaster)
-                connName = Master;
+                connName = $"{connNameOfPrefix}{_connNmeOfMaster}";
             else
-                connName = Secondary;
+                connName = $"{connNameOfPrefix}{_connNameOfSecondary}";
 
             return connName;
         }
