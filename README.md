@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v2.0.2
+> Overt.Core.Data v2.1.0
 
 #### 1. 项目目录
 
@@ -36,7 +36,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V2.0.1
+> * Nuget版本：V2.1.0
 > * 框架支持： Framework4.6.1 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -87,7 +87,7 @@ Microsoft.Extensions.Configuration 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 2.0.1
+Install-Package Overt.Core.Data -Version 2.1.0
 ```
 
 
@@ -164,7 +164,8 @@ namespace Overt.User.Domain.Repositories
 public async Task<bool> ExecuteInTransactionAsync()
 {
     // 分布式事务
-    using (var scope = new TransactionScope())
+    // 异步中需要增加该参数：TransactionScopeAsyncFlowOption.Enabled
+    using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
     {
         var result = false;
         try
@@ -209,8 +210,10 @@ public async Task<bool> ExecuteInTransactionAsync()
 
 * 添加记录
 ```
+// 单条记录插入
 _repository.Add(obj);
 
+// 多条记录批量插入，建议不要超过500条
 _repository.Add(obj0, obj1, ...);
 ```
 
@@ -219,20 +222,22 @@ _repository.Add(obj0, obj1, ...);
 // 修改整份数据
 _repository.Set(obj);
 
-// 修改部分字段
+// 修改部分字段（基于字典对象）
 var setDic = new Dictionary<string, object>()
 {
     { "UserName", "1" }
 };
 _repository.Set(() => setDic, oo => oo.UserId == 1);
 
-var setObj = new {
+// 修改部分字段（基于匿名对象）
+var setObj = new 
+{
     UserName = "1"
 };
 _repository.Set(() => setObj, oo => oo.UserId == 1);
 
-// 修改值类型字段进行增减
-_repository.Set("Age", 1, oo => oo.UserId == 1);
+// 修改值类型字段进行增减，比如数量的增减，年龄的增减等
+_repository.Incr("Age", 1, oo => oo.UserId == 1);
 ```
 
 * 删除记录
@@ -274,9 +279,9 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 
 #### 9. 更新说明
 
-- 2021-02-24 v2.0.2
+- 2021-02-24 v2.1.0
 
-> 1. 基础方法增加根据某个字段增减数据的方法：SetAsync(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress)
+> 1. 基础方法增加根据某个字段增减数据的方法：IncrAsync(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress)
 
 
 
