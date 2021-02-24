@@ -7,7 +7,7 @@
     <Authors>Yaofeng</Authors>
     <Description>Overt.Core.Data</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>增加单字段增减的基础方法SetAsync(string field, TValue value)</PackageReleaseNotes>
+    <PackageReleaseNotes>增加单字段增减的基础方法SetFieldAddAsync(string field, TValue value, Expression whereExpress)</PackageReleaseNotes>
     <Copyright>Overt</Copyright>
     <PackageTags></PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
