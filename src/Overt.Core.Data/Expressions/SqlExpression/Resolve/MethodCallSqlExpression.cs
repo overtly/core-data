@@ -12,7 +12,8 @@ namespace Overt.Core.Data.Expressions
             {"Equals", Equals},
             {"Contains", Contains},
             {"StartsWith", StartsWith},
-            {"EndsWith", EndsWith}
+            {"EndsWith", EndsWith},
+            {"Format", Format}
         };
 
         private static new void In(MethodCallExpression expression, SqlGenerate sqlGenerate)
@@ -68,7 +69,39 @@ namespace Overt.Core.Data.Expressions
             sqlGenerate.AddDbParameter($"{val}%");
         }
 
+        private static void Format(MethodCallExpression expression, SqlGenerate sqlGenerate)
+        {
+            var formatString = SqlExpressionCompiler.Evaluate(expression.Arguments[0]);
+            var formatArgs = new List<string>();
+            var args = expression.Arguments;
+            if (args.Count > 1)
+            {
+                for (int i = 1; i < args.Count; i++)
+                {
+                    var val = SqlExpressionCompiler.Evaluate(expression.Arguments[i]);
+                    formatArgs.Add(val?.ToString());
+                }
+            }
+            sqlGenerate += string.Format(formatString.ToString(), formatArgs.ToArray());
+        }
+
         protected override SqlGenerate Where(MethodCallExpression expression, SqlGenerate sqlGenerate)
+        {
+            var key = expression.Method;
+            if (key.IsGenericMethod)
+                key = key.GetGenericMethodDefinition();
+
+            Action<MethodCallExpression, SqlGenerate> action;
+            if (_Methods.TryGetValue(key.Name, out action))
+            {
+                action(expression, sqlGenerate);
+                return sqlGenerate;
+            }
+
+            throw new NotImplementedException("无法解析方法" + expression.Method);
+        }
+
+        protected override SqlGenerate Update(MethodCallExpression expression, SqlGenerate sqlGenerate)
         {
             var key = expression.Method;
             if (key.IsGenericMethod)

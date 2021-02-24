@@ -88,6 +88,15 @@ namespace Overt.Core.Data
         bool Set(Expression<Func<object>> setExpress, Expression<Func<TEntity, bool>> whereExpress);
 
         /// <summary>
+        /// 根据条件 在原字段上增减数据
+        /// </summary>
+        /// <param name="field">增减的字段</param>
+        /// <param name="value">增减的值</param>
+        /// <param name="whereExpress">条件表达式</param>
+        /// <returns></returns>
+        bool Set<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct;
+
+        /// <summary>
         /// 获取一条数据
         /// </summary>
         /// <param name="expression">查询条件</param>
@@ -185,6 +194,15 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <returns>是否成功</returns>
         Task<bool> SetAsync(Expression<Func<object>> setExpress, Expression<Func<TEntity, bool>> whereExpress);
+
+        /// <summary>
+        /// 根据条件 在原字段上增减数据
+        /// </summary>
+        /// <param name="field">增减的字段</param>
+        /// <param name="value">增减的值</param>
+        /// <param name="whereExpress">条件表达式</param>
+        /// <returns></returns>
+        Task<bool> SetAsync<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct;
 
         /// <summary>
         /// 异步获取一条数据

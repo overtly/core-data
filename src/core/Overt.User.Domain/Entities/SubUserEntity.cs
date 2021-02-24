@@ -18,6 +18,10 @@ namespace Overt.User.Domain.Entities
         public DateTime AddTime { get; set; }
         public bool IsSex { get; set; }
         /// <summary>
+        /// 
+        /// </summary>
+        public int Age { get; set; }
+        /// <summary>
         /// Json类型
         /// </summary>
         public string JsonValue { get; set; }

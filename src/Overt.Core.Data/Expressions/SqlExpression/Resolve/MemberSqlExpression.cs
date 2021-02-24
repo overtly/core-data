@@ -82,7 +82,11 @@ namespace Overt.Core.Data.Expressions
             if (obj.GetType().IsValueType)
                 throw new ArgumentException($"Expression '{expression}' accesses unsupported valuetype");
 
-            if (obj is IDictionary dictionary)
+            if (obj.GetType() == typeof(string))
+            {
+                sqlGenerate += obj.ToString();
+            }
+            else if (obj is IDictionary dictionary)
             {
                 foreach (string key in dictionary.Keys)
                 {

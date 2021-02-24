@@ -102,6 +102,15 @@
             <param name="whereExpress">条件表达式</param>
             <returns>是否成功</returns>
         </member>
+        <member name="M:Overt.Core.Data.IBaseRepository`1.Set``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            根据条件 在原字段上增减数据
+            </summary>
+            <param name="field">增减的字段</param>
+            <param name="value">增减的值</param>
+            <param name="whereExpress">条件表达式</param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.IBaseRepository`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             获取一条数据
@@ -198,6 +207,15 @@
             <param name="setExpress">修改字段表达式</param>
             <param name="whereExpress">条件表达式</param>
             <returns>是否成功</returns>
+        </member>
+        <member name="M:Overt.Core.Data.IBaseRepository`1.SetAsync``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            根据条件 在原字段上增减数据
+            </summary>
+            <param name="field">增减的字段</param>
+            <param name="value">增减的值</param>
+            <param name="whereExpress">条件表达式</param>
+            <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.IBaseRepository`1.GetAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
@@ -1186,6 +1204,20 @@
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.SetAsync``2(System.Data.IDbConnection,System.String,System.String,``1,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
+            <summary>
+            条件修改
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="connection">连接</param>
+            <param name="tableName">表名</param>
+            <param name="field">增减的字段</param>
+            <param name="value">增减的值</param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.DapperExtensions.GetAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Action{System.String})">
             <summary>
             获取单条数据
@@ -1565,7 +1597,17 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
+        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <member name="M:Overt.Core.Data.BaseRepository`1.Set``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            根据条件 在原字段上增减数据
+            </summary>
+            <typeparam name="TValue"></typeparam>
+            <param name="field">增减的字段</param>
+            <param name="value">增减的值</param>
+            <param name="whereExpress">条件表达式</param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             查找数据
@@ -1654,7 +1696,16 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
+        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <member name="M:Overt.Core.Data.BaseRepository`1.SetAsync``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            根据条件 在原字段上增减数据
+            </summary>
+            <param name="field">增减的字段</param>
+            <param name="value">增减的值</param>
+            <param name="whereExpress">条件表达式</param>
+            <returns>是否成功</returns>
+        </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.GetAsync(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Boolean)">
             <summary>
             异步获取一条数据

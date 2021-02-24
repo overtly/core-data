@@ -369,6 +369,41 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
+        /// 条件修改
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="connection">连接</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="field">增减的字段</param>
+        /// <param name="value">增减的值</param>
+        /// <param name="whereExpress">条件表达式</param>
+        /// <param name="outSqlAction">返回sql语句</param>
+        /// <returns></returns>
+        public static async Task<bool> SetAsync<TEntity, TValue>(this
+            IDbConnection connection,
+            string tableName,
+            string field,
+            TValue value,
+            Expression<Func<TEntity, bool>> whereExpress,
+            Action<string> outSqlAction = null)
+            where TEntity : class, new()
+        {
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentNullException(nameof(tableName));
+            if (string.IsNullOrEmpty(field))
+                throw new ArgumentNullException(field, "增减字段不能为空");
+
+            var dbType = connection.GetDbType();
+            var setExpressString = $"{field.ParamSql(dbType)} = {field.ParamSql(dbType)} + ({value})";
+            var sqlExpression = SqlExpression.Update<TEntity>(dbType, () => setExpressString, tableName).Where(whereExpress);
+            outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
+
+            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
+            return result > 0;
+        }
+
+        /// <summary>
         /// 获取单条数据
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>

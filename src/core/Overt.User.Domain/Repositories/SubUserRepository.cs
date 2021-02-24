@@ -34,6 +34,7 @@ namespace Overt.User.Domain.Repositories
                     "  [RealName] varchar(200) COLLATE Chinese_PRC_CI_AS DEFAULT NULL NULL," +
                     "  [AddTime] datetime DEFAULT NULL NULL," +
                     "  [IsSex] bit DEFAULT NULL NULL," +
+                    "  [Age] int DEFAULT 0 NOT NULL," +
                     "  [JsonValue] varchar(1000) COLLATE Chinese_PRC_CI_AS DEFAULT NULL NULL" +
                     ") ";
         };

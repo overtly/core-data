@@ -7,13 +7,13 @@
     <Authors>Yaofeng</Authors>
     <Description>Overt.Core.Data</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>修复多数据库情况下数据库切换并发连接导致连接字符串获取错误</PackageReleaseNotes>
+    <PackageReleaseNotes>增加单字段增减的基础方法SetAsync(string field, TValue value)</PackageReleaseNotes>
     <Copyright>Overt</Copyright>
     <PackageTags></PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <RepositoryUrl>http://github.com/overtly/core-data</RepositoryUrl>
   </PropertyGroup>
 

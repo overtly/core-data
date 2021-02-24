@@ -30,4 +30,6 @@
     </None>
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="https://json.schemastore.org/bitrise" /></VisualStudio></ProjectExtensions>
+
 </Project>
