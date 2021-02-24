@@ -155,9 +155,9 @@ namespace Overt.Core.Data
         /// <param name="value">增减的值</param>
         /// <param name="whereExpress">条件表达式</param>
         /// <returns></returns>
-        public bool SetFieldAdd<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct
+        public bool Incr<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct
         {
-            return SetFieldAddAsync(field, value, whereExpress).Result;
+            return IncrAsync(field, value, whereExpress).Result;
         }
 
         /// <summary>
@@ -356,11 +356,11 @@ namespace Overt.Core.Data
         /// <summary>
         /// 根据条件 在原字段上增减数据
         /// </summary>
-        /// <param name="field">增减的字段</param>
+        /// <param name="field">增减的字段，底层未验证改字段是否存在，由数据库异常抛出</param>
         /// <param name="value">增减的值</param>
         /// <param name="whereExpress">条件表达式</param>
         /// <returns>是否成功</returns>
-        public async Task<bool> SetFieldAddAsync<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct
+        public async Task<bool> IncrAsync<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct
         {
             if (string.IsNullOrWhiteSpace(field))
                 throw new ArgumentNullException(nameof(field), "字段值必须提供");
@@ -368,7 +368,7 @@ namespace Overt.Core.Data
             return await Execute(async (connection) =>
             {
                 var tableName = whereExpress.GetTableName(TableNameFunc);
-                var task = await connection.SetFieldAddAsync(tableName, field, value, whereExpress, OutSqlAction);
+                var task = await connection.IncrAsync(tableName, field, value, whereExpress, OutSqlAction);
                 return task;
             }, true);
         }

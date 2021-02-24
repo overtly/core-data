@@ -380,7 +380,7 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static async Task<bool> SetFieldAddAsync<TEntity, TValue>(this
+        public static async Task<bool> IncrAsync<TEntity, TValue>(this
             IDbConnection connection,
             string tableName,
             string field,
