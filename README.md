@@ -1,6 +1,6 @@
 ### 项目层次说明
 
-> Overt.Core.Data v2.0.1
+> Overt.Core.Data v2.0.2
 
 #### 1. 项目目录
 
@@ -72,6 +72,7 @@ Microsoft.Extensions.Configuration 2.0.0
 
 > * 支持 IConfiguration 对象注入
 > * 支持默认配置文件appsettings.json
+> * 支持环境变量，或者使用外部的第三方配置中心（appolo），最终还是依赖于微软自身Configuration
 > * Core(DbType=MySql|SqlServer|SQLite): 
 
 ```
@@ -198,7 +199,53 @@ public async Task<bool> ExecuteInTransactionAsync()
 > * &&
 > * ||
 
-##### 支持案例
+
+##### 不支持案例
+~~var list = _repository.GetList(1, 1, oo=>"test".Contains(oo.UserName));~~  
+~~var list = _repository.GetList(1, 1, oo=>oo.UserName.IndexOf("abc") > -1);~~
+
+
+#### 8. 案例使用
+
+* 添加记录
+```
+_repository.Add(obj);
+
+_repository.Add(obj0, obj1, ...);
+```
+
+* 修改记录
+```
+// 修改整份数据
+_repository.Set(obj);
+
+// 修改部分字段
+var setDic = new Dictionary<string, object>()
+{
+    { "UserName", "1" }
+};
+_repository.Set(() => setDic, oo => oo.UserId == 1);
+
+var setObj = new {
+    UserName = "1"
+};
+_repository.Set(() => setObj, oo => oo.UserId == 1);
+
+// 修改值类型字段进行增减
+_repository.Set("Age", 1, oo => oo.UserId == 1);
+```
+
+* 删除记录
+```
+_repository.Delete(oo => oo.UserId == 1);
+```
+
+* 单记录查询
+```
+var entity = _repository.Get(oo => oo.UserId == 1);
+```
+
+* 列表记录查询
 ```
 var ary = new string[]{ "1", "2" };
 var list = _repository.GetList(1, 1, oo=>ary.Contains(oo.UserId));
@@ -224,15 +271,14 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName != null);
 var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 ```
 
-##### 不支持案例
 
-~~var list = _repository.GetList(1, 1, oo=>"test".Contains(oo.UserName));~~  
-~~var list = _repository.GetList(1, 1, oo=>oo.UserName.IndexOf("abc") > -1);~~
+#### 9. 更新说明
+
+- 2021-02-24 v2.0.2
+
+> 1. 基础方法增加根据某个字段增减数据的方法：SetAsync(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress)
 
 
-
-
-#### 8. 更新说明
 
 - 2021-01-14 v2.0.1
 
