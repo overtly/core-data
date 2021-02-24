@@ -72,6 +72,7 @@ Microsoft.Extensions.Configuration 2.0.0
 
 > * 支持 IConfiguration 对象注入
 > * 支持默认配置文件appsettings.json
+> * 支持环境变量，或者使用外部的第三方配置中心（appolo），最终还是依赖于微软自身Configuration
 > * Core(DbType=MySql|SqlServer|SQLite): 
 
 ```
@@ -198,7 +199,13 @@ public async Task<bool> ExecuteInTransactionAsync()
 > * &&
 > * ||
 
-##### 支持案例
+
+##### 不支持案例
+~~var list = _repository.GetList(1, 1, oo=>"test".Contains(oo.UserName));~~  
+~~var list = _repository.GetList(1, 1, oo=>oo.UserName.IndexOf("abc") > -1);~~
+
+
+#### 8. 案例使用
 
 * 添加记录
 ```
@@ -264,15 +271,8 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName != null);
 var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 ```
 
-##### 不支持案例
 
-~~var list = _repository.GetList(1, 1, oo=>"test".Contains(oo.UserName));~~  
-~~var list = _repository.GetList(1, 1, oo=>oo.UserName.IndexOf("abc") > -1);~~
-
-
-
-
-#### 8. 更新说明
+#### 9. 更新说明
 
 - 2021-02-24 v2.0.2
 
