@@ -121,7 +121,7 @@ namespace Overt.User.Application.Services
             var updateResult3 = await _userRepository.SetAsync(entity);
 
             // 第三种
-            var updateResult4 = await _userRepository.SetAsync(nameof(UserEntity.Age), 10, oo => oo.UserId == userId);
+            var updateResult4 = await _userRepository.SetFieldAddAsync(nameof(UserEntity.Age), 10, oo => oo.UserId == userId);
 
             return updateResult3;
         }

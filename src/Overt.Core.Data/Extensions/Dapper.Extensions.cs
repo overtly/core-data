@@ -369,7 +369,7 @@ namespace Overt.Core.Data
         }
 
         /// <summary>
-        /// 条件修改
+        /// 条件修改 在字段上增减
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <typeparam name="TValue"></typeparam>
@@ -380,7 +380,7 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static async Task<bool> SetAsync<TEntity, TValue>(this
+        public static async Task<bool> SetFieldAddAsync<TEntity, TValue>(this
             IDbConnection connection,
             string tableName,
             string field,

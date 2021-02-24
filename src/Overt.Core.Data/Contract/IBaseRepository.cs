@@ -94,7 +94,7 @@ namespace Overt.Core.Data
         /// <param name="value">增减的值</param>
         /// <param name="whereExpress">条件表达式</param>
         /// <returns></returns>
-        bool Set<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct;
+        bool SetFieldAdd<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct;
 
         /// <summary>
         /// 获取一条数据
@@ -202,7 +202,7 @@ namespace Overt.Core.Data
         /// <param name="value">增减的值</param>
         /// <param name="whereExpress">条件表达式</param>
         /// <returns></returns>
-        Task<bool> SetAsync<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct;
+        Task<bool> SetFieldAddAsync<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct;
 
         /// <summary>
         /// 异步获取一条数据
