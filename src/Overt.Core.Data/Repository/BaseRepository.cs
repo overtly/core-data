@@ -64,7 +64,7 @@ namespace Overt.Core.Data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        [Obsolete("请使用GetTableName")]
+        [Obsolete("请使用GetTableName()")]
         public string GetTableName(string key)
         {
             var tableName = key.GetTableName<TEntity>(TableNameFunc);
@@ -79,7 +79,13 @@ namespace Overt.Core.Data
         /// <returns></returns>
         public bool IsExistTable(string tableName, bool isMaster = true)
         {
-            return IsExistTableAsync(tableName, isMaster).Result;
+            if (string.IsNullOrEmpty(tableName))
+                return false;
+
+            using (var connection = OpenConnection(isMaster))
+            {
+                return connection.IsExistTable(tableName, OutSqlAction);
+            }
         }
 
         /// <summary>
@@ -91,7 +97,13 @@ namespace Overt.Core.Data
         /// <returns></returns>
         public bool IsExistField(string tableName, string fieldName, bool isMaster = true)
         {
-            return IsExistFieldAsync(tableName, fieldName, isMaster).Result;
+            if (string.IsNullOrEmpty(tableName) || string.IsNullOrEmpty(fieldName))
+                return false;
+
+            using (var conneciton = OpenConnection(isMaster))
+            {
+                return conneciton.IsExistField(tableName, fieldName, OutSqlAction);
+            }
         }
 
         /// <summary>
@@ -102,7 +114,15 @@ namespace Overt.Core.Data
         /// <returns>添加后的数据实体</returns>
         public virtual bool Add(TEntity entity, bool returnLastIdentity = false)
         {
-            return AddAsync(entity, returnLastIdentity).Result;
+            if (entity == null)
+                return false;
+
+            return Execute((connection) =>
+            {
+                var tableName = entity.GetTableName(TableNameFunc);
+                var result = connection.Insert(tableName, entity, returnLastIdentity, OutSqlAction);
+                return result > 0;
+            }, true);
         }
 
         /// <summary>
@@ -112,7 +132,15 @@ namespace Overt.Core.Data
         /// <returns>添加后的数据实体</returns>
         public virtual bool Add(params TEntity[] entities)
         {
-            return AddAsync(entities).Result;
+            if ((entities?.Count() ?? 0) <= 0)
+                return false;
+
+            return Execute((connection) =>
+            {
+                var tableName = entities.First().GetTableName(TableNameFunc);
+                var result = connection.Insert(tableName, entities, OutSqlAction);
+                return result > 0;
+            }, true);
         }
 
         /// <summary>
@@ -122,7 +150,12 @@ namespace Overt.Core.Data
         /// <returns>是否成功</returns>
         public bool Delete(Expression<Func<TEntity, bool>> expression)
         {
-            return DeleteAsync(expression).Result;
+            return Execute((connection) =>
+            {
+                var tableName = expression.GetTableName(TableNameFunc);
+                var task = connection.Delete(tableName, expression, OutSqlAction);
+                return task > 0;
+            }, true);
         }
 
         /// <summary>
@@ -133,7 +166,16 @@ namespace Overt.Core.Data
         /// <returns>是否成功</returns>
         public bool Set(TEntity entity, Expression<Func<TEntity, object>> fields = null)
         {
-            return SetAsync(entity, fields).Result;
+            if (entity == null)
+                return false;
+
+            return Execute((connection) =>
+            {
+                var tableName = entity.GetTableName(TableNameFunc);
+                var fieldNames = fields.GetFieldNames()?.ToList();
+                var task = connection.Set(tableName, entity, fieldNames, OutSqlAction);
+                return task;
+            }, true);
         }
 
         /// <summary>
@@ -144,7 +186,15 @@ namespace Overt.Core.Data
         /// <returns>是否成功</returns>
         public bool Set(Expression<Func<object>> setExpress, Expression<Func<TEntity, bool>> whereExpress)
         {
-            return SetAsync(setExpress, whereExpress).Result;
+            if (setExpress == null || whereExpress == null)
+                return false;
+
+            return Execute((connection) =>
+            {
+                var tableName = whereExpress.GetTableName(TableNameFunc);
+                var task = connection.Set(tableName, setExpress, whereExpress, OutSqlAction);
+                return task;
+            }, true);
         }
 
         /// <summary>
@@ -157,7 +207,15 @@ namespace Overt.Core.Data
         /// <returns></returns>
         public bool Incr<TValue>(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress) where TValue : struct
         {
-            return IncrAsync(field, value, whereExpress).Result;
+            if (string.IsNullOrWhiteSpace(field))
+                throw new ArgumentNullException(nameof(field), "字段值必须提供");
+
+            return Execute((connection) =>
+            {
+                var tableName = whereExpress.GetTableName(TableNameFunc);
+                var task = connection.Incr(tableName, field, value, whereExpress, OutSqlAction);
+                return task;
+            }, true);
         }
 
         /// <summary>
@@ -169,7 +227,15 @@ namespace Overt.Core.Data
         /// <returns>实体</returns>
         public TEntity Get(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, object>> fieldExpressison = null, bool isMaster = false)
         {
-            return GetAsync(expression, fieldExpressison, isMaster).Result;
+            if (expression == null)
+                return default(TEntity);
+
+            return Execute((connection) =>
+          {
+              var tableName = expression.GetTableName(TableNameFunc);
+              var task = connection.Get(tableName, expression, fieldExpressison, OutSqlAction);
+              return task;
+          }, isMaster);
         }
 
         /// <summary>
@@ -190,7 +256,15 @@ namespace Overt.Core.Data
             bool isMaster = false,
             params OrderByField[] orderByFields)
         {
-            return GetListAsync(page, rows, expression, fieldExpressison, isMaster, orderByFields).Result;
+            if (page <= 0 || rows <= 0)
+                return default(IEnumerable<TEntity>);
+
+            return Execute((connection) =>
+          {
+              var tableName = expression.GetTableName(TableNameFunc);
+              var task = connection.GetList(tableName, page, rows, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
+              return task;
+          }, isMaster);
         }
 
         /// <summary>
@@ -211,7 +285,15 @@ namespace Overt.Core.Data
             bool isMaster = false,
             params OrderByField[] orderByFields)
         {
-            return GetOffsetsAsync(offset, size, expression, fieldExpressison, isMaster, orderByFields).Result;
+            if (offset < 0 || size <= 0)
+                return default(IEnumerable<TEntity>);
+
+            return Execute((connection) =>
+          {
+              var tableName = expression.GetTableName(TableNameFunc);
+              var task = connection.GetOffsets(tableName, offset, size, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
+              return task;
+          }, isMaster);
         }
 
         /// <summary>
@@ -222,7 +304,12 @@ namespace Overt.Core.Data
         /// <returns></returns>
         public int Count(Expression<Func<TEntity, bool>> expression = null, bool isMaster = false)
         {
-            return CountAsync(expression, isMaster).Result;
+            return Execute((connection) =>
+          {
+              var tableName = expression.GetTableName(TableNameFunc);
+              var task = connection.Count(tableName, expression, OutSqlAction);
+              return task;
+          }, isMaster);
         }
         #endregion
 
@@ -469,6 +556,24 @@ namespace Overt.Core.Data
         #endregion
 
         #region Protected
+        /// <summary>
+        /// 包含connection的方法执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <param name="isMaster"></param>
+        /// <returns></returns>
+        protected T Execute<T>(Func<IDbConnection, T> func, bool isMaster = true)
+        {
+            if (!this.CheckTableIfMissingCreate(isMaster))
+                return default(T);
+
+            using (var connection = OpenConnection(isMaster))
+            {
+                return func(connection);
+            }
+        }
+
         /// <summary>
         /// 包含connection的方法执行
         /// </summary>

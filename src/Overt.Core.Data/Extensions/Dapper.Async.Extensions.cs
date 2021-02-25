@@ -1,18 +1,12 @@
 ﻿using Dapper;
-using MySql.Data.MySqlClient;
 using Overt.Core.Data.Expressions;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Overt.Core.Data
 {
@@ -21,99 +15,6 @@ namespace Overt.Core.Data
     /// </summary>
     public static partial class DapperExtensions
     {
-        #region TableName
-        /// <summary>
-        /// 获取表名
-        /// </summary>
-        /// <param name="val"></param>
-        /// <param name="tableNameFunc"></param>
-        /// <returns></returns>
-        public static string GetTableName<TEntity>(this string val, Func<string> tableNameFunc = null) where TEntity : class, new()
-        {
-            if (tableNameFunc != null)
-                return tableNameFunc.Invoke();
-
-            var t = typeof(TEntity);
-            var mTableName = t.GetMainTableName();
-            var propertyInfo = t.GetProperty<SubmeterAttribute>();
-            if (propertyInfo == null) // 代表没有分表特性
-                return mTableName;
-
-            // 获取分表
-            var suffix = propertyInfo.GetSuffix(val);
-            return $"{mTableName}_{suffix}";
-        }
-
-        /// <summary>
-        /// 获取表名
-        /// </summary>
-        /// <param name="entity">实体实例</param>
-        /// <param name="tableNameFunc"></param>
-        /// <returns></returns>
-        public static string GetTableName<TEntity>(this TEntity entity, Func<string> tableNameFunc = null) where TEntity : class, new()
-        {
-            if (tableNameFunc != null)
-                return tableNameFunc.Invoke();
-
-            var t = typeof(TEntity);
-            var mTableName = t.GetMainTableName();
-            var propertyInfo = t.GetProperty<SubmeterAttribute>();
-            if (propertyInfo == null) // 代表没有分表特性
-                return mTableName;
-
-            // 获取分表
-            var suffix = propertyInfo.GetSuffix(entity);
-            return $"{mTableName}_{suffix}";
-        }
-
-        /// <summary>
-        /// 获取表名
-        /// </summary>
-        /// <param name="expression">表达式数据</param>
-        /// <param name="tableNameFunc"></param>
-        /// <returns></returns>
-        public static string GetTableName<TEntity>(this Expression<Func<TEntity, bool>> expression, Func<string> tableNameFunc = null) where TEntity : class, new()
-        {
-            if (tableNameFunc != null)
-                return tableNameFunc.Invoke();
-
-            var t = typeof(TEntity);
-            var mTableName = t.GetMainTableName();
-            var propertyInfo = t.GetProperty<SubmeterAttribute>();
-            if (propertyInfo == null) // 代表没有分表特性
-                return mTableName;
-
-            // 获取分表
-            var suffix = propertyInfo.GetSuffix(expression);
-            return $"{mTableName}_{suffix}";
-        }
-        #endregion
-
-        #region Field
-        /// <summary>
-        /// 获取自增字段
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public static PropertyInfo GetIdentityField<TEntity>(this TEntity entity)
-        {
-            var t = entity.GetType();
-            var propertyInfos = t.GetProperties<DatabaseGeneratedAttribute>();
-            if ((propertyInfos?.Count ?? 0) <= 0) // 代表没有主键
-                return null;
-
-            foreach (var pi in propertyInfos)
-            {
-                var attribute = pi.GetAttribute<DatabaseGeneratedAttribute>();
-                if (attribute != null && attribute.DatabaseGeneratedOption == DatabaseGeneratedOption.Identity)
-                {
-                    return pi;
-                }
-            }
-            return null;
-        }
-        #endregion
-
         #region Public Method
         /// <summary>
         /// 是否存在表
@@ -122,7 +23,7 @@ namespace Overt.Core.Data
         /// <param name="tableName"></param>
         /// <param name="outSqlAction"></param>
         /// <returns></returns>
-        public static bool IsExistTable(this IDbConnection connection, string tableName, Action<string> outSqlAction = null)
+        public static async Task<bool> IsExistTableAsync(this IDbConnection connection, string tableName, Action<string> outSqlAction = null)
         {
             if (string.IsNullOrEmpty(tableName))
                 return false;
@@ -131,7 +32,7 @@ namespace Overt.Core.Data
             var sql = dbType.ExistTableSql(dbName, tableName);
             outSqlAction?.Invoke(sql); // 返回sql
 
-            var result = connection.QueryFirstOrDefault<int>(sql);
+            var result = await connection.QueryFirstOrDefaultAsync<int>(sql);
             return result > 0;
         }
 
@@ -143,7 +44,7 @@ namespace Overt.Core.Data
         /// <param name="fieldName"></param>
         /// <param name="outSqlAction"></param>
         /// <returns></returns>
-        public static bool IsExistField(this IDbConnection connection, string tableName, string fieldName, Action<string> outSqlAction = null)
+        public static async Task<bool> IsExistFieldAsync(this IDbConnection connection, string tableName, string fieldName, Action<string> outSqlAction = null)
         {
             if (string.IsNullOrEmpty(tableName))
                 return false;
@@ -152,7 +53,7 @@ namespace Overt.Core.Data
             var sql = dbType.ExistFieldSql(dbName, tableName, fieldName);
             outSqlAction?.Invoke(sql);
 
-            var result = connection.QueryFirstOrDefault<int>(sql);
+            var result = await connection.QueryFirstOrDefaultAsync<int>(sql);
             return result > 0;
         }
 
@@ -166,7 +67,7 @@ namespace Overt.Core.Data
         /// <param name="returnLastIdentity">是否返回自增的数据</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
-        public static int Insert<TEntity>(this
+        public static async Task<int> InsertAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             TEntity entity,
@@ -201,13 +102,13 @@ namespace Overt.Core.Data
             if (identityPropertyInfo != null && returnLastIdentity)
             {
                 sql += dbType.SelectLastIdentity();
-                result = connection.ExecuteScalar<int>(sql, entity);
+                result = await connection.ExecuteScalarAsync<int>(sql, entity);
                 if (result > 0)
                     identityPropertyInfo.SetValue(entity, result);
             }
             else
             {
-                result = connection.Execute(sql, entity);
+                result = await connection.ExecuteAsync(sql, entity);
             }
 
             return result;
@@ -222,7 +123,7 @@ namespace Overt.Core.Data
         /// <param name="entities"></param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
-        public static int Insert<TEntity>(this
+        public static async Task<int> InsertAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             IEnumerable<TEntity> entities,
@@ -252,7 +153,7 @@ namespace Overt.Core.Data
             var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
             outSqlAction?.Invoke(sql);
 
-            var result = connection.Execute(sql, entities);
+            var result = await connection.ExecuteAsync(sql, entities);
             return result;
         }
 
@@ -265,7 +166,7 @@ namespace Overt.Core.Data
         /// <param name="whereExpress"></param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
-        public static int Delete<TEntity>(this
+        public static async Task<int> DeleteAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             Expression<Func<TEntity, bool>> whereExpress,
@@ -281,7 +182,7 @@ namespace Overt.Core.Data
             var sqlExpression = SqlExpression.Delete<TEntity>(dbType, tableName).Where(whereExpress);
             outSqlAction?.Invoke(sqlExpression.Script);
 
-            var result = connection.Execute(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
             return result;
         }
 
@@ -295,7 +196,7 @@ namespace Overt.Core.Data
         /// <param name="fields">选择字段</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static bool Set<TEntity>(this
+        public static async Task<bool> SetAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             TEntity entity,
@@ -332,7 +233,7 @@ namespace Overt.Core.Data
             var sql = $"update {tableName.ParamSql(dbType)} set {string.Join(", ", setFields)} where {string.Join(", ", whereFields)}";
             outSqlAction?.Invoke(sql);
 
-            var result = connection.Execute(sql, entity);
+            var result = await connection.ExecuteAsync(sql, entity);
             return result > 0;
         }
 
@@ -346,7 +247,7 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static bool Set<TEntity>(this
+        public static async Task<bool> SetAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             Expression<Func<object>> setExpress,
@@ -363,7 +264,7 @@ namespace Overt.Core.Data
             var sqlExpression = SqlExpression.Update<TEntity>(dbType, setExpress, tableName).Where(whereExpress);
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var result = connection.Execute(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
             return result > 0;
         }
 
@@ -379,7 +280,7 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static bool Incr<TEntity, TValue>(this
+        public static async Task<bool> IncrAsync<TEntity, TValue>(this
             IDbConnection connection,
             string tableName,
             string field,
@@ -398,7 +299,7 @@ namespace Overt.Core.Data
             var sqlExpression = SqlExpression.Update<TEntity>(dbType, () => setExpressString, tableName).Where(whereExpress);
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var result = connection.Execute(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.ExecuteAsync(sqlExpression.Script, sqlExpression.DbParams);
             return result > 0;
         }
 
@@ -412,7 +313,7 @@ namespace Overt.Core.Data
         /// <param name="fieldExpress">选择字段，默认为*</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static TEntity Get<TEntity>(this
+        public static async Task<TEntity> GetAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             Expression<Func<TEntity, bool>> whereExpress,
@@ -429,7 +330,7 @@ namespace Overt.Core.Data
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName).Where(whereExpress);
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var result = connection.QueryFirstOrDefault<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.QueryFirstOrDefaultAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
             return result;
         }
 
@@ -446,7 +347,7 @@ namespace Overt.Core.Data
         /// <param name="orderByFields">排序字段集合</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static IEnumerable<TEntity> GetList<TEntity>(this
+        public static async Task<IEnumerable<TEntity>> GetListAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             int page,
@@ -471,7 +372,7 @@ namespace Overt.Core.Data
             sqlExpression.OrderBy(orderBy).Limit(page, rows);
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var result = connection.Query<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
             return result;
         }
 
@@ -488,7 +389,7 @@ namespace Overt.Core.Data
         /// <param name="orderByFields">排序字段集合</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static IEnumerable<TEntity> GetOffsets<TEntity>(this
+        public static async Task<IEnumerable<TEntity>> GetOffsetsAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             int offset,
@@ -513,7 +414,7 @@ namespace Overt.Core.Data
             sqlExpression.OrderBy(orderBy).Offset(offset, size);
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var result = connection.Query<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.QueryAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
             return result;
         }
 
@@ -526,7 +427,7 @@ namespace Overt.Core.Data
         /// <param name="whereExpress">条件表达式</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns></returns>
-        public static int Count<TEntity>(this
+        public static async Task<int> CountAsync<TEntity>(this
             IDbConnection connection,
             string tableName,
             Expression<Func<TEntity, bool>> whereExpress,
@@ -540,157 +441,8 @@ namespace Overt.Core.Data
             var sqlExpression = SqlExpression.Count<TEntity>(dbType, tableName: tableName).Where(whereExpress);
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
-            var result = connection.QueryFirstOrDefault<int>(sqlExpression.Script, sqlExpression.DbParams);
+            var result = await connection.QueryFirstOrDefaultAsync<int>(sqlExpression.Script, sqlExpression.DbParams);
             return result;
-        }
-        #endregion
-
-        #region Private Method
-        static ConcurrentDictionary<string, DatabaseType> MSSqlDbType = new ConcurrentDictionary<string, DatabaseType>();
-        /// <summary>
-        /// 获取db类型
-        /// </summary>
-        /// <param name="connection"></param>
-        /// <returns></returns>
-        internal static DatabaseType GetDbType(this IDbConnection connection)
-        {
-            if (connection is MySqlConnection)
-                return DatabaseType.MySql;
-            if (connection is SqlConnection)
-            {
-                return MSSqlDbType.GetOrAdd(connection.ConnectionString, (connectionString) =>
-                {
-                    var sqlConnection = (SqlConnection)connection;
-                    var v = sqlConnection.ServerVersion;
-                    int.TryParse(v.Substring(0, v.IndexOf(".")), out int bV);
-                    if (bV >= Constants.MSSQLVersion.SQLServer2012Bv)
-                        return DatabaseType.GteSqlServer2012;
-                    return DatabaseType.SqlServer;
-                });
-            }
-#if ASP_NET_CORE
-            if (connection is Microsoft.Data.Sqlite.SqliteConnection)
-#else
-            if (connection is System.Data.SQLite.SQLiteConnection)
-#endif
-                return DatabaseType.SQLite;
-
-            return DatabaseType.MySql;
-        }
-
-        /// <summary>
-        /// 获取主表名称
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        internal static string GetMainTableName(this Type entity)
-        {
-            var attribute = entity.GetAttribute<TableAttribute>();
-            string mTableName;
-            if (attribute == null)
-                mTableName = entity.Name;
-            else
-                mTableName = attribute.Name;
-            return mTableName;
-        }
-
-        /// <summary>
-        /// 获取值
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyInfo"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        internal static object GetValueFromExpression<TEntity>(this PropertyInfo propertyInfo, Expression<Func<TEntity, bool>> expression)
-        {
-            var dictionary = new Dictionary<object, object>();
-            ExpressionHelper.Resolve(expression.Body, ref dictionary);
-            if ((dictionary?.Count ?? 0) <= 0)
-                throw new ArgumentNullException($"Property [{propertyInfo.Name}] 数据为空");
-
-            dictionary.TryGetValue(propertyInfo.Name, out object val);
-            return val;
-        }
-
-        /// <summary>
-        /// 获取位数
-        /// </summary>
-        /// <param name="propertyInfo"></param>
-        /// <returns></returns>
-        [Obsolete("请使用TableNameFunc")]
-        internal static int GetBit(this PropertyInfo propertyInfo)
-        {
-            if (propertyInfo == null)
-                return -1;
-
-            var bit = ((SubmeterAttribute)propertyInfo.GetCustomAttribute(typeof(SubmeterAttribute)))?.Bit ?? -1;
-            return bit;
-        }
-
-        /// <summary>
-        /// 获取后缀
-        /// </summary>
-        /// <param name="val"></param>
-        /// <param name="bit"></param>
-        /// <returns></returns>
-        [Obsolete("请使用TableNameFunc")]
-        internal static string GetSuffix(string val, int bit = 2)
-        {
-            if (string.IsNullOrEmpty(val))
-                throw new ArgumentNullException($"分表数据为空");
-            if (bit <= 0)
-                throw new ArgumentOutOfRangeException("length", "length必须是大于零的值。");
-
-            var result = Encoding.Default.GetBytes(val.ToString());    //tbPass为输入密码的文本框
-            var md5Provider = new MD5CryptoServiceProvider();
-            var output = md5Provider.ComputeHash(result);
-            var hash = BitConverter.ToString(output).Replace("-", "");  //tbMd5pass为输出加密文本
-
-            var suffix = hash.Substring(0, bit).ToUpper();
-            return suffix;
-        }
-
-        /// <summary>
-        /// 获取分表名 base md5
-        /// </summary>
-        /// <param name="propertyInfo"></param>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        [Obsolete("请使用TableNameFunc")]
-        internal static string GetSuffix(this PropertyInfo propertyInfo, string val)
-        {
-            var bit = propertyInfo.GetBit();
-            return GetSuffix(val.ToString(), bit);
-        }
-
-        /// <summary>
-        /// 获取分表名 base md5
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyInfo"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        [Obsolete("请使用TableNameFunc")]
-        internal static string GetSuffix<TEntity>(this PropertyInfo propertyInfo, TEntity entity) where TEntity : class, new()
-        {
-            var val = propertyInfo.GetValue(entity);
-            var bit = propertyInfo.GetBit();
-            return GetSuffix(val.ToString(), bit);
-        }
-
-        /// <summary>
-        /// 获取分表名 base md5
-        /// </summary>
-        /// <typeparam name="TEntity"></typeparam>
-        /// <param name="propertyInfo"></param>
-        /// <param name="expression">表达式数据</param>
-        /// <returns></returns>
-        [Obsolete("请使用TableNameFunc")]
-        internal static string GetSuffix<TEntity>(this PropertyInfo propertyInfo, Expression<Func<TEntity, bool>> expression) where TEntity : class, new()
-        {
-            var val = propertyInfo.GetValueFromExpression(expression);
-            var bit = propertyInfo.GetBit();
-            return GetSuffix(val.ToString(), bit);
         }
         #endregion
     }

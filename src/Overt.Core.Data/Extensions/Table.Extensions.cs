@@ -10,7 +10,8 @@ namespace Overt.Core.Data
     /// </summary>
     public static class TableExtensions
     {
-        private static ConcurrentDictionary<string, bool> ExistInformation = new ConcurrentDictionary<string, bool>();
+        private static ConcurrentDictionary<string, object> lockObjectMap = new ConcurrentDictionary<string, object>();
+        private static ConcurrentDictionary<string, bool> tableExistMap = new ConcurrentDictionary<string, bool>();
 
         /// <summary>
         /// 检查表是否存在
@@ -30,10 +31,13 @@ namespace Overt.Core.Data
                 throw new Exception($"CheckTableIfMissingCreate: TableNameFunc 必须提供");
 
             var tableKey = $"{repository.DbStoreKey}_{tableName}_{isMaster}";
-            var existTable = ExistInformation.GetOrAdd(tableKey, k => repository.IsExistTable(tableName, isMaster));
-            if (!existTable)
+            lock (lockObjectMap.GetOrAdd(tableKey, new object()))
             {
-                ExistInformation.TryRemove(tableKey, out existTable);
+                var existTable = tableExistMap.GetOrAdd(tableKey, k => repository.IsExistTable(tableName, isMaster));
+                if (existTable)
+                    return true;
+
+                tableExistMap.TryRemove(tableKey, out existTable);
                 if (!isMaster)
                     return false;
 
@@ -42,15 +46,15 @@ namespace Overt.Core.Data
                     using (var scope = new TransactionScope(TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled))
                     using (var connection = repository.OpenConnection(true))
                     {
-                        connection.ExecuteAsync(createScript).GetAwaiter().GetResult();
+                        connection.Execute(createScript);
                     }
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
             }
-            return true;
         }
     }
 }

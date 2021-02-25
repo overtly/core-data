@@ -21,7 +21,7 @@ namespace Overt.User.Domain.Repositories
 
         public override Func<string> TableNameFunc => () =>
         {
-            var tableName = $"{GetMainTableName()}_{DateTime.Now.ToString("yyyyMMdd")}";
+            var tableName = $"{GetMainTableName()}_{AddTime.ToString("yyyyMMdd")}";
             return tableName;
         };
 

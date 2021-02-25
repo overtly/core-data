@@ -9,6 +9,11 @@ namespace Overt.User.Application.Constracts
 {
     public interface ISubDbUserService
     {
+
+        int Add(UserPostModel model);
+
+        UserModel Get(int userId, bool isMaster = false);
+
         Task<int> AddAsync(UserPostModel model);
 
         Task<UserModel> GetAsync(int userId, bool isMaster = false);

@@ -1095,37 +1095,9 @@
             <summary>
             Dapper扩展
             </summary>
-        </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(System.String,System.Func{System.String})">
             <summary>
-            获取表名
+            Dapper扩展
             </summary>
-            <param name="val"></param>
-            <param name="tableNameFunc"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(``0,System.Func{System.String})">
-            <summary>
-            获取表名
-            </summary>
-            <param name="entity">实体实例</param>
-            <param name="tableNameFunc"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Func{System.String})">
-            <summary>
-            获取表名
-            </summary>
-            <param name="expression">表达式数据</param>
-            <param name="tableNameFunc"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetIdentityField``1(``0)">
-            <summary>
-            获取自增字段
-            </summary>
-            <param name="entity"></param>
-            <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DapperExtensions.IsExistTableAsync(System.Data.IDbConnection,System.String,System.Action{System.String})">
             <summary>
@@ -1261,6 +1233,181 @@
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DapperExtensions.CountAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
+            <summary>
+            获取数量
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(System.String,System.Func{System.String})">
+            <summary>
+            获取表名
+            </summary>
+            <param name="val"></param>
+            <param name="tableNameFunc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(``0,System.Func{System.String})">
+            <summary>
+            获取表名
+            </summary>
+            <param name="entity">实体实例</param>
+            <param name="tableNameFunc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Func{System.String})">
+            <summary>
+            获取表名
+            </summary>
+            <param name="expression">表达式数据</param>
+            <param name="tableNameFunc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetIdentityField``1(``0)">
+            <summary>
+            获取自增字段
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.IsExistTable(System.Data.IDbConnection,System.String,System.Action{System.String})">
+            <summary>
+            是否存在表
+            </summary>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="outSqlAction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.IsExistField(System.Data.IDbConnection,System.String,System.String,System.Action{System.String})">
+            <summary>
+            是否存在字段
+            </summary>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="fieldName"></param>
+            <param name="outSqlAction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Insert``1(System.Data.IDbConnection,System.String,``0,System.Boolean,System.Action{System.String})">
+            <summary>
+            插入数据
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="entity"></param>
+            <param name="returnLastIdentity">是否返回自增的数据</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns>-1 参数为空</returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Insert``1(System.Data.IDbConnection,System.String,System.Collections.Generic.IEnumerable{``0},System.Action{System.String})">
+            <summary>
+            批量插入数据
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="entities"></param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns>-1 参数为空</returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Delete``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
+            <summary>
+            删除数据
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="whereExpress"></param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns>-1 参数为空</returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Set``1(System.Data.IDbConnection,System.String,``0,System.Collections.Generic.IEnumerable{System.String},System.Action{System.String})">
+            <summary>
+            对象修改
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="entity"></param>
+            <param name="fields">选择字段</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Set``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
+            <summary>
+            条件修改
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection">连接</param>
+            <param name="tableName">表名</param>
+            <param name="setExpress">修改内容表达式</param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Incr``2(System.Data.IDbConnection,System.String,System.String,``1,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
+            <summary>
+            条件修改 在字段上增减
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="connection">连接</param>
+            <param name="tableName">表名</param>
+            <param name="field">增减的字段</param>
+            <param name="value">增减的值</param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Get``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Action{System.String})">
+            <summary>
+            获取单条数据
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName">表名</param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="fieldExpress">选择字段，默认为*</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetList``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
+            <summary>
+            获取分页数据
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="page"></param>
+            <param name="rows"></param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="fieldExpress">选择字段，默认为*</param>
+            <param name="orderByFields">排序字段集合</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetOffsets``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
+            <summary>
+            获取分页数据 Offset
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="offset"></param>
+            <param name="size"></param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="fieldExpress">选择字段，默认为*</param>
+            <param name="orderByFields">排序字段集合</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.Count``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
             <summary>
             获取数量
             </summary>
@@ -1745,6 +1892,15 @@
             </summary>
             <param name="expression">条件表达式</param>
             <param name="isMaster">是否主从</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,``0},System.Boolean)">
+            <summary>
+            包含connection的方法执行
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="func"></param>
+            <param name="isMaster"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,System.Threading.Tasks.Task{``0}},System.Boolean)">

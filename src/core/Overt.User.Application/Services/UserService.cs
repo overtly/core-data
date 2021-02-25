@@ -27,6 +27,147 @@ namespace Overt.User.Application.Services
             _subUserRepository = subUserRepository;
         }
 
+        #region SyncMethod
+        public int Add(UserPostModel model)
+        {
+            if (!model.IsValid(out Exception ex))
+                throw ex;
+
+            var entity = _mapper.Map<UserEntity>(model);
+            entity.AddTime = DateTime.Now;
+            var result = _userRepository.Add(entity, true);
+            if (!result)
+                throw new Exception($"新增失败");
+            return entity.UserId;
+        }
+
+        public bool Add(params UserPostModel[] models)
+        {
+            if ((models?.Count() ?? 0) <= 0)
+                throw new Exception("必须提供");
+
+            var entities = _mapper.Map<List<UserEntity>>(models);
+            entities.ForEach(oo =>
+            {
+                oo.AddTime = DateTime.Now;
+            });
+            var result = _userRepository.Add(entities.ToArray());
+            if (!result)
+                throw new Exception($"新增失败");
+            return result;
+        }
+
+        public bool Delete(int userId)
+        {
+            if (userId <= 0)
+                throw new Exception($"UserId必须大于0");
+
+            return _userRepository.Delete(oo => oo.UserId == userId);
+        }
+
+        public UserModel Get(int userId, bool isMaster = false)
+        {
+            if (userId <= 0)
+                throw new Exception($"UserId必须大于0");
+
+            var entity = _userRepository.Get(oo => oo.UserId == userId, isMaster: isMaster);
+            return _mapper.Map<UserModel>(entity);
+        }
+
+        public List<UserModel> GetList(List<int> userIds, bool isMaster = false)
+        {
+            if ((userIds?.Count ?? 0) <= 0)
+                throw new Exception($"UserIds至少提供一个");
+
+            var entities = _userRepository.GetList(1, userIds.Count, oo => userIds.Contains(oo.UserId), isMaster: isMaster);
+            return _mapper.Map<List<UserModel>>(entities);
+        }
+
+        public (int, List<UserModel>) GetPage(UserSearchModel model)
+        {
+            var expression = model.GetExpression();
+            var orders = model.GetOrder();
+            var count = _userRepository.Count(expression, model.IsMaster);
+            var entities = _userRepository.GetList(model.Page, model.Size, expression, isMaster: model.IsMaster, orderByFields: orders);
+            var models = _mapper.Map<List<UserModel>>(entities);
+            return (count, models);
+        }
+
+        public List<string> OtherSql()
+        {
+            var result = _userRepository.OtherSql();
+            return result;
+        }
+
+        public bool Update(int userId, bool isSex)
+        {
+            if (userId <= 0)
+                throw new Exception($"UserId必须大于0");
+
+            // 第一种
+            var dic = new Dictionary<string, object>()
+            {
+                { nameof(UserEntity.IsSex), isSex }
+            };
+            var updateResult1 = _userRepository.Set(() => dic, oo => oo.UserId == userId);
+
+            // 第二种
+            var updateResult2 = _userRepository.Set(() => new { IsSex = isSex }, oo => oo.UserId == userId);
+
+            // 第三种
+            var entity = _userRepository.Get(oo => oo.UserId == userId, isMaster: true);
+            if (entity?.UserId != userId)
+                throw new Exception($"无可更新数据");
+            entity.IsSex = isSex;
+            var updateResult3 = _userRepository.Set(entity);
+
+            // 第三种
+            var updateResult4 = _userRepository.Incr(nameof(UserEntity.Age), 10, oo => oo.UserId == userId);
+
+            return updateResult3;
+        }
+
+        public bool ExecuteInTransaction()
+        {
+            using (var scope = new TransactionScope())
+            {
+                var result = _userRepository.Add(new UserEntity()
+                {
+                    UserName = "11111111111",
+                    RealName = "11111111111",
+                    Password = "123456",
+                    IsSex = false,
+                    JsonValue = "{}",
+                    AddTime = DateTime.Now
+                });
+                result &= _subUserRepository.Add(new SubUserEntity()
+                {
+                    UserName = "222222222",
+                    RealName = "22222222",
+                    Password = "123456",
+                    IsSex = false,
+                    JsonValue = "{}",
+                    AddTime = DateTime.Now
+                });
+
+                scope.Complete();
+            }
+            //_userRepository.BeginTransaction( transaction =>
+            //{
+            //    // 传递事务
+            //    _subUserRepository.Transaction = transaction;
+
+            //    var result = _userRepository.Add(new UserEntity());
+            //    result &= _subUserRepository.Add(new SubUserEntity());
+
+            //    transaction.Commit();
+            //    return result;
+            //});
+            return true;
+        }
+        #endregion
+
+        #region AsyncMethod
         public async Task<int> AddAsync(UserPostModel model)
         {
             if (!model.IsValid(out Exception ex))
@@ -139,7 +280,15 @@ namespace Overt.User.Application.Services
                     JsonValue = "{}",
                     AddTime = DateTime.Now
                 });
-                result &= await _subUserRepository.AddAsync(new SubUserEntity());
+                result &= await _subUserRepository.AddAsync(new SubUserEntity()
+                {
+                    UserName = "222222222",
+                    RealName = "22222222",
+                    Password = "123456",
+                    IsSex = false,
+                    JsonValue = "{}",
+                    AddTime = DateTime.Now
+                });
 
                 scope.Complete();
             }
@@ -156,5 +305,7 @@ namespace Overt.User.Application.Services
             //});
             return true;
         }
+        #endregion
+
     }
 }
