@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Overt.Core.Data.Expressions
@@ -8,6 +9,19 @@ namespace Overt.Core.Data.Expressions
     /// </summary>
     public static class SqlExpression
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dbType"></param>
+        /// <param name="tableName"></param>
+        /// <param name="returnLastIdentity"></param>
+        /// <returns></returns>
+        public static SqlExpressionCore<T> Insert<T>(DatabaseType dbType, string tableName = "", bool returnLastIdentity = false)
+        {
+            return new SqlExpressionCore<T>(dbType, tableName).Insert(returnLastIdentity);
+        }
+
         /// <summary>
         /// 删除
         /// </summary>
@@ -19,6 +33,7 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Delete();
         }
+
         /// <summary>
         /// 修改
         /// </summary>
@@ -31,6 +46,20 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Update(expression);
         }
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dbType">数据库类型</param>
+        /// <param name="fields"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public static SqlExpressionCore<T> Update<T>(DatabaseType dbType, IEnumerable<string> fields = null, string tableName = "")
+        {
+            return new SqlExpressionCore<T>(dbType, tableName).Update(fields);
+        }
+
         /// <summary>
         /// 查询
         /// </summary>
@@ -55,6 +84,7 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Count(expression);
         }
+
         /// <summary>
         /// 最大
         /// </summary>
@@ -67,6 +97,7 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Max(expression);
         }
+
         /// <summary>
         /// 最小
         /// </summary>
@@ -79,6 +110,7 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Min(expression);
         }
+
         /// <summary>
         /// 平均值
         /// </summary>
@@ -91,6 +123,7 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Avg(expression);
         }
+
         /// <summary>
         /// 求和
         /// </summary>

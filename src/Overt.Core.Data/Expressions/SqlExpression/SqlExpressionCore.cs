@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -41,7 +42,36 @@ namespace Overt.Core.Data.Expressions
         /// </summary>
         public void Clear()
         {
-            this.sqlGenerate.Clear();
+            sqlGenerate.Clear();
+        }
+
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="returnLastIdentity"></param>
+        /// <returns></returns>
+        public SqlExpressionCore<T> Insert(bool returnLastIdentity)
+        {
+            var addFields = new List<string>();
+            var atFields = new List<string>();
+
+            var identityPi = typeof(T).GetIdentityField();
+            var pis = typeof(T).GetProperties();
+            foreach (var pi in pis)
+            {
+                if (identityPi?.Name == pi.Name)
+                    continue;
+
+                addFields.Add($"{pi.Name.ParamSql(sqlGenerate.DatabaseType)}");
+                atFields.Add($"@{pi.Name}");
+            }
+
+            sqlGenerate.Clear();
+            sqlGenerate += $"insert into {sqlGenerate.TableName}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
+            if (identityPi != null && returnLastIdentity)
+                sqlGenerate += sqlGenerate.DatabaseType.SelectLastIdentity();
+
+            return this;
         }
 
         /// <summary>
@@ -260,6 +290,38 @@ namespace Overt.Core.Data.Expressions
             sqlGenerate.Clear();
             sqlGenerate += $"update {sqlGenerate.TableName} set ";
             SqlExpressionProvider.Update(expression, sqlGenerate);
+            return this;
+        }
+
+        /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
+        public SqlExpressionCore<T> Update(IEnumerable<string> fields = null)
+        {
+            var setFields = new List<string>();
+            var whereFields = new List<string>();
+
+            var pis = typeof(T).GetProperties();
+            foreach (var pi in pis)
+            {
+                var obs = pi.GetCustomAttributes(typeof(KeyAttribute), false);
+                if (obs?.Count() > 0)
+                    whereFields.Add($"{pi.Name.ParamSql(sqlGenerate.DatabaseType)} = @{pi.Name}");
+                else
+                {
+                    if ((fields?.Count() ?? 0) <= 0 || fields.Contains(pi.Name))
+                        setFields.Add($"{pi.Name.ParamSql(sqlGenerate.DatabaseType)} = @{pi.Name}");
+                }
+            }
+            if (whereFields.Count <= 0)
+                throw new Exception($"实体未设置主键Key属性");
+            if (setFields.Count <= 0)
+                throw new Exception($"实体未标记任何更新字段");
+
+            sqlGenerate.Clear();
+            sqlGenerate += $"update {sqlGenerate.TableName} set {string.Join(", ", setFields)} where {string.Join(", ", whereFields)}";
             return this;
         }
     }

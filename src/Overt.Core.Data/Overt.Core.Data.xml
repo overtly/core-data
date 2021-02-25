@@ -787,6 +787,16 @@
             Expression => Sql 
             </summary>
         </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpression.Insert``1(Overt.Core.Data.DatabaseType,System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dbType"></param>
+            <param name="tableName"></param>
+            <param name="returnLastIdentity"></param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.Expressions.SqlExpression.Delete``1(Overt.Core.Data.DatabaseType,System.String)">
             <summary>
             删除
@@ -803,6 +813,16 @@
             <typeparam name="T"></typeparam>
             <param name="dbType">数据库类型</param>
             <param name="expression"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpression.Update``1(Overt.Core.Data.DatabaseType,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            修改
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dbType">数据库类型</param>
+            <param name="fields"></param>
             <param name="tableName"></param>
             <returns></returns>
         </member>
@@ -916,6 +936,13 @@
             清除
             </summary>
         </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpressionCore`1.Insert(System.Boolean)">
+            <summary>
+            新增
+            </summary>
+            <param name="returnLastIdentity"></param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.Expressions.SqlExpressionCore`1.Select(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
             <summary>
             查询
@@ -1000,6 +1027,13 @@
             修改
             </summary>
             <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpressionCore`1.Update(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            修改
+            </summary>
+            <param name="fields"></param>
             <returns></returns>
         </member>
         <member name="T:Overt.Core.Data.Expressions.SqlExpressionFingerprint">
@@ -1267,11 +1301,11 @@
             <param name="tableNameFunc"></param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetIdentityField``1(``0)">
+        <member name="M:Overt.Core.Data.DapperExtensions.GetIdentityField(System.Type)">
             <summary>
             获取自增字段
             </summary>
-            <param name="entity"></param>
+            <param name="type"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DapperExtensions.IsExistTable(System.Data.IDbConnection,System.String,System.Action{System.String})">

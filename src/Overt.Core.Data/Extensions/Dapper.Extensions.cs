@@ -93,12 +93,11 @@ namespace Overt.Core.Data
         /// <summary>
         /// 获取自增字段
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public static PropertyInfo GetIdentityField<TEntity>(this TEntity entity)
+        public static PropertyInfo GetIdentityField(this Type type)
         {
-            var t = entity.GetType();
-            var propertyInfos = t.GetProperties<DatabaseGeneratedAttribute>();
+            var propertyInfos = type.GetProperties<DatabaseGeneratedAttribute>();
             if ((propertyInfos?.Count ?? 0) <= 0) // 代表没有主键
                 return null;
 
@@ -179,35 +178,21 @@ namespace Overt.Core.Data
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var addFields = new List<string>();
-            var atFields = new List<string>();
             var dbType = connection.GetDbType();
-
-            var pis = typeof(TEntity).GetProperties();
-            var identityPropertyInfo = entity.GetIdentityField();
-            foreach (var pi in pis)
-            {
-                if (identityPropertyInfo?.Name == pi.Name)
-                    continue;
-
-                addFields.Add($"{pi.Name.ParamSql(dbType)}");
-                atFields.Add($"@{pi.Name}");
-            }
-
-            var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
-            outSqlAction?.Invoke(sql);
+            var sqlExpression = SqlExpression.Insert<TEntity>(dbType, tableName, returnLastIdentity);
+            outSqlAction?.Invoke(sqlExpression.Script);
 
             int result;
-            if (identityPropertyInfo != null && returnLastIdentity)
+            var identityPI = typeof(TEntity).GetIdentityField();
+            if (identityPI != null && returnLastIdentity)
             {
-                sql += dbType.SelectLastIdentity();
-                result = connection.ExecuteScalar<int>(sql, entity);
+                result = connection.ExecuteScalar<int>(sqlExpression.Script, entity);
                 if (result > 0)
-                    identityPropertyInfo.SetValue(entity, result);
+                    identityPI.SetValue(entity, result);
             }
             else
             {
-                result = connection.Execute(sql, entity);
+                result = connection.Execute(sqlExpression.Script, entity);
             }
 
             return result;
@@ -234,25 +219,11 @@ namespace Overt.Core.Data
             if ((entities?.Count() ?? 0) <= 0)
                 throw new ArgumentNullException(nameof(entities));
 
-            var addFields = new List<string>();
-            var atFields = new List<string>();
             var dbType = connection.GetDbType();
+            var sqlExpression = SqlExpression.Insert<TEntity>(dbType, tableName);
+            outSqlAction?.Invoke(sqlExpression.Script);
 
-            var pis = typeof(TEntity).GetProperties();
-            var identityPropertyInfo = entities.First().GetIdentityField();
-            foreach (var pi in pis)
-            {
-                if (identityPropertyInfo?.Name == pi.Name)
-                    continue;
-
-                addFields.Add($"{pi.Name.ParamSql(dbType)}");
-                atFields.Add($"@{pi.Name}");
-            }
-
-            var sql = $"insert into {tableName.ParamSql(dbType)}({string.Join(", ", addFields)}) values({string.Join(", ", atFields)});";
-            outSqlAction?.Invoke(sql);
-
-            var result = connection.Execute(sql, entities);
+            var result = connection.Execute(sqlExpression.Script, entities);
             return result;
         }
 
@@ -308,31 +279,11 @@ namespace Overt.Core.Data
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            var setFields = new List<string>();
-            var whereFields = new List<string>();
             var dbType = connection.GetDbType();
+            var sqlExpression = SqlExpression.Update<TEntity>(dbType, fields, tableName);
+            outSqlAction?.Invoke(sqlExpression.Script);
 
-            var pis = typeof(TEntity).GetProperties();
-            foreach (var pi in pis)
-            {
-                var obs = pi.GetCustomAttributes(typeof(KeyAttribute), false);
-                if (obs?.Count() > 0)
-                    whereFields.Add($"{pi.Name.ParamSql(dbType)} = @{pi.Name}");
-                else
-                {
-                    if ((fields?.Count() ?? 0) <= 0 || fields.Contains(pi.Name))
-                        setFields.Add($"{pi.Name.ParamSql(dbType)} = @{pi.Name}");
-                }
-            }
-            if (whereFields.Count <= 0)
-                throw new Exception($"实体[{nameof(TEntity)}]未设置主键Key属性");
-            if (setFields.Count <= 0)
-                throw new Exception($"实体[{nameof(TEntity)}]未标记任何更新字段");
-
-            var sql = $"update {tableName.ParamSql(dbType)} set {string.Join(", ", setFields)} where {string.Join(", ", whereFields)}";
-            outSqlAction?.Invoke(sql);
-
-            var result = connection.Execute(sql, entity);
+            var result = connection.Execute(sqlExpression.Script, entity);
             return result > 0;
         }
 
