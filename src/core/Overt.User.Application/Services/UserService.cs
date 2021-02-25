@@ -258,7 +258,9 @@ namespace Overt.User.Application.Services
             var entity = await _userRepository.GetAsync(oo => oo.UserId == userId, isMaster: true);
             if (entity?.UserId != userId)
                 throw new Exception($"无可更新数据");
-            entity.IsSex = isSex;
+            entity.IsSex = !isSex;
+            entity.AddTime = new DateTime(2021, 1, 1);
+            entity.UserName = "我是谁";
             var updateResult3 = await _userRepository.SetAsync(entity);
 
             // 第三种
