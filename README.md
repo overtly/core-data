@@ -1,6 +1,7 @@
 ### 项目层次说明
 
-> Overt.Core.Data v2.1.0
+> Overt.Core.Data v2.1.3  
+> 如有疑问可直接加QQ：2292709323，微信：yaofengv，联系
 
 #### 1. 项目目录
 
@@ -36,7 +37,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V2.1.0
+> * Nuget版本：V2.1.3
 > * 框架支持： Framework4.6.1 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -87,7 +88,7 @@ Microsoft.Extensions.Configuration 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 2.1.0
+Install-Package Overt.Core.Data -Version 2.1.3
 ```
 
 
@@ -279,7 +280,7 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 
 #### 9. 更新说明
 
-- 2021-02-24 v2.1.0
+- 2021-02-24 v2.1.3
 
 > 1. 基础方法增加根据某个字段增减数据的方法：IncrAsync(string field, TValue value, Expression<Func<TEntity, bool>> whereExpress)
 
