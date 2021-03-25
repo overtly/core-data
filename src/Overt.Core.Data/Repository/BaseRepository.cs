@@ -563,7 +563,7 @@ namespace Overt.Core.Data
         /// <param name="func"></param>
         /// <param name="isMaster"></param>
         /// <returns></returns>
-        protected T Execute<T>(Func<IDbConnection, T> func, bool isMaster = true)
+        protected virtual T Execute<T>(Func<IDbConnection, T> func, bool isMaster = true)
         {
             if (!this.CheckTableIfMissingCreate(isMaster))
                 return default(T);
@@ -581,7 +581,7 @@ namespace Overt.Core.Data
         /// <param name="func"></param>
         /// <param name="isMaster"></param>
         /// <returns></returns>
-        protected async Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true)
+        protected virtual async Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true)
         {
             if (!this.CheckTableIfMissingCreate(isMaster))
                 return default(T);

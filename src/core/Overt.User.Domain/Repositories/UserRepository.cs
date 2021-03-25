@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Overt.User.Domain.Repositories
 {
@@ -15,6 +16,22 @@ namespace Overt.User.Domain.Repositories
         public UserRepository(IConfiguration configuration)
             : base(configuration) // dbStoreKey 可用于不同数据库切换，连接字符串key前缀：xxx.master xxx.secondary
         {
+        }
+
+        protected override T Execute<T>(Func<IDbConnection, T> func, bool isMaster = true)
+        {
+            return base.Execute(func, isMaster);
+        }
+
+        protected async override Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true)
+        {
+            if (!this.CheckTableIfMissingCreate(isMaster))
+                return default(T);
+
+            using (var connection = OpenConnection(isMaster))
+            {
+                return await func(connection);
+            }
         }
 
         public List<string> OtherSql()
