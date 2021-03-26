@@ -112,7 +112,7 @@ namespace Overt.Core.Data
         /// <param name="entity">数据实体</param>
         /// <param name="returnLastIdentity">是否赋值最后一次的自增ID</param>
         /// <returns>添加后的数据实体</returns>
-        public virtual bool Add(TEntity entity, bool returnLastIdentity = false)
+        public bool Add(TEntity entity, bool returnLastIdentity = false)
         {
             if (entity == null)
                 return false;
@@ -130,7 +130,7 @@ namespace Overt.Core.Data
         /// </summary>
         /// <param name="entities">数据实体</param>
         /// <returns>添加后的数据实体</returns>
-        public virtual bool Add(params TEntity[] entities)
+        public bool Add(params TEntity[] entities)
         {
             if ((entities?.Count() ?? 0) <= 0)
                 return false;
@@ -563,7 +563,7 @@ namespace Overt.Core.Data
         /// <param name="func"></param>
         /// <param name="isMaster"></param>
         /// <returns></returns>
-        protected T Execute<T>(Func<IDbConnection, T> func, bool isMaster = true)
+        protected virtual T Execute<T>(Func<IDbConnection, T> func, bool isMaster = true)
         {
             if (!this.CheckTableIfMissingCreate(isMaster))
                 return default(T);
@@ -581,7 +581,7 @@ namespace Overt.Core.Data
         /// <param name="func"></param>
         /// <param name="isMaster"></param>
         /// <returns></returns>
-        protected async Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true)
+        protected virtual async Task<T> Execute<T>(Func<IDbConnection, Task<T>> func, bool isMaster = true)
         {
             if (!this.CheckTableIfMissingCreate(isMaster))
                 return default(T);
