@@ -1,10 +1,12 @@
 ﻿#if ASP_NET_CORE
 using Microsoft.Extensions.Configuration;
 #endif
+using Overt.Core.Data.Diagnostics;
 using Overt.Core.Data.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -16,6 +18,9 @@ namespace Overt.Core.Data
     /// </summary>
     public abstract class BaseRepository<TEntity> : PropertyAssist, IBaseRepository<TEntity> where TEntity : class, new()
     {
+        private static readonly DiagnosticListener _diagnosticListener =
+           new DiagnosticListener(DiagnosticListenerNames.DiagnosticSourceName);
+
         #region Constructor 
 #if ASP_NET_CORE
         /// <summary>
@@ -570,7 +575,20 @@ namespace Overt.Core.Data
 
             using (var connection = OpenConnection(isMaster))
             {
-                return func(connection);
+                ExecuteBefore(connection.ConnectionString, connection.Database);
+                try
+                {
+                    return func(connection);
+                }
+                catch (Exception ex)
+                {
+                    ExecuteError(ex);
+                    throw ex;
+                }
+                finally
+                {
+                    ExecuteAfter(this.ExecuteScript, this.GetTableName());
+                }
             }
         }
 
@@ -588,7 +606,21 @@ namespace Overt.Core.Data
 
             using (var connection = OpenConnection(isMaster))
             {
-                return await func(connection);
+                ExecuteBefore(connection.ConnectionString, connection.Database);
+                try
+                {
+                    return await func(connection);
+                }
+                catch (Exception ex)
+                {
+                    ExecuteError(ex);
+                    throw ex;
+                }
+                finally
+                {
+                    ExecuteAfter(this.ExecuteScript, this.GetTableName());
+                }
+
             }
         }
         #endregion
@@ -601,6 +633,30 @@ namespace Overt.Core.Data
         private void OutSqlAction(string sql)
         {
             ExecuteScript = sql;
+        }
+
+        private void ExecuteBefore(string connStr, string database)
+        {
+            if (_diagnosticListener.IsEnabled(DiagnosticListenerNames.CommandStart))
+            {
+                _diagnosticListener.Write(DiagnosticListenerNames.CommandStart, new { connStr = connStr, database = database });
+            }
+        }
+
+        private void ExecuteAfter(string commandText, string tableName)
+        {
+            if (_diagnosticListener.IsEnabled(DiagnosticListenerNames.CommandStop))
+            {
+                _diagnosticListener.Write(DiagnosticListenerNames.CommandStop, new { commandText = commandText, tableName = tableName });
+            }
+        }
+
+        private void ExecuteError(Exception exception)
+        {
+            if (_diagnosticListener.IsEnabled(DiagnosticListenerNames.CommandException))
+            {
+                _diagnosticListener.Write(DiagnosticListenerNames.CommandException, new { exception = exception });
+            }
         }
         #endregion
     }

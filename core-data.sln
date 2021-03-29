@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overt.Core.Data", "src\Overt.Core.Data\Overt.Core.Data.csproj", "{8B1B556F-1D2C-49D2-8CB9-F9D2C7080786}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overt.User.Application", "src\net46\Overt.User.Application\Overt.User.Application.csproj", "{5ADB2A33-42E4-484B-997E-3F8B942539E4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overt.Core.DataConsole", "src\net46\Overt.Core.DataConsole\Overt.Core.DataConsole.csproj", "{F92F116B-A438-447B-9475-4D62AF197742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overt.Apm.Opentelemetry", "src\core\Overt.Apm.Opentelemetry\Overt.Apm.Opentelemetry.csproj", "{34548823-102E-4247-B99C-948CFE69B250}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{F92F116B-A438-447B-9475-4D62AF197742}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92F116B-A438-447B-9475-4D62AF197742}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F92F116B-A438-447B-9475-4D62AF197742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34548823-102E-4247-B99C-948CFE69B250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34548823-102E-4247-B99C-948CFE69B250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34548823-102E-4247-B99C-948CFE69B250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34548823-102E-4247-B99C-948CFE69B250}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{0558E8F8-BB9E-4C62-A8D0-03011ED77284} = {9DD521BB-DEE6-40A1-B042-EA89EB889546}
 		{5ADB2A33-42E4-484B-997E-3F8B942539E4} = {B159908C-321A-45AF-998B-C431D7D02070}
 		{F92F116B-A438-447B-9475-4D62AF197742} = {B159908C-321A-45AF-998B-C431D7D02070}
+		{34548823-102E-4247-B99C-948CFE69B250} = {9DD521BB-DEE6-40A1-B042-EA89EB889546}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63C9732F-DFAB-438C-B2F2-7C0399EF8701}
