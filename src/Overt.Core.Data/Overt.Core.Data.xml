@@ -356,7 +356,20 @@
             <param name="isMaster"></param>
             <param name="dbStoreKey"></param>
             <param name="connectionFunc"></param>
-            <return      </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DataSettings.ResolveConnectionString(System.String,System.String)">
+            <summary>
+            解析
+            </summary>
+            <param name="connectionString"></param>
+            <param name="param"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DataSettings.GetKey(System.Boolean,System.String)">
+            <summary>
+            获取
+            </summary>
             <param name="isMaster"></param>
             <param name="dbStoreKey">不能包含点</param>
             <returns></returns>
@@ -454,16 +467,6 @@
             <param name="type"></param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.Expressions.ExpressionExtensions.GetMemberExpression(System.Linq.Expressions.MemberExpression)">
-            <summary>
-            
-            </summary>
-            <param name="m"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.Expressions.ExpressionExtensions.IsParameterAccess(System.Linq.Expressions.Expression)">
-            <summary>
-            Determines whether the expression imember>
         <member name="M:Overt.Core.Data.Expressions.ExpressionExtensions.GetMemberExpression(System.Linq.Expressions.MemberExpression)">
             <summary>
             
@@ -1950,6 +1953,17 @@
             <param name="isMaster"></param>
             <returns></returns>
         </member>
+        <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,System.String,System.Object,``0},System.String,System.Object,System.Boolean)">
+            <summary>
+            包含connection的方法执行
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="func">回调</param>
+            <param name="sql">执行的sql</param>
+            <param name="param">参数</param>
+            <param name="isMaster">是否主库</param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,System.Threading.Tasks.Task{``0}},System.Boolean)">
             <summary>
             包含connection的方法执行
@@ -1957,6 +1971,17 @@
             <typeparam name="T"></typeparam>
             <param name="func"></param>
             <param name="isMaster"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.BaseRepository`1.Execute``1(System.Func{System.Data.IDbConnection,System.String,System.Object,System.Threading.Tasks.Task{``0}},System.String,System.Object,System.Boolean)">
+            <summary>
+            包含connection的方法执行
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="func">回调</param>
+            <param name="sql">执行的sql</param>
+            <param name="param">参数</param>
+            <param name="isMaster">是否主库</param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.OutSqlAction(System.String)">

@@ -596,6 +596,41 @@ namespace Overt.Core.Data
         /// 包含connection的方法执行
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="func">回调</param>
+        /// <param name="sql">执行的sql</param>
+        /// <param name="param">参数</param>
+        /// <param name="isMaster">是否主库</param>
+        /// <returns></returns>
+        protected T Execute<T>(Func<IDbConnection, string, object, T> func, string sql, object param, bool isMaster = true)
+        {
+            if (!this.CheckTableIfMissingCreate(isMaster))
+                return default(T);
+
+            using (var connection = OpenConnection(isMaster))
+            {
+                ExecuteBefore(connection.ConnectionString, connection.Database);
+                try
+                {
+                    return func(connection, sql, param);
+                }
+                catch (Exception ex)
+                {
+                    ExecuteError(ex);
+                    throw ex;
+                }
+                finally
+                {
+                    if (string.IsNullOrWhiteSpace(this.ExecuteScript))
+                        OutSqlAction(sql);
+                    ExecuteAfter(this.ExecuteScript, this.GetTableName(), param);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 包含connection的方法执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <param name="isMaster"></param>
         /// <returns></returns>
@@ -623,6 +658,41 @@ namespace Overt.Core.Data
 
             }
         }
+
+        /// <summary>
+        /// 包含connection的方法执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func">回调</param>
+        /// <param name="sql">执行的sql</param>
+        /// <param name="param">参数</param>
+        /// <param name="isMaster">是否主库</param>
+        /// <returns></returns>
+        protected async Task<T> Execute<T>(Func<IDbConnection, string, object, Task<T>> func, string sql, object param, bool isMaster = true)
+        {
+            if (!this.CheckTableIfMissingCreate(isMaster))
+                return default(T);
+
+            using (var connection = OpenConnection(isMaster))
+            {
+                ExecuteBefore(connection.ConnectionString, connection.Database);
+                try
+                {
+                    return await func(connection, sql, param);
+                }
+                catch (Exception ex)
+                {
+                    ExecuteError(ex);
+                    throw ex;
+                }
+                finally
+                {
+                    if (string.IsNullOrWhiteSpace(this.ExecuteScript))
+                        OutSqlAction(sql);
+                    ExecuteAfter(this.ExecuteScript, this.GetTableName(), param);
+                }
+            }
+        }
         #endregion
 
         #region Private Method
@@ -643,11 +713,11 @@ namespace Overt.Core.Data
             }
         }
 
-        private void ExecuteAfter(string commandText, string tableName)
+        private void ExecuteAfter(string commandText, string tableName, object param = null)
         {
             if (_diagnosticListener.IsEnabled(DiagnosticListenerNames.CommandStop))
             {
-                _diagnosticListener.Write(DiagnosticListenerNames.CommandStop, new { commandText = commandText, tableName = tableName });
+                _diagnosticListener.Write(DiagnosticListenerNames.CommandStop, new { commandText = commandText, tableName = tableName, param = param });
             }
         }
 

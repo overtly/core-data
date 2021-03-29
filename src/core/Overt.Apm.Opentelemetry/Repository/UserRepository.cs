@@ -12,12 +12,11 @@ namespace Overt.Apm.Opentelemetry.Repository
     {
         public UserRepository(IConfiguration configuration, string dbStoreKey = "") : base(configuration, dbStoreKey)
         {
-            this.Execute(connection =>
+            this.Execute((connection, sql, param) =>
             {
-                this.ExecuteScript = "select * from users where id=@id;";
-                connection.Query(this.ExecuteScript, new { id = 1 }, commandTimeout: 15);
+                connection.Query(sql, param, commandTimeout: 15);
                 return 1;
-            });
+            }, "select * from users where id=@id;", new { id = 1 });
         }
     }
 }
