@@ -1,7 +1,11 @@
+如有疑问可直接加QQ：2292709323，微信：yaofengv，联系
+
+# Overt.Core.Data
+
 ### 项目层次说明
 
 > Overt.Core.Data v2.1.3  
-> 如有疑问可直接加QQ：2292709323，微信：yaofengv，联系
+> 基于dapper封装的expression om，让CURD更简单
 
 #### 1. 项目目录
 
