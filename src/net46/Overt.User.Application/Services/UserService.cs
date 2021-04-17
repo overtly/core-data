@@ -108,7 +108,7 @@ namespace Overt.User.Application.Services
         public async Task<bool> ExecuteInTransactionAsync()
         {
             // 分布式事务
-            using (var scope = new TransactionScope())
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 var result = false;
                 try
