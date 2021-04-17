@@ -113,13 +113,29 @@ namespace Overt.User.Application.Services
                 var result = false;
                 try
                 {
-                    result = await _userRepository.AddAsync(new UserEntity());
-                    result &= await _subUserRepository.AddAsync(new SubUserEntity());
+                    result = await _userRepository.AddAsync(new UserEntity()
+                    {
+                        UserName = "222222222",
+                        RealName = "22222222",
+                        Password = "123456",
+                        IsSex = false,
+                        JsonValue = "{}",
+                        AddTime = DateTime.Now
+                    });
+                    result &= await _subUserRepository.AddAsync(new SubUserEntity()
+                    {
+                        UserName = "222222222",
+                        RealName = "22222222",
+                        Password = "123456",
+                        IsSex = false,
+                        JsonValue = "{}",
+                        AddTime = DateTime.Now
+                    });
 
                     scope.Complete();
                     return result;
                 }
-                catch
+                catch(Exception ex)
                 {
                     // logger
                 }
