@@ -14,6 +14,7 @@ namespace Overt.User.Domain
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ISubUserRepository, SubUserRepository>();
             services.AddTransient<ISubDbUserRepository, SubDbUserRepository>();
+            services.AddTransient<ISubDbUser2Repository, SubDbUser2Repository>();
         }
     }
 }

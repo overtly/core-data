@@ -88,6 +88,23 @@ namespace Overt.Core.DataConsole
             var getResult2 = _subDbUserService.GetAsync(addResult2).Result;
             #endregion
 
+            #region 分库2
+            var _subDbUser2Service = AutofacContainer.Container.Resolve<ISubDbUser2Service>();
+
+            // 添加
+            var addResult3 = _subDbUser2Service.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST_SubDb",
+                RealName = "TEST_SubDb",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }).Result;
+
+            // 获取
+            var getResult3 = _subDbUser2Service.GetAsync(addResult3).Result;
+            #endregion
+
             #region 事务
             var transResult = _userService.ExecuteInTransactionAsync().Result;
             #endregion

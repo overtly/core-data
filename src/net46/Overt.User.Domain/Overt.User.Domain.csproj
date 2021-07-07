@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,13 +51,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacExtensions.cs" />
+    <Compile Include="Contracts\ISubDbUser2Repository.cs" />
     <Compile Include="Contracts\ISubDbUserRepository.cs" />
     <Compile Include="Contracts\ISubUserRepository.cs" />
     <Compile Include="Contracts\IUserRepository.cs" />
+    <Compile Include="Entities\SubDbUser2Entity.cs" />
     <Compile Include="Entities\SubDbUserEntity.cs" />
     <Compile Include="Entities\SubUserEntity.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\SubDbUser2Repository.cs" />
     <Compile Include="Repositories\SubDbUserRepository.cs" />
     <Compile Include="Repositories\SubUserRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />

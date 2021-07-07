@@ -13,6 +13,7 @@ namespace Overt.User.Application
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ISubUserService, SubUserService>();
             services.AddTransient<ISubDbUserService, SubDbUserService>();
+            services.AddTransient<ISubDbUser2Service, SubDbUser2Service>();
 
             services.AddDomainDI();
             services.AddAutoMapper();

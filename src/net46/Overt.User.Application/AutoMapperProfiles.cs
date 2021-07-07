@@ -12,12 +12,14 @@ namespace Overt.User.Application
             CreateMap<UserPostModel, UserEntity>();
             CreateMap<UserPostModel, SubUserEntity>();
             CreateMap<UserPostModel, SubDbUserEntity>();
+            CreateMap<UserPostModel, SubDbUser2Entity>();
             #endregion
 
             #region Output
             CreateMap<UserEntity,UserModel>();
             CreateMap<SubUserEntity, UserModel>();
             CreateMap<SubDbUserEntity, UserModel>();
+            CreateMap<SubDbUser2Entity, UserModel>();
             #endregion
         }
     }

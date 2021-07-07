@@ -127,6 +127,23 @@ namespace Overt.Core.DataConsole
             var getResult2 = await _subDbUserService.GetAsync(addResult2);
             #endregion
 
+            #region 分库2
+            var _subDbUser2Service = provider.GetService<ISubDbUser2Service>();
+
+            // 添加
+            var addResult3 = await _subDbUser2Service.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST_SubDb2",
+                RealName = "TEST_SubDb2",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            });
+
+            // 获取
+            var getResult3 = await _subDbUser2Service.GetAsync(addResult3);
+            #endregion
+
             #region 事务
             var transResult = await _userService.ExecuteInTransactionAsync();
             #endregion
@@ -226,6 +243,23 @@ namespace Overt.Core.DataConsole
 
             // 获取
             var getResult2 = _subDbUserService.Get(addResult2);
+            #endregion
+
+            #region 分库2
+            var _subDbUser2Service = provider.GetService<ISubDbUser2Service>();
+
+            // 添加
+            var addResult3 = _subDbUser2Service.Add(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST_SubDb2",
+                RealName = "TEST_SubDb2",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            });
+
+            // 获取
+            var getResult3 = _subDbUser2Service.Get(addResult3);
             #endregion
 
             #region 事务

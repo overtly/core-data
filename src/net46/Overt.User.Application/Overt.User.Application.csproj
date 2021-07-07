@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AutofacExtensions.cs" />
     <Compile Include="AutoMapperProfiles.cs" />
+    <Compile Include="Constracts\ISubDbUser2Service.cs" />
     <Compile Include="Constracts\ISubDbUserService.cs" />
     <Compile Include="Constracts\ISubUserService.cs" />
     <Compile Include="Constracts\IUserService.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Models\UserPostModel.cs" />
     <Compile Include="Models\UserSearchModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SubDbUser2Service.cs" />
     <Compile Include="Services\SubDbUserService.cs" />
     <Compile Include="Services\SubUserService.cs" />
     <Compile Include="Services\UserService.cs" />

@@ -11,6 +11,7 @@ namespace Overt.User.Domain
             builder.RegisterType<UserRepository>().As<IUserRepository>();
             builder.RegisterType<SubUserRepository>().As<ISubUserRepository>();
             builder.RegisterType<SubDbUserRepository>().As<ISubDbUserRepository>();
+            builder.RegisterType<SubDbUser2Repository>().As<ISubDbUser2Repository>();
         }
     }
 }

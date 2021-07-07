@@ -12,6 +12,7 @@ namespace Overt.User.Application
             builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<SubUserService>().As<ISubUserService>();
             builder.RegisterType<SubDbUserService>().As<ISubDbUserService>();
+            builder.RegisterType<SubDbUser2Service>().As<ISubDbUser2Service>();
 
             builder.AddDomainDI();
         }
