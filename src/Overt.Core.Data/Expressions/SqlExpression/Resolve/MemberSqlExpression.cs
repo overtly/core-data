@@ -63,7 +63,10 @@ namespace Overt.Core.Data.Expressions
         {
             var result = SqlExpressionCompiler.Evaluate(expression);
             var inArgs = (result as IEnumerable).Flatten();
-            sqlGenerate.AddDbParameter(inArgs);
+            if (sqlGenerate.DatabaseType == DatabaseType.PostgreSQL)  // pg的in查询需要手动拼接，不然npgsql客户不支持list类型参数化
+                sqlGenerate.CombineInParameters(inArgs);
+            else
+                sqlGenerate.AddDbParameter(inArgs);
             return sqlGenerate;
         }
 

@@ -23,6 +23,8 @@ namespace Overt.Core.Data
                     return "?";
                 case DatabaseType.SQLite:
                     return "@";
+                case DatabaseType.PostgreSQL:
+                    return "@";
                 default:
                     return string.Empty;
             }
@@ -62,6 +64,10 @@ namespace Overt.Core.Data
                     if (columnName.StartsWith("`"))
                         return columnName;
                     return $"`{columnName}`";
+                case DatabaseType.PostgreSQL:
+                    if (columnName.StartsWith("\""))
+                        return columnName;
+                    return $"\"{columnName}\"";
                 default:
                     return columnName;
             }
@@ -83,6 +89,8 @@ namespace Overt.Core.Data
                     return " select LAST_INSERT_ID();";
                 case DatabaseType.SQLite:
                     return " select last_insert_rowid();";
+                case DatabaseType.PostgreSQL:
+                    return "  select LASTVAL();";
                 default:
                     return string.Empty;
             }
@@ -106,6 +114,8 @@ namespace Overt.Core.Data
                     return $"select count(1) from information_schema.tables where table_schema = '{dbName}' and table_name = '{tableName}'";
                 case DatabaseType.SQLite:
                     return $"select count(1) from sqlite_master where type = 'table' and name='{tableName}'";
+                case DatabaseType.PostgreSQL:
+                    return $"select count (1) from information_schema.tables WHERE table_schema = '{dbName}' and table_name = '{tableName}';";
                 default: return string.Empty;
             }
         }
@@ -129,6 +139,8 @@ namespace Overt.Core.Data
                     return $"select count(1) from information_schema.columns where table_schema = '{dbName}' and table_name  = '{tableName}' and column_name = '{fieldName}'";
                 case DatabaseType.SQLite:
                     return $"select * from sqlite_master where name='{tableName}' and sql like '%{fieldName}%';";
+                case DatabaseType.PostgreSQL:
+                    return $"select count(1) from information_schema.columns WHERE table_schema = '{dbName}' and table_name = '{tableName}' and column_name = '{fieldName}'";
                 default: return string.Empty;
             }
         }

@@ -526,6 +526,9 @@ namespace Overt.Core.Data
 #endif
                 return DatabaseType.SQLite;
 
+            if (connection is Npgsql.NpgsqlConnection)
+                return DatabaseType.PostgreSQL;
+
             return DatabaseType.MySql;
         }
 
