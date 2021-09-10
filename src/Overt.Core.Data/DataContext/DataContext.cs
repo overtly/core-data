@@ -121,6 +121,8 @@ namespace Overt.Core.Data
                     return SqlClientFactory.Instance;
                 case DatabaseType.MySql:
                     return MySqlClientFactory.Instance;
+                case DatabaseType.PostgreSQL:
+                    return Npgsql.NpgsqlFactory.Instance;
                 case DatabaseType.SQLite:
 #if ASP_NET_CORE
                     AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data"));

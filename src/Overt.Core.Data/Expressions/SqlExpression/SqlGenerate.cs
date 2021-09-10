@@ -141,6 +141,18 @@ namespace Overt.Core.Data.Expressions
                 Sql.Append(" " + name);
             }
         }
+
+        /// <summary>
+        /// 拼接in参数
+        /// </summary>
+        /// <param name="parameterValues"></param>
+        public void CombineInParameters(List<object> parameterValues)
+        {
+            if (parameterValues == null || parameterValues.Count == 0)
+                return;
+            Sql.Append(" " + $"({string.Join(",", parameterValues.Select(n => $"'{n}'"))})");
+        }
+
         /// <summary>
         /// ToString
         /// </summary>

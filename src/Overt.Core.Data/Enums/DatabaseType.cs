@@ -21,5 +21,9 @@
         /// Sqlite
         /// </summary>
         SQLite,
+        /// <summary>
+        /// PostgreSQL
+        /// </summary>
+        PostgreSQL
     }
 }

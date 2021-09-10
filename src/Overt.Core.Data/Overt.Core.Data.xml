@@ -389,6 +389,11 @@
             Sqlite
             </summary>
         </member>
+        <member name="F:Overt.Core.Data.DatabaseType.PostgreSQL">
+            <summary>
+            PostgreSQL
+            </summary>
+        </member>
         <member name="T:Overt.Core.Data.FieldSortType">
             <summary>
             字段排序类型
@@ -1119,6 +1124,12 @@
             </summary>
             <param name="parameterValue"></param>
         </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlGenerate.CombineInParameters(System.Collections.Generic.List{System.Object})">
+            <summary>
+            拼接in参数
+            </summary>
+            <param name="parameterValues"></param>
+        </member>
         <member name="M:Overt.Core.Data.Expressions.SqlGenerate.ToString">
             <summary>
             ToString
@@ -1778,7 +1789,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.Incr``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             根据条件 在原字段上增减数据
@@ -1877,7 +1888,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.IncrAsync``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             根据条件 在原字段上增减数据
