@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Overt.Core.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,6 +12,8 @@ namespace Overt.User.Domain.Entities
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
+
+        [DataType("Jsonb")]
         public string UserName { get; set; }
         public string RealName { get; set; }
         public string Password { get; set; }

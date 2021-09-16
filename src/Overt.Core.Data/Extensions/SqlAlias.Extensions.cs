@@ -1,4 +1,8 @@
 ﻿using Overt.Core.Data.Expressions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 
 namespace Overt.Core.Data
 {
@@ -70,6 +74,39 @@ namespace Overt.Core.Data
                     return $"\"{columnName}\"";
                 default:
                     return columnName;
+            }
+        }
+
+        /// <summary>
+        /// 获取添加字段
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="dbType"></param>
+        /// <param name="customFields"></param>
+        /// <returns></returns>
+        public static string ParamValue(this string columnName, DatabaseType? dbType, List<PropertyInfo> customFields)
+        {
+            switch (dbType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
+                    return $"@{columnName}";
+                case DatabaseType.MySql:
+                    return $"@{columnName}";
+                case DatabaseType.SQLite:
+                    return $"@{columnName}";
+                case DatabaseType.PostgreSQL:
+                    var customPi = customFields.FirstOrDefault(p=>p.Name.Equals(columnName));
+                    if (customPi != null)
+                    {
+                        var attribute = customPi.GetAttribute<DataTypeAttribute>();
+                        if (attribute.CustomDataType == DataCustomType.Jsonb.ToString())
+                            return $"CAST(@{columnName} AS json)";
+                        return $"@{columnName}";
+                    }
+                    return $"@{columnName}";
+                default:
+                    return $"@{columnName}";
             }
         }
 
