@@ -100,7 +100,7 @@ namespace Overt.Core.Data
                     if (customPi != null)
                     {
                         var attribute = customPi.GetAttribute<DataTypeAttribute>();
-                        if (attribute.CustomDataType == DataCustomType.Jsonb.ToString())
+                        if (attribute != null && attribute.CustomDataType == DataCustomType.Jsonb.ToString())
                             return $"CAST(@{columnName} AS json)";
                         return $"@{columnName}";
                     }
