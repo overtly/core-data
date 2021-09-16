@@ -305,11 +305,10 @@
             连接对象
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.DataContext.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.String,System.Func{System.Boolean,System.String})">
+        <member name="M:Overt.Core.Data.DataContext.#ctor(System.Boolean,System.String,System.Func{System.Boolean,System.Configuration.ConnectionStringSettings})">
             <summary>
             构造函数
             </summary>
-            <param name="configuration">if null 则从appsettings.json中获取</param>
             <param name="isMaster">是否从库</param>
             <param name="dbStoreKey">存储字符串标识</param>
             <param name="connectionFunc">连接字符串Func</param>
@@ -348,22 +347,13 @@
             构造函数
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.DataSettings.Get(Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.String,System.Func{System.Boolean,System.String})">
+        <member name="M:Overt.Core.Data.DataSettings.Get(System.Boolean,System.String,System.Func{System.Boolean,System.Configuration.ConnectionStringSettings})">
             <summary>
             获取连接字符串
             </summary>
-            <param name="configuration"></param>
             <param name="isMaster"></param>
             <param name="dbStoreKey"></param>
             <param name="connectionFunc"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.DataSettings.ResolveConnectionString(System.String,System.String)">
-            <summary>
-            解析
-            </summary>
-            <param name="connectionString"></param>
-            <param name="param"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DataSettings.GetKey(System.Boolean,System.String)">
@@ -842,6 +832,16 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="dbType">数据库类型</param>
+            <param name="expression"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpression.Update``1(Overt.Core.Data.DatabaseType,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            修改
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dbType">数据库类型</par</param>
             <param name="expression"></param>
             <param name="tableName"></param>
             <returns></returns>
