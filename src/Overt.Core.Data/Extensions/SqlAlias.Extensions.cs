@@ -152,7 +152,7 @@ namespace Overt.Core.Data
                 case DatabaseType.SQLite:
                     return $"select count(1) from sqlite_master where type = 'table' and name='{tableName}'";
                 case DatabaseType.PostgreSQL:
-                    return $"select count (1) from information_schema.tables WHERE table_schema = '{dbName}' and table_name = '{tableName}';";
+                    return $"select count(1) from pg_class where relname = '{tableName}';";
                 default: return string.Empty;
             }
         }
