@@ -96,7 +96,7 @@ namespace Overt.Core.Data
                 case DatabaseType.SQLite:
                     return $"@{columnName}";
                 case DatabaseType.PostgreSQL:
-                    var customPi = customFields.FirstOrDefault(p=>p.Name.Equals(columnName));
+                    var customPi = customFields?.FirstOrDefault(p=>p.Name.Equals(columnName));
                     if (customPi != null)
                     {
                         var attribute = customPi.GetAttribute<DataTypeAttribute>();
