@@ -1,4 +1,8 @@
 ﻿using Overt.Core.Data.Expressions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Reflection;
 
 namespace Overt.Core.Data
 {
@@ -22,6 +26,8 @@ namespace Overt.Core.Data
                 case DatabaseType.MySql:
                     return "?";
                 case DatabaseType.SQLite:
+                    return "@";
+                case DatabaseType.PostgreSQL:
                     return "@";
                 default:
                     return string.Empty;
@@ -62,8 +68,45 @@ namespace Overt.Core.Data
                     if (columnName.StartsWith("`"))
                         return columnName;
                     return $"`{columnName}`";
+                case DatabaseType.PostgreSQL:
+                    if (columnName.StartsWith("\""))
+                        return columnName;
+                    return $"\"{columnName}\"";
                 default:
                     return columnName;
+            }
+        }
+
+        /// <summary>
+        /// 获取添加字段
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="dbType"></param>
+        /// <param name="customFields"></param>
+        /// <returns></returns>
+        public static string ParamValue(this string columnName, DatabaseType? dbType, List<PropertyInfo> customFields)
+        {
+            switch (dbType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.GteSqlServer2012:
+                    return $"@{columnName}";
+                case DatabaseType.MySql:
+                    return $"@{columnName}";
+                case DatabaseType.SQLite:
+                    return $"@{columnName}";
+                case DatabaseType.PostgreSQL:
+                    var customPi = customFields?.FirstOrDefault(p=>p.Name.Equals(columnName));
+                    if (customPi != null)
+                    {
+                        var attribute = customPi.GetAttribute<DataTypeAttribute>();
+                        if (attribute != null && attribute.CustomDataType.ToLower() == DataCustomType.Jsonb.ToString().ToLower())
+                            return $"CAST(@{columnName} AS json)";
+                        return $"@{columnName}";
+                    }
+                    return $"@{columnName}";
+                default:
+                    return $"@{columnName}";
             }
         }
 
@@ -83,6 +126,8 @@ namespace Overt.Core.Data
                     return " select LAST_INSERT_ID();";
                 case DatabaseType.SQLite:
                     return " select last_insert_rowid();";
+                case DatabaseType.PostgreSQL:
+                    return "  select LASTVAL();";
                 default:
                     return string.Empty;
             }
@@ -106,6 +151,8 @@ namespace Overt.Core.Data
                     return $"select count(1) from information_schema.tables where table_schema = '{dbName}' and table_name = '{tableName}'";
                 case DatabaseType.SQLite:
                     return $"select count(1) from sqlite_master where type = 'table' and name='{tableName}'";
+                case DatabaseType.PostgreSQL:
+                    return $"select count(1) from pg_class where relname = '{tableName}';";
                 default: return string.Empty;
             }
         }
@@ -129,6 +176,8 @@ namespace Overt.Core.Data
                     return $"select count(1) from information_schema.columns where table_schema = '{dbName}' and table_name  = '{tableName}' and column_name = '{fieldName}'";
                 case DatabaseType.SQLite:
                     return $"select * from sqlite_master where name='{tableName}' and sql like '%{fieldName}%';";
+                case DatabaseType.PostgreSQL:
+                    return $"select count(1) from information_schema.columns WHERE table_schema = '{dbName}' and table_name = '{tableName}' and column_name = '{fieldName}'";
                 default: return string.Empty;
             }
         }

@@ -111,6 +111,29 @@ namespace Overt.Core.Data
             }
             return null;
         }
+
+        /// <summary>
+        /// 获取自定义类型的字段列表
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<PropertyInfo> GetCustomFields(this Type type)
+        {
+            var propertyInfos = type.GetProperties<DataTypeAttribute>();
+            if ((propertyInfos?.Count ?? 0) <= 0) // 代表没有自定义字段
+                return null;
+
+            var result = new List<PropertyInfo>();
+            foreach (var pi in propertyInfos)
+            {
+                var attribute = pi.GetAttribute<DataTypeAttribute>();
+                if (attribute != null)
+                {
+                    result.Add(pi);
+                }
+            }
+            return result;
+        }
         #endregion
 
         #region Public Method
@@ -525,6 +548,9 @@ namespace Overt.Core.Data
             if (connection is System.Data.SQLite.SQLiteConnection)
 #endif
                 return DatabaseType.SQLite;
+
+            if (connection is Npgsql.NpgsqlConnection)
+                return DatabaseType.PostgreSQL;
 
             return DatabaseType.MySql;
         }

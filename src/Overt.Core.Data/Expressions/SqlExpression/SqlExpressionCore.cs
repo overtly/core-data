@@ -56,6 +56,7 @@ namespace Overt.Core.Data.Expressions
             var atFields = new List<string>();
 
             var identityPi = typeof(T).GetIdentityField();
+            var customPis = typeof(T).GetCustomFields();
             var pis = typeof(T).GetProperties();
             foreach (var pi in pis)
             {
@@ -63,7 +64,7 @@ namespace Overt.Core.Data.Expressions
                     continue;
 
                 addFields.Add($"{pi.Name.ParamSql(sqlGenerate.DatabaseType)}");
-                atFields.Add($"@{pi.Name}");
+                atFields.Add($"{pi.Name.ParamValue(sqlGenerate.DatabaseType, customPis)}");
             }
 
             sqlGenerate.Clear();
@@ -124,7 +125,11 @@ namespace Overt.Core.Data.Expressions
                 var property = typeof(T).GetProperty<KeyAttribute>();
                 if (property == null)
                     property = typeof(T).GetProperties()[0];
-                orderBy = $"order by {property.Name} desc";
+
+                var propertyName = property.Name;
+                if (sqlGenerate.DatabaseType == DatabaseType.PostgreSQL)
+                    propertyName = $"\"{propertyName}\"";
+                orderBy = $"order by {propertyName} desc";
             }
 
             if (!orderBy.StartsWith("order by"))
@@ -142,6 +147,9 @@ namespace Overt.Core.Data.Expressions
                     sqlGenerate += $"{Environment.NewLine}{orderBy}";
                     break;
                 case DatabaseType.SQLite:
+                    sqlGenerate += $"{Environment.NewLine}{orderBy}";
+                    break;
+                case DatabaseType.PostgreSQL:
                     sqlGenerate += $"{Environment.NewLine}{orderBy}";
                     break;
             }
@@ -171,6 +179,9 @@ namespace Overt.Core.Data.Expressions
                 case DatabaseType.SQLite:
                     sqlGenerate += $" limit {rows} offset {skip}";
                     break;
+                case DatabaseType.PostgreSQL:
+                    sqlGenerate += $" limit {rows} offset {skip}";
+                    break;
                 default:
                     break;
             }
@@ -197,6 +208,9 @@ namespace Overt.Core.Data.Expressions
                     sqlGenerate += $" limit {offset}, {size}";
                     break;
                 case DatabaseType.SQLite:
+                    sqlGenerate += $" limit {size} offset {offset}";
+                    break;
+                case DatabaseType.PostgreSQL:
                     sqlGenerate += $" limit {size} offset {offset}";
                     break;
                 default:
@@ -304,6 +318,7 @@ namespace Overt.Core.Data.Expressions
             var whereFields = new List<string>();
 
             var pis = typeof(T).GetProperties();
+            var customPis = typeof(T).GetCustomFields();
             foreach (var pi in pis)
             {
                 var obs = pi.GetCustomAttributes(typeof(KeyAttribute), false);
@@ -312,7 +327,7 @@ namespace Overt.Core.Data.Expressions
                 else
                 {
                     if ((fields?.Count() ?? 0) <= 0 || fields.Contains(pi.Name))
-                        setFields.Add($"{pi.Name.ParamSql(sqlGenerate.DatabaseType)} = @{pi.Name}");
+                        setFields.Add($"{pi.Name.ParamSql(sqlGenerate.DatabaseType)} = {pi.Name.ParamValue(sqlGenerate.DatabaseType, customPis)}");
                 }
             }
             if (whereFields.Count <= 0)

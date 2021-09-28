@@ -130,7 +130,7 @@ namespace Overt.Core.Data
         /// </summary>
         /// <param name="entities">数据实体</param>
         /// <returns>添加后的数据实体</returns>
-        public bool Add(params TEntity[] entities)
+        public bool Add(params TEntity[] entities) 
         {
             if ((entities?.Count() ?? 0) <= 0)
                 return false;

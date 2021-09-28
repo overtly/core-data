@@ -389,6 +389,26 @@
             Sqlite
             </summary>
         </member>
+        <member name="F:Overt.Core.Data.DatabaseType.PostgreSQL">
+            <summary>
+            PostgreSQL
+            </summary>
+        </member>
+        <member name="T:Overt.Core.Data.DataCustomType">
+            <summary>
+            自定义字段类型
+            </summary>
+        </member>
+        <member name="F:Overt.Core.Data.DataCustomType.None">
+            <summary>
+            未定义
+            </summary>
+        </member>
+        <member name="F:Overt.Core.Data.DataCustomType.Jsonb">
+            <summary>
+            jsonb类型
+            </summary>
+        </member>
         <member name="T:Overt.Core.Data.FieldSortType">
             <summary>
             字段排序类型
@@ -821,6 +841,16 @@
             修改
             </summary>
             <typeparam name="T"></typeparam>
+            <param name="dbType">数据库类型</par</param>
+            <param name="expression"></param>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpression.Update``1(Overt.Core.Data.DatabaseType,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            修改
+            </summary>
+            <typeparam name="T"></typeparam>
             <param name="dbType">数据库类型</param>
             <param name="fields"></param>
             <param name="tableName"></param>
@@ -1119,6 +1149,12 @@
             </summary>
             <param name="parameterValue"></param>
         </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlGenerate.CombineInParameters(System.Collections.Generic.List{System.Object})">
+            <summary>
+            拼接in参数
+            </summary>
+            <param name="parameterValues"></param>
+        </member>
         <member name="M:Overt.Core.Data.Expressions.SqlGenerate.ToString">
             <summary>
             ToString
@@ -1304,6 +1340,13 @@
         <member name="M:Overt.Core.Data.DapperExtensions.GetIdentityField(System.Type)">
             <summary>
             获取自增字段
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetCustomFields(System.Type)">
+            <summary>
+            获取自定义类型的字段列表
             </summary>
             <param name="type"></param>
             <returns></returns>
@@ -1612,6 +1655,15 @@
             <param name="dbType"></param>
             <returns></returns>
         </member>
+        <member name="M:Overt.Core.Data.SqlAliasExtensions.ParamValue(System.String,System.Nullable{Overt.Core.Data.DatabaseType},System.Collections.Generic.List{System.Reflection.PropertyInfo})">
+            <summary>
+            获取添加字段
+            </summary>
+            <param name="columnName"></param>
+            <param name="dbType"></param>
+            <param name="customFields"></param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.SqlAliasExtensions.SelectLastIdentity(Overt.Core.Data.DatabaseType)">
             <summary>
             获取最后一次Insert
@@ -1706,10 +1758,11 @@
             实现IBaseRepository
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.BaseRepository`1.#ctor(System.String)">
+        <member name="M:Overt.Core.Data.BaseRepository`1.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
             <summary>
             构造函数 
             </summary>
+            <param name="configuration">配置注入</param>
             <param name="dbStoreKey">数据库前缀</param>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.GetMainTableName">
@@ -1778,7 +1831,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.Incr``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             根据条件 在原字段上增减数据
@@ -1877,7 +1930,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.IncrAsync``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             根据条件 在原字段上增减数据
@@ -1957,10 +2010,11 @@
             DbRespository 抽象类
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.PropertyAssist.#ctor(System.String)">
+        <member name="M:Overt.Core.Data.PropertyAssist.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
             <summary>
             实例化
             </summary>
+            <param name="configuration">配置注入</param>
             <param name="dbStoreKey">数据库前缀</param>
         </member>
         <member name="P:Overt.Core.Data.PropertyAssist.DbStoreKey">
