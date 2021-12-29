@@ -841,16 +841,6 @@
             修改
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="dbType">数据库类型</par</param>
-            <param name="expression"></param>
-            <param name="tableName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.Expressions.SqlExpression.Update``1(Overt.Core.Data.DatabaseType,System.Collections.Generic.IEnumerable{System.String},System.String)">
-            <summary>
-            修改
-            </summary>
-            <typeparam name="T"></typeparam>
             <param name="dbType">数据库类型</param>
             <param name="fields"></param>
             <param name="tableName"></param>
@@ -1758,11 +1748,10 @@
             实现IBaseRepository
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.BaseRepository`1.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
+        <member name="M:Overt.Core.Data.BaseRepository`1.#ctor(System.String)">
             <summary>
             构造函数 
             </summary>
-            <param name="configuration">配置注入</param>
             <param name="dbStoreKey">数据库前缀</param>
         </member>
         <member name="M:Overt.Core.Data.BaseRepository`1.GetMainTableName">
@@ -1831,7 +1820,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.Set(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.Incr``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             根据条件 在原字段上增减数据
@@ -1930,7 +1919,7 @@
             <param name="fields">x=> x.SomeProperty1 or x=> new { x.SomeProperty1, x.SomeProperty2 }</param>
             <returns>是否成功</returns>
         </member>
-        <!-- 对于成员“M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})”忽略有格式错误的 XML 注释 -->
+        <!-- Badly formed XML comment ignored for member "M:Overt.Core.Data.BaseRepository`1.SetAsync(System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})" -->
         <member name="M:Overt.Core.Data.BaseRepository`1.IncrAsync``1(System.String,``0,System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
             根据条件 在原字段上增减数据
@@ -2010,11 +1999,10 @@
             DbRespository 抽象类
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.PropertyAssist.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.String)">
+        <member name="M:Overt.Core.Data.PropertyAssist.#ctor(System.String)">
             <summary>
             实例化
             </summary>
-            <param name="configuration">配置注入</param>
             <param name="dbStoreKey">数据库前缀</param>
         </member>
         <member name="P:Overt.Core.Data.PropertyAssist.DbStoreKey">
@@ -2028,6 +2016,29 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="P:Overt.Core.Data.PropertyAssist.ConnectionFunc">
+            <summary>
+            数据库连接方法
+            </summary>
+        </member>
+        <member name="P:Overt.Core.Data.PropertyAssist.TableNameFunc">
+            <summary>
+            表名方法
+            </summary>
+        </member>
+        <member name="P:Overt.Core.Data.PropertyAssist.CreateScriptFunc">
+            <summary>
+            创建表的脚本
+            </summary>
+        </member>
+        <member name="P:Overt.Core.Data.PropertyAssist.ExecuteScript">
+            <summary>
+            执行的sql脚本
+            </summary>
+        </member>
+    </members>
+</doc>
+      </member>
         <member name="P:Overt.Core.Data.PropertyAssist.ConnectionFunc">
             <summary>
             数据库连接方法
