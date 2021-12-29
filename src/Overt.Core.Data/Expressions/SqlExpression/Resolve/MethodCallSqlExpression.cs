@@ -52,7 +52,7 @@ namespace Overt.Core.Data.Expressions
         private static void EndsWith(MethodCallExpression expression, SqlGenerate sqlGenerate)
         {
             SqlExpressionProvider.Where(expression.Object, sqlGenerate);
-            SqlExpressionProvider.Where(expression.Arguments[0], sqlGenerate);
+            //SqlExpressionProvider.Where(expression.Arguments[0], sqlGenerate);
             sqlGenerate += " like ";
 
             var val = SqlExpressionCompiler.Evaluate(expression.Arguments[0]);
@@ -62,7 +62,7 @@ namespace Overt.Core.Data.Expressions
         private static void StartsWith(MethodCallExpression expression, SqlGenerate sqlGenerate)
         {
             SqlExpressionProvider.Where(expression.Object, sqlGenerate);
-            SqlExpressionProvider.Where(expression.Arguments[0], sqlGenerate);
+            //SqlExpressionProvider.Where(expression.Arguments[0], sqlGenerate);
             sqlGenerate += " like ";
 
             var val = SqlExpressionCompiler.Evaluate(expression.Arguments[0]);
