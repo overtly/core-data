@@ -10,6 +10,8 @@ namespace Overt.Core.Data.Expressions
             switch (expressionNodeType)
             {
                 case ExpressionType.And:
+                    sqlGenerate.Sql.Insert(operatorIndex, " & ");
+                    break;
                 case ExpressionType.AndAlso:
                     sqlGenerate.Sql.Insert(operatorIndex, " and ");
                     break;
@@ -32,6 +34,8 @@ namespace Overt.Core.Data.Expressions
                         sqlGenerate.Sql.Insert(operatorIndex, " <> ");
                     break;
                 case ExpressionType.Or:
+                    sqlGenerate.Sql.Insert(operatorIndex, " | ");
+                    break;
                 case ExpressionType.OrElse:
                     sqlGenerate.Sql.Insert(operatorIndex, " or ");
                     break;
@@ -93,7 +97,8 @@ namespace Overt.Core.Data.Expressions
                 OperatorParser(expression.NodeType, signIndex, sqlGenerate);
             #endregion
 
-            if (expression.NodeType == ExpressionType.OrElse || expression.NodeType == ExpressionType.AndAlso)
+            if (expression.NodeType == ExpressionType.OrElse || expression.NodeType == ExpressionType.AndAlso ||
+                expression.NodeType == ExpressionType.Or || expression.NodeType == ExpressionType.And)
             {
                 sqlGenerate.Sql.Insert(leftBracketIndex, " ( ");
                 rightBracketIndex = sqlGenerate.Length;

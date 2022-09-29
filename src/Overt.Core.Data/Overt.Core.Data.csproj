@@ -7,13 +7,13 @@
     <Authors>Yaofeng</Authors>
     <Description>Overt.Core.Data</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>将基础方法Execute变更为virtual，可允许重写</PackageReleaseNotes>
+    <PackageReleaseNotes>增加支持&amp;|</PackageReleaseNotes>
     <Copyright>Overt</Copyright>
     <PackageTags></PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <RepositoryUrl>http://github.com/overtly/core-data</RepositoryUrl>
   </PropertyGroup>
 

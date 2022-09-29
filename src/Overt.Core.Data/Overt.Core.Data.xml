@@ -305,11 +305,10 @@
             连接对象
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.DataContext.#ctor(Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.String,System.Func{System.Boolean,System.String})">
+        <member name="M:Overt.Core.Data.DataContext.#ctor(System.Boolean,System.String,System.Func{System.Boolean,System.Configuration.ConnectionStringSettings})">
             <summary>
             构造函数
             </summary>
-            <param name="configuration">if null 则从appsettings.json中获取</param>
             <param name="isMaster">是否从库</param>
             <param name="dbStoreKey">存储字符串标识</param>
             <param name="connectionFunc">连接字符串Func</param>
@@ -348,22 +347,13 @@
             构造函数
             </summary>
         </member>
-        <member name="M:Overt.Core.Data.DataSettings.Get(Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.String,System.Func{System.Boolean,System.String})">
+        <member name="M:Overt.Core.Data.DataSettings.Get(System.Boolean,System.String,System.Func{System.Boolean,System.Configuration.ConnectionStringSettings})">
             <summary>
             获取连接字符串
             </summary>
-            <param name="configuration"></param>
             <param name="isMaster"></param>
             <param name="dbStoreKey"></param>
             <param name="connectionFunc"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.DataSettings.ResolveConnectionString(System.String,System.String)">
-            <summary>
-            解析
-            </summary>
-            <param name="connectionString"></param>
-            <param name="param"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DataSettings.GetKey(System.Boolean,System.String)">
@@ -1136,7 +1126,19 @@
             清除
             </summary>
         </member>
-        <member name="M:Ove       </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlGenerate.RelaceLast(System.String,System.String)">
+            <summary>
+            替换最后一次出现字符
+            </summary>
+            <param name="oldStr"></param>
+            <param name="newStr"></param>
+        </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlGenerate.AddDbParameter(System.Object)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="parameterValue"></param>
+        </member>
         <member name="M:Overt.Core.Data.Expressions.SqlGenerate.CombineInParameters(System.Collections.Generic.List{System.Object})">
             <summary>
             拼接in参数
@@ -1222,18 +1224,6 @@
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-      IEnumerable{System.String},System.Action{System.String})">
-            <summary>
-            对象修改
-            </summary>
-            <typeparam name="TEntity"></typeparam>
-            <param name="connection"></param>
-            <param name="tableName"></param>
-            <param name="entity"></param>
-            <param name="fields">选择字段</param>
-            <param name="outSqlAction">返回sql语句</param>
-            <returns></returns>
-        </member>
         <member name="M:Overt.Core.Data.DapperExtensions.SetAsync``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{System.Object}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
             <summary>
             条件修改
@@ -1287,7 +1277,17 @@
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetOffsetsAsync``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}e="fieldExpress">选择字段，默认为*</param>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetOffsetsAsync``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
+            <summary>
+            获取分页数据 Offset
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName"></param>
+            <param name="offset"></param>
+            <param name="size"></param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="fieldExpress">选择字段，默认为*</param>
             <param name="orderByFields">排序字段集合</param>
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
@@ -1372,14 +1372,6 @@
             <param name="outSqlAction">返回sql语句</param>
             <returns>-1 参数为空</returns>
         </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.Insert``1(System.Data.IDbConnection,System.String,  <typeparam name="TEntity"></typeparam>
-            <param name="connection"></param>
-            <param name="tableName"></param>
-            <param name="entity"></param>
-            <param name="returnLastIdentity">是否返回自增的数据</param>
-            <param name="outSqlAction">返回sql语句</param>
-            <returns>-1 参数为空</returns>
-        </member>
         <member name="M:Overt.Core.Data.DapperExtensions.Insert``1(System.Data.IDbConnection,System.String,System.Collections.Generic.IEnumerable{``0},System.Action{System.String})">
             <summary>
             批量插入数据
@@ -1443,7 +1435,16 @@
         <member name="M:Overt.Core.Data.DapperExtensions.Get``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Action{System.String})">
             <summary>
             获取单条数据
-ystem.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
+            </summary>
+            <typeparam name="TEntity"></typeparam>
+            <param name="connection"></param>
+            <param name="tableName">表名</param>
+            <param name="whereExpress">条件表达式</param>
+            <param name="fieldExpress">选择字段，默认为*</param>
+            <param name="outSqlAction">返回sql语句</param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetList``1(System.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Collections.Generic.List{Overt.Core.Data.OrderByField},System.Action{System.String})">
             <summary>
             获取分页数据
             </summary>
@@ -2015,29 +2016,6 @@ ystem.Data.IDbConnection,System.String,System.Int32,System.Int32,System.Linq.Exp
             </summary>
             <returns></returns>
         </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.ConnectionFunc">
-            <summary>
-            数据库连接方法
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.TableNameFunc">
-            <summary>
-            表名方法
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.CreateScriptFunc">
-            <summary>
-            创建表的脚本
-            </summary>
-        </member>
-        <member name="P:Overt.Core.Data.PropertyAssist.ExecuteScript">
-            <summary>
-            执行的sql脚本
-            </summary>
-        </member>
-    </members>
-</doc>
-      </member>
         <member name="P:Overt.Core.Data.PropertyAssist.ConnectionFunc">
             <summary>
             数据库连接方法
