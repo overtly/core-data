@@ -1303,6 +1303,13 @@
             <param name="outSqlAction">返回sql语句</param>
             <returns></returns>
         </member>
+        <member name="M:Overt.Core.Data.DapperExtensions.GetMainTableName(System.Type)">
+            <summary>
+            获取主表名称
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.DapperExtensions.GetTableName``1(System.String,System.Func{System.String})">
             <summary>
             获取表名
@@ -1490,13 +1497,6 @@
             获取db类型
             </summary>
             <param name="connection"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.DapperExtensions.GetMainTableName(System.Type)">
-            <summary>
-            获取主表名称
-            </summary>
-            <param name="entity"></param>
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.DapperExtensions.GetValueFromExpression``1(System.Reflection.PropertyInfo,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">

@@ -23,6 +23,22 @@ namespace Overt.Core.Data
     {
         #region TableName
         /// <summary>
+        /// 获取主表名称
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static string GetMainTableName(this Type entity)
+        {
+            var attribute = entity.GetAttribute<TableAttribute>();
+            string mTableName;
+            if (attribute == null)
+                mTableName = entity.Name;
+            else
+                mTableName = attribute.Name;
+            return mTableName;
+        }
+
+        /// <summary>
         /// 获取表名
         /// </summary>
         /// <param name="val"></param>
@@ -553,22 +569,6 @@ namespace Overt.Core.Data
                 return DatabaseType.PostgreSQL;
 
             return DatabaseType.MySql;
-        }
-
-        /// <summary>
-        /// 获取主表名称
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        internal static string GetMainTableName(this Type entity)
-        {
-            var attribute = entity.GetAttribute<TableAttribute>();
-            string mTableName;
-            if (attribute == null)
-                mTableName = entity.Name;
-            else
-                mTableName = attribute.Name;
-            return mTableName;
         }
 
         /// <summary>
