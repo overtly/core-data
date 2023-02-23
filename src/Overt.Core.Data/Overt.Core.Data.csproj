@@ -7,13 +7,13 @@
     <Authors>Yaofeng</Authors>
     <Description>Overt.Core.Data</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>GetMainTableName开放使用</PackageReleaseNotes>
+    <PackageReleaseNotes>Insert 支持long自增</PackageReleaseNotes>
     <Copyright>Overt</Copyright>
     <PackageTags></PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>2.2.2</Version>
+    <Version>2.2.3</Version>
     <RepositoryUrl>http://github.com/overtly/core-data</RepositoryUrl>
   </PropertyGroup>
 

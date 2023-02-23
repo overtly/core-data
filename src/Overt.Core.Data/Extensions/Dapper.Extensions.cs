@@ -204,7 +204,7 @@ namespace Overt.Core.Data
         /// <param name="returnLastIdentity">是否返回自增的数据</param>
         /// <param name="outSqlAction">返回sql语句</param>
         /// <returns>-1 参数为空</returns>
-        public static int Insert<TEntity>(this
+        public static bool Insert<TEntity>(this
             IDbConnection connection,
             string tableName,
             TEntity entity,
@@ -221,20 +221,24 @@ namespace Overt.Core.Data
             var sqlExpression = SqlExpression.Insert<TEntity>(dbType, tableName, returnLastIdentity);
             outSqlAction?.Invoke(sqlExpression.Script);
 
-            int result;
             var identityPI = typeof(TEntity).GetIdentityField();
             if (identityPI != null && returnLastIdentity)
             {
-                result = connection.ExecuteScalar<int>(sqlExpression.Script, entity);
-                if (result > 0)
-                    identityPI.SetValue(entity, result);
-            }
-            else
-            {
-                result = connection.Execute(sqlExpression.Script, entity);
+                if (identityPI.PropertyType == typeof(int))
+                {
+                    var intResult = connection.ExecuteScalar<int>(sqlExpression.Script, entity);
+                    if (intResult > 0)
+                        identityPI.SetValue(entity, intResult);
+                    return intResult > 0;
+                }
+                var longResult = connection.ExecuteScalar<long>(sqlExpression.Script, entity);
+                if (longResult > 0)
+                    identityPI.SetValue(entity, longResult);
+                return longResult > 0;
             }
 
-            return result;
+            var result = connection.Execute(sqlExpression.Script, entity);
+            return result > 0;
         }
 
         /// <summary>
@@ -245,7 +249,7 @@ namespace Overt.Core.Data
         /// <param name="tableName"></param>
         /// <param name="entities"></param>
         /// <param name="outSqlAction">返回sql语句</param>
-        /// <returns>-1 参数为空</returns>
+        /// <returns>执行条数</returns>
         public static int Insert<TEntity>(this
             IDbConnection connection,
             string tableName,

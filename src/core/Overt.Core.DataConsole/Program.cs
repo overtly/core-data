@@ -31,9 +31,77 @@ namespace Overt.Core.DataConsole
             ExecuteMethod();
 
             ExecuteMethodAsync().GetAwaiter().GetResult();
+
+            ExecuteMethodLongId();
+
+            ExecuteMethodLongIdAsync().GetAwaiter().GetResult();
         }
 
         #region Static Method
+        private static void ExecuteMethodLongId()
+        {
+            var _userService = provider.GetService<IUserLongIdService>();
+
+            // 新增
+            var userId = _userService.Add(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST1",
+                RealName = "TEST1",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            });
+
+            // 批量新增
+            var batchAddResult = _userService.Add(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST1" + DateTime.Now.ToString("fffff"),
+                RealName = "TEST1" + DateTime.Now.ToString("fffff"),
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }, new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST2" + DateTime.Now.ToString("fffff"),
+                RealName = "TEST2" + DateTime.Now.ToString("fffff"),
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            });
+        }
+
+        private static async Task ExecuteMethodLongIdAsync()
+        {
+            var _userService = provider.GetService<IUserLongIdService>();
+
+            // 新增
+            var userId = await _userService.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST1",
+                RealName = "TEST1",
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            });
+
+            // 批量新增
+            var batchAddResult = await _userService.AddAsync(new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST1" + DateTime.Now.ToString("fffff"),
+                RealName = "TEST1" + DateTime.Now.ToString("fffff"),
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            }, new User.Application.Models.UserPostModel()
+            {
+                UserName = "TEST2" + DateTime.Now.ToString("fffff"),
+                RealName = "TEST2" + DateTime.Now.ToString("fffff"),
+                Password = "123456",
+                IsSex = false,
+                JsonValue = "{}"
+            });
+        }
+
         private static async Task ExecuteMethodAsync()
         {
             var _userService = provider.GetService<IUserService>();

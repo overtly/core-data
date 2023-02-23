@@ -1388,7 +1388,7 @@
             <param name="tableName"></param>
             <param name="entities"></param>
             <param name="outSqlAction">返回sql语句</param>
-            <returns>-1 参数为空</returns>
+            <returns>执行条数</returns>
         </member>
         <member name="M:Overt.Core.Data.DapperExtensions.Delete``1(System.Data.IDbConnection,System.String,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{System.String})">
             <summary>

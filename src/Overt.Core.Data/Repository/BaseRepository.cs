@@ -121,7 +121,7 @@ namespace Overt.Core.Data
             {
                 var tableName = entity.GetTableName(TableNameFunc);
                 var result = connection.Insert(tableName, entity, returnLastIdentity, OutSqlAction);
-                return result > 0;
+                return result;
             }, true);
         }
 
@@ -364,7 +364,7 @@ namespace Overt.Core.Data
             {
                 var tableName = entity.GetTableName(TableNameFunc);
                 var result = await connection.InsertAsync(tableName, entity, returnLastIdentity, OutSqlAction);
-                return result > 0;
+                return result;
             }, true);
         }
 
