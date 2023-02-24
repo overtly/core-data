@@ -4,7 +4,7 @@
 
 ### 项目层次说明
 
-> Overt.Core.Data v2.1.3  
+> Overt.Core.Data v2.2.3 
 > 基于dapper封装的expression om，让CURD更简单
 
 #### 1. 项目目录
@@ -41,7 +41,7 @@
 
 #### 2. 版本及支持
 
-> * Nuget版本：V2.1.3
+> * Nuget版本：V2.2.3
 > * 框架支持： Framework4.6.1 - NetStandard 2.0
 > * 数据库支持：MySql / SqlServer / SQLite [使用详见下文]
 
@@ -92,7 +92,7 @@ Microsoft.Extensions.Configuration 2.0.0
 #### 2. Nuget包引用
 
 ```
-Install-Package Overt.Core.Data -Version 2.1.3
+Install-Package Overt.Core.Data -Version 2.2.3
 ```
 
 
@@ -204,6 +204,8 @@ public async Task<bool> ExecuteInTransactionAsync()
 > * EndWith
 > * &&
 > * ||
+> * &
+> * |
 
 
 ##### 不支持案例
@@ -283,6 +285,37 @@ var list = _repository.GetList(1, 1, oo=>oo.UserName == null);
 
 
 #### 9. 更新说明
+
+- 2023-02-23 v2.2.3
+
+> 1. Insert 支持long自增
+
+
+
+- 2022-11-22 v2.2.2
+
+> 1. GetMainTableName开放使用
+
+
+
+- 2022-09-29 v2.2.1
+
+> 1. 增加支持& |
+
+
+
+- 2021-12-29 v2.2.0
+
+> 1. 支持PG数据库 感谢 @liuzhenbao0505
+> 2. 修正 StartWith EndWith 的拼接错误 @Zhang-Pengyuan
+
+
+
+- 2021-03-26 v2.1.4
+
+> 1. 将基础方法Execute变更为virtual，可允许重写
+
+
 
 - 2021-02-24 v2.1.3
 
