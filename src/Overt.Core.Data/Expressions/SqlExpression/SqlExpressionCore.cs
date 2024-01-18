@@ -157,6 +157,33 @@ namespace Overt.Core.Data.Expressions
         }
 
         /// <summary>
+        /// Top1
+        /// </summary>
+        /// <returns></returns>
+        public SqlExpressionCore<T> TopOne()
+        {
+            switch (sqlGenerate.DatabaseType)
+            {
+                case DatabaseType.SqlServer: // 2012版本支持 内部数据库版本706 【select DATABASEPROPERTYEX('master','version')】
+                    sqlGenerate.Sql.Replace("select", $"select top 1{Environment.NewLine}");
+                    break;
+                case DatabaseType.GteSqlServer2012:
+                    sqlGenerate.Sql.Replace("select", $"select top 1{Environment.NewLine}");
+                    break;
+                case DatabaseType.MySql:
+                    sqlGenerate += $"{Environment.NewLine}limit 1";
+                    break;
+                case DatabaseType.SQLite:
+                    sqlGenerate += $"{Environment.NewLine}limit 1";
+                    break;
+                case DatabaseType.PostgreSQL:
+                    sqlGenerate += $"{Environment.NewLine}limit 1";
+                    break;
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Limit
         /// </summary>
         /// <param name="page"></param>

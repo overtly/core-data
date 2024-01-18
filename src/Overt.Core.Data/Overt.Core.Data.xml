@@ -985,6 +985,12 @@
             <param name="orderBy"></param>
             <returns></returns>
         </member>
+        <member name="M:Overt.Core.Data.Expressions.SqlExpressionCore`1.TopOne">
+            <summary>
+            Top1
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Overt.Core.Data.Expressions.SqlExpressionCore`1.Limit(System.Int32,System.Int32)">
             <summary>
             Limit

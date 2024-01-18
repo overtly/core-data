@@ -231,11 +231,11 @@ namespace Overt.Core.Data
                 return default(TEntity);
 
             return Execute((connection) =>
-          {
-              var tableName = expression.GetTableName(TableNameFunc);
-              var task = connection.Get(tableName, expression, fieldExpressison, OutSqlAction);
-              return task;
-          }, isMaster);
+            {
+                var tableName = expression.GetTableName(TableNameFunc);
+                var task = connection.Get(tableName, expression, fieldExpressison, OutSqlAction);
+                return task;
+            }, isMaster);
         }
 
         /// <summary>
@@ -260,11 +260,11 @@ namespace Overt.Core.Data
                 return default(IEnumerable<TEntity>);
 
             return Execute((connection) =>
-          {
-              var tableName = expression.GetTableName(TableNameFunc);
-              var task = connection.GetList(tableName, page, rows, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
-              return task;
-          }, isMaster);
+            {
+                var tableName = expression.GetTableName(TableNameFunc);
+                var task = connection.GetList(tableName, page, rows, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
+                return task;
+            }, isMaster);
         }
 
         /// <summary>
@@ -289,11 +289,11 @@ namespace Overt.Core.Data
                 return default(IEnumerable<TEntity>);
 
             return Execute((connection) =>
-          {
-              var tableName = expression.GetTableName(TableNameFunc);
-              var task = connection.GetOffsets(tableName, offset, size, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
-              return task;
-          }, isMaster);
+            {
+                var tableName = expression.GetTableName(TableNameFunc);
+                var task = connection.GetOffsets(tableName, offset, size, expression, fieldExpressison, orderByFields?.ToList(), OutSqlAction);
+                return task;
+            }, isMaster);
         }
 
         /// <summary>
@@ -305,11 +305,11 @@ namespace Overt.Core.Data
         public int Count(Expression<Func<TEntity, bool>> expression = null, bool isMaster = false)
         {
             return Execute((connection) =>
-          {
-              var tableName = expression.GetTableName(TableNameFunc);
-              var task = connection.Count(tableName, expression, OutSqlAction);
-              return task;
-          }, isMaster);
+            {
+                var tableName = expression.GetTableName(TableNameFunc);
+                var task = connection.Count(tableName, expression, OutSqlAction);
+                return task;
+            }, isMaster);
         }
         #endregion
 

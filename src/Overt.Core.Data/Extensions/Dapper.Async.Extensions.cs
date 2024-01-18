@@ -87,7 +87,7 @@ namespace Overt.Core.Data
             var identityPI = typeof(TEntity).GetIdentityField();
             if (identityPI != null && returnLastIdentity)
             {
-                if(identityPI.PropertyType == typeof(int))
+                if (identityPI.PropertyType == typeof(int))
                 {
                     var intResult = await connection.ExecuteScalarAsync<int>(sqlExpression.Script, entity);
                     if (intResult > 0)
@@ -284,6 +284,7 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName).Where(whereExpress);
+            sqlExpression = sqlExpression.TopOne();
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
             var result = await connection.QueryFirstOrDefaultAsync<TEntity>(sqlExpression.Script, sqlExpression.DbParams);

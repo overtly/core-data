@@ -72,6 +72,7 @@ namespace Overt.Core.Data.Expressions
         {
             return new SqlExpressionCore<T>(dbType, tableName).Select(expression);
         }
+
         /// <summary>
         /// 数量
         /// </summary>

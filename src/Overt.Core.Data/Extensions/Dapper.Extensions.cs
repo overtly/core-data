@@ -421,6 +421,7 @@ namespace Overt.Core.Data
 
             var dbType = connection.GetDbType();
             var sqlExpression = SqlExpression.Select(dbType, fieldExpress, tableName).Where(whereExpress);
+            sqlExpression = sqlExpression.TopOne();
             outSqlAction?.Invoke(sqlExpression.Script); // 返回sql
 
             var result = connection.QueryFirstOrDefault<TEntity>(sqlExpression.Script, sqlExpression.DbParams);
