@@ -171,7 +171,7 @@ namespace Overt.Core.Data
             {
                 case DatabaseType.SqlServer:
                 case DatabaseType.GteSqlServer2012:
-                    return $"select count(1) sys.columns where object_id = object_id('{tableName}') and name='{fieldName}'";
+                    return $"select count(1) from sys.columns where object_id = object_id('{tableName}') and name='{fieldName}'";
                 case DatabaseType.MySql:
                     return $"select count(1) from information_schema.columns where table_schema = '{dbName}' and table_name  = '{tableName}' and column_name = '{fieldName}'";
                 case DatabaseType.SQLite:
