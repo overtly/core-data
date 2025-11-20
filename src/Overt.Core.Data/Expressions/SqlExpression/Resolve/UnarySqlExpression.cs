@@ -17,7 +17,10 @@ namespace Overt.Core.Data.Expressions
             {
                 case ExpressionType.Not:
                     if (expression.Operand is MethodCallExpression)
+                    {
                         sqlGenerate.RelaceLast("in", "not in");
+                        sqlGenerate.RelaceLast("like", "not like");
+                    }
                     else
                         sqlGenerate += " = 0";
                     break;

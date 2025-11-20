@@ -123,6 +123,9 @@ namespace Overt.Core.Data.Expressions
         /// <param name="newStr"></param>
         public void RelaceLast(string oldStr, string newStr)
         {
+            if (Sql.ToString().LastIndexOf(oldStr) == -1)
+                return;
+
             Sql = Sql.Replace(oldStr, newStr, Sql.ToString().LastIndexOf(oldStr), newStr.Length);
         }
 
