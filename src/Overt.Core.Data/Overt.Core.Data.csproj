@@ -7,13 +7,13 @@
     <Authors>Yaofeng</Authors>
     <Description>Overt.Core.Data</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Get方法中Sql语句增加Top 1</PackageReleaseNotes>
+    <PackageReleaseNotes>lambda表达式解析增加 !Contains 生成 not like</PackageReleaseNotes>
     <Copyright>Overt</Copyright>
     <PackageTags></PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>2.3.1</Version>
+    <Version>2.3.2</Version>
     <RepositoryUrl>http://github.com/overtly/core-data</RepositoryUrl>
   </PropertyGroup>
 
