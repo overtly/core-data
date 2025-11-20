@@ -119,29 +119,6 @@ namespace Overt.Core.Data.Expressions
 
 
         #region Internal Method
-        /// <summary>
-        /// 是否是静态集合方法
-        /// </summary>
-        /// <param name="m"></param>
-        /// <returns></returns>
-        internal static bool IsStaticArrayMethod(MethodCallExpression m)
-        {
-            return (m.Object == null
-                && m.Arguments.Count == 2);
-        }
-
-        /// <summary>
-        /// 是否是集合方法
-        /// </summary>
-        /// <param name="m"></param>
-        /// <returns></returns>
-        internal static bool IsEnumerableMethod(MethodCallExpression m)
-        {
-            return m.Object != null
-                && m.Object.Type.IsOrHasGenericInterfaceTypeOf(typeof(IEnumerable<>))
-                && m.Object.Type != typeof(string)
-                && m.Arguments.Count == 1;
-        }
 
         internal static void DoEnumerableMethodCall(MethodCallExpression expression, SqlGenerate sqlGenerate)
         {

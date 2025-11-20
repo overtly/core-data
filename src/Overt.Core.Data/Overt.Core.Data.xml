@@ -696,6 +696,20 @@
             <param name="sqlGenerate"></param>
             <returns></returns>
         </member>
+        <member name="M:Overt.Core.Data.Expressions.BaseSqlExpression`1.IsStaticArrayMethod(System.Linq.Expressions.MethodCallExpression)">
+            <summary>
+            是否是静态集合方法
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Overt.Core.Data.Expressions.BaseSqlExpression`1.IsEnumerableMethod(System.Linq.Expressions.MethodCallExpression)">
+            <summary>
+            是否是集合方法
+            </summary>
+            <param name="m"></param>
+            <returns></returns>
+        </member>
         <member name="T:Overt.Core.Data.Expressions.ISqlExpression">
             <summary>
             interface
@@ -782,20 +796,6 @@
             <returns></returns>
         </member>
         <member name="M:Overt.Core.Data.Expressions.MemberSqlExpression.IsEnumerable(System.Linq.Expressions.MemberExpression)">
-            <summary>
-            是否是集合方法
-            </summary>
-            <param name="m"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.Expressions.MethodCallSqlExpression.IsStaticArrayMethod(System.Linq.Expressions.MethodCallExpression)">
-            <summary>
-            是否是静态集合方法
-            </summary>
-            <param name="m"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Overt.Core.Data.Expressions.MethodCallSqlExpression.IsEnumerableMethod(System.Linq.Expressions.MethodCallExpression)">
             <summary>
             是否是集合方法
             </summary>

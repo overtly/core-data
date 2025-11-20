@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Overt.Core.Data.Expressions
@@ -19,6 +20,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Update方法");
         }
+
         /// <summary>
         /// Select
         /// </summary>
@@ -29,6 +31,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Select方法");
         }
+
         /// <summary>
         /// Where
         /// </summary>
@@ -39,6 +42,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Where方法");
         }
+
         /// <summary>
         /// In
         /// </summary>
@@ -49,6 +53,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.In方法");
         }
+
         /// <summary>
         /// OrderBy
         /// </summary>
@@ -59,6 +64,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.OrderBy方法");
         }
+
         /// <summary>
         /// Max
         /// </summary>
@@ -69,6 +75,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Max方法");
         }
+
         /// <summary>
         /// Min
         /// </summary>
@@ -79,6 +86,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Min方法");
         }
+
         /// <summary>
         /// Avg
         /// </summary>
@@ -89,6 +97,7 @@ namespace Overt.Core.Data.Expressions
         {
             throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Avg方法");
         }
+
         /// <summary>
         /// Count
         /// </summary>
@@ -120,6 +129,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Update((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Select
         /// </summary>
@@ -130,6 +140,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Select((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Where
         /// </summary>
@@ -140,6 +151,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Where((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// In
         /// </summary>
@@ -150,6 +162,7 @@ namespace Overt.Core.Data.Expressions
         {
             return In((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// OrderBy
         /// </summary>
@@ -160,6 +173,7 @@ namespace Overt.Core.Data.Expressions
         {
             return OrderBy((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Max
         /// </summary>
@@ -170,6 +184,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Max((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Min
         /// </summary>
@@ -180,6 +195,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Min((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Avg
         /// </summary>
@@ -190,6 +206,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Avg((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Count
         /// </summary>
@@ -200,6 +217,7 @@ namespace Overt.Core.Data.Expressions
         {
             return Count((T)expression, sqlGenerate);
         }
+
         /// <summary>
         /// Sum
         /// </summary>
@@ -210,5 +228,31 @@ namespace Overt.Core.Data.Expressions
         {
             return Sum((T)expression, sqlGenerate);
         }
+
+        #region Internal Method
+        /// <summary>
+        /// 是否是静态集合方法
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        internal static bool IsStaticArrayMethod(MethodCallExpression m)
+        {
+            return (m.Object == null
+                && m.Arguments.Count == 2);
+        }
+
+        /// <summary>
+        /// 是否是集合方法
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        internal static bool IsEnumerableMethod(MethodCallExpression m)
+        {
+            return m.Object != null
+                && m.Object.Type.IsOrHasGenericInterfaceTypeOf(typeof(IEnumerable<>))
+                && m.Object.Type != typeof(string)
+                && m.Arguments.Count == 1;
+        }
+        #endregion
     }
 }
